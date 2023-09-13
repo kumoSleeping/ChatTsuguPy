@@ -17,7 +17,7 @@ plugin_configurations = []
 class Msg:
     IP = 'localhost'
     PORT = '16530'
-    TOKEN = "ef9596b968925eafc5d8822438c70ab4242c9ba13f9a2e29be2feee4417008d8"
+    TOKEN = "your_token"
 
     def __init__(self):
         self.IP = self.IP
