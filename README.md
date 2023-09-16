@@ -2,8 +2,8 @@
 <h1 align="center"> tsugu-bangdream-bot-lite-py </h1>
 
 
-<div align="center"> <img src="/logo.jpg" width="120"/> </div>
-<div align="center">v0.2.0</div>
+<div align="center"> <img src="./logo.jpg" width="120"/> </div>
+<div align="center">v0.2.1</div>
 <div align="center">  Python编写的Tsugu前端、登陆端脚本 基于<a href="https://github.com/Yamamoto-2/tsugu-bangdream-bot">tsugu-bangdream-bot</a>后端
 </div>
 <div align="center">  Tsugu部署方法(长期更新)：http://ks.ksm.ink/#/tsugu </a>
@@ -100,7 +100,9 @@ servers:
 使用`tsuguLP.py`或`tsuguLP_async.py`接入您的同步或异步代码，接入方法参考登陆端的`c_p_3`或`menu`即可。
 
 `tsuguLP.py`位于登陆端文件夹，两登陆端的`tsuguLP.py`文件是一样的，
-`tsuguLP_async.py`位于scripts_async`scripts_async`文件夹，具有异步特性，理论上无其他改动，由@zhaomaoniu 维护。
+
+~~`tsuguLP_async.py`位于scripts_async`scripts_async`文件夹，具有异步特性，理论上无其他改动，由@zhaomaoniu 维护。~~
+> zhaomaoniu(2023 9.16 20:16): 现在我可以跑同步代码了 😋 不维护 aiohttp 的菇 了
 
 
 ### 自建后端(非必需步骤)
