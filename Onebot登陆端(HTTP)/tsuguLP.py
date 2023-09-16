@@ -3,46 +3,89 @@ import re
 import json
 from pathlib import Path
 
-# import os
-# import time
-# import base64, io
-# from PIL import Image
+import os
+import time
+import base64, io
+from PIL import Image
 
-BACKEND_URL = 'http://tsugubot.com:8080'  # 后端地址
-default_use_easy_bg = True  # 是否使用简易背景
-default_servers = ["3", "0"]   # 默认服务器顺序
-BindPlayer_url = ''  # 请填写玩家绑定数据库API
-self_id = 'tsugu'  # bot称呼，后面会用到 swc off 称呼 来关闭bot
-help_word = 'help'  # help 触发词（不能有空格）
 
-folder_path = Path('tsugu_config')  # 配置文件存储位置，可以不管
-bandoriStationToken = 'ZtV4EX2K9Onb'
-source = 'Tsugu'
-ban_group_file = folder_path / 'ban_group.json'
-administrator_file = folder_path / 'administrator.json'
-
+current_dir = Path.cwd()
+folder_path = Path(current_dir / "tsugu_config")
 if not folder_path.exists():
     folder_path.mkdir()
+config_file_path = f"{folder_path}/config.json"  # 配置文件路径
 
-
-def load_json_file(file, default_data):
-    if not file.exists():
-        with open(file, 'w', encoding='utf-8') as f:
-            json.dump(default_data, f)
-            return default_data
+def read_or_create_config():
+    """
+    读取配置文件，如果文件不存在则创建默认配置并写入文件
+    """
+    if Path(config_file_path).exists():
+        with open(config_file_path, "r", encoding='utf-8') as file:
+            config_data = json.load(file)
+            print(f"配置文件已读取: {config_file_path}")
     else:
-        with open(file, 'r', encoding='utf-8') as f:
-            return json.load(f)
+        # 默认配置
+        config_data = {
+            "同意「免责声明」(需填写同意)": "同意",
+            "BACKEND_URL_RCD": "http://tsugubot.com:8080",
+            "USE_EASY_BG": True,
+            "DEFAULT_SERVERS": ["3", "0"],
+            "BIND_PLAYER_URL": "不填写没玩家状态用",
+            "BOT_NAME": "tsugu",
+            "HELP_TRIGGER": "help",
+            "BANDORI_STATION_TOKEN": "ZtV4EX2K9Onb",
+            "TOKEN_NAME": "Tsugu",
+            "ADMIN_LIST": ["ALL", "114514"],
+            "BAN_GROUP_DATA": ["115415", "666808414"],
+            "STATUS_ON_ECHO": "喜多喜多～",
+            "STATUS_OFF_ECHO": "呜呜，zoule",
+        }
+        with open(f"{folder_path}/help_config.txt", "w", encoding='utf-8') as file:
+            text = """HELP：
+- `BACKEND_URL`: 后端地址，默认为 Tsugu 官方的地址。
+- `USE_EASY_BG`: 是否使用简化背景，建议为 true，否则可能导致速度变慢且可能出现 bug。
+- `DEFAULT_SERVERS`: 默认服务器顺序，3 表示国服，0 表示日服。
+- `BIND_PLAYER_URL`: 绑定玩家状态的 API 地址，可以向 kumo 请求获取。
+- `BOT_NAME`: Bot 的名字，默认为 "tsugu"。
+- `HELP_TRIGGER`: 触发帮助的指令名，默认为 "help"。
+- `BANDORI_STATION_TOKEN`: 车站 Token，默认为 Tsugu 的 Token。
+- `TOKEN_NAME`: Token 名称，与车站 Token 绑定。
+- `ADMIN_LIST`: 管理员列表，"ALL" 表示所有人，"114514" 是一个示例管理员 ID。
+- `BAN_GROUP_DATA`: 停用 tsugu 的群聊列表，初始为空列表。
+- `STATUS_ON_ECHO`: bot被启用发出的提示。
+- `STATUS_OFF_ECHO`: bot被停用发出的提示。
+"""
+            file.write(text)
+        # 写入默认配置到文件
+        with open(config_file_path, "w", encoding='utf-8') as file:
+            json.dump(config_data, file, indent=4, ensure_ascii=False)
+            disclaimer = "这里是免责声明。"
+            print(f"默认配置已写入到: {config_file_path}\n请修改配置后重启。免责声明：\n{disclaimer}")
+            exit()
 
+    return config_data
 
-ban_group_data = load_json_file(ban_group_file, [])
-administrator_data = load_json_file(administrator_file, ["ALL"])
-# print(ban_group_data, administrator_data)
+# 在此处调用 read_or_create_config() 来获取配置信息
+config = read_or_create_config()
+
+# 使用配置信息
+BACKEND_URL = config.get("BACKEND_URL_RCD", None)
+USE_EASY_BG = config.get("USE_EASY_BG", True)
+DEFAULT_SERVERS = config.get("DEFAULT_SERVERS", [])
+BIND_PLAYER_URL = config.get("BIND_PLAYER_URL", "不填写没玩家状态用")
+BOT_NAME = config.get("BOT_NAME", "tsugu")
+HELP_TRIGGER = config.get("HELP_TRIGGER", "help")
+BANDORI_STATION_TOKEN = config.get("BANDORI_STATION_TOKEN", "ZtV4EX2K9Onb")
+TOKEN_NAME = config.get("TOKEN_NAME", "Tsugu")
+ADMIN_LIST = config.get("ADMIN_LIST", ["ALL", "114514"])
+BAN_GROUP_DATA = config.get("BAN_GROUP_DATA", [])
+STATUS_ON_ECHO = config.get("STATUS_ON_ECHO", "喜多喜多～")
+STATUS_OFF_ECHO = config.get("STATUS_OFF_ECHO", "呜呜，zoule")
 
 # cmd_dict 可以用来设置别名
 cmd_dict = {
     # （不支持换服务器优先级）
-    help_word: "Help",
+    HELP_TRIGGER: "Help",
     "swc": "Swc",
     "查曲": "/searchSong",
     "查活动": "/searchEvent",
@@ -76,7 +119,7 @@ cmd_dict = {
 
 # 此列表键与 cmd_dict 保持一致
 cmd_help_dict = {
-    "swc": f"swc off {self_id} ·关闭本群Tsugu\nswc on {self_id} ·开启本群Tsugu",
+    "swc": f"swc off {BOT_NAME} ·关闭本群Tsugu\nswc on {BOT_NAME} ·开启本群Tsugu",
     "查曲": "查曲 信息 ·列表查曲\n查曲 ID ·查寻单曲信息",
     "查活动": "查活动 信息 ·列表查活动\n查活动 ID ·查寻活动信息",
     "查谱面": "查谱面 ID 难度 ·输出谱面预览",
@@ -107,18 +150,19 @@ non_arg_cmd = [
     "/gachaSimulate",
     "BindPlayer",
     "Help",
+    "/ycxAll",
 ]
 
 language_mapping = {"jp": 0, "en": 1, "tw": 2, "cn": 3, "kr": 4}
 
-config = {
+car_config = {
     "car": ["车", "w", "W", "国", "日", "火", "q", "开", "Q", "万", "缺", "来", "差", "奇迹", "冲", "途", "分", "禁"],
     "fake": ["114514", "假车", "测试", "野兽", "恶臭", "1919", "下北泽", "粪", "糞", "臭", "雀魂", "麻将", "打牌", "maj", "麻", "[", "]", "断幺", "11451", "xiabeize", "qq.com", "@", "q0", "q5", "q6", "q7", "q8", "q9", "q10", "腾讯会议", "master", "疯狂星期四", "离开了我们", "日元", "av", "bv"]
 }
 
 
 def get_data(user_id: str, server: str):
-    url = f"{BindPlayer_url}/api/data?mode=get&user_id={user_id}&server={server}"
+    url = f"{BIND_PLAYER_URL}/api/data?mode=get&user_id={user_id}&server={server}"
     try:
         with requests.Session() as session:
             response = session.get(url)
@@ -131,7 +175,7 @@ def get_data(user_id: str, server: str):
 
 
 def save_data(user_id: str, uid: str, server: str):
-    url = f"{BindPlayer_url}/api/data?mode=save&user_id={user_id}&uid={uid}&server={server}"
+    url = f"{BIND_PLAYER_URL}/api/data?mode=save&user_id={user_id}&uid={uid}&server={server}"
     try:
         with requests.Session() as session:
             response = session.get(url)
@@ -193,14 +237,14 @@ def tsugu_main(message: str, user_id: str, group_id: str):
         返回布尔值"""
         isCar = False
 
-        # 检查config['car']中的关键字
-        for keyword in config["car"]:
+        # 检查car_config['car']中的关键字
+        for keyword in car_config["car"]:
             if keyword in message:
                 isCar = True
                 break
 
-        # 检查config['fake']中的关键字
-        for keyword in config["fake"]:
+        # 检查car_config['fake']中的关键字
+        for keyword in car_config["fake"]:
             if keyword in message:
                 isCar = False
                 break
@@ -224,7 +268,7 @@ def tsugu_main(message: str, user_id: str, group_id: str):
                 car_id = car_id[:5]
 
             # 构建URL
-            url = f"https://api.bandoristation.com/index.php?function=submit_room_number&number={car_id}&user_id={user_id}&raw_message={message}&source={source}&token={bandoriStationToken}"
+            url = f"https://api.bandoristation.com/index.php?function=submit_room_number&number={car_id}&user_id={user_id}&raw_message={message}&source={TOKEN_NAME}&token={BANDORI_STATION_TOKEN}"
 
             # 发送请求
             response = requests.get(url)
@@ -264,46 +308,67 @@ def tsugu_main(message: str, user_id: str, group_id: str):
                 return None
 
         elif api == "Swc":
+            def add_or_remove_ban_group(group_id, add=True):
+                global config
+                """
+                添加或移除 BAN_GROUP_DATA 中的群组ID。
+                Args:
+                    group_id (str): 要添加或移除的群组ID。
+                    add (bool): True 表示添加，False 表示移除。
+                """
+                # 读取配置文件
+
+                # 获取 BAN_GROUP_DATA
+                ban_group_data = config.get('BAN_GROUP_DATA', [])
+
+                # 根据 add 参数添加或移除群组ID
+                if add and group_id not in ban_group_data:
+                    ban_group_data.append(group_id)
+                elif not add and group_id in ban_group_data:
+                    ban_group_data.remove(group_id)
+
+                # 更新配置
+                config['BAN_GROUP_DATA'] = ban_group_data
+
+                # 保存回配置文件
+                with open(config_file_path, 'w', encoding='utf-8') as config_file:
+                    json.dump(config, config_file, indent=4, ensure_ascii=False)
+                with open(config_file_path, 'r', encoding='utf-8') as config_file:
+                    config = json.load(config_file)
+                print(config.get('BAN_GROUP_DATA', []))
 
             # 验权
-            if 'ALL' not in administrator_data:
-                if user_id in administrator_data:
+            if 'ALL' not in ADMIN_LIST:
+                if user_id in ADMIN_LIST:
                     pass
-                else:
+                elif user_id not in ADMIN_LIST and BOT_NAME in message.split():
                     return [
-                    {
-                        "type": "string",
-                        "string": '权限不足',
-                    }
-                ]
-
-            # 默认值
-            if text.strip().startswith("off") and self_id in message:
-                if group_id not in ban_group_data:
-                    ban_group_data.append(group_id)
+                        {
+                            "type": "string",
+                            "string": '权限不足',
+                        }
+                    ]
                 else:
                     return None
-                with open(ban_group_file, 'w', encoding='utf-8') as f:
-                    json.dump(ban_group_data, f)
+
+            # 默认值
+            if text.strip().startswith("off") and BOT_NAME in message:
+                add_or_remove_ban_group(group_id, add=True)
                 return [
                 {
                     "type": "string",
-                    "string": '呜呜，zoule',
+                    "string": STATUS_OFF_ECHO,
                 }
             ]
-            '''
-            '''
-            if text.strip().startswith("on") and self_id in message:
+            if text.strip().startswith("on") and BOT_NAME in message:
                 try:
-                    ban_group_data.remove(group_id)
+                    add_or_remove_ban_group(group_id, add=False)
                 except:
                     return None
-                with open(ban_group_file, 'w', encoding='utf-8') as f:
-                    json.dump(ban_group_data, f)
                 return [
                     {
                         "type": "string",
-                        "string": '喜多喜多～',
+                        "string": STATUS_ON_ECHO,
                     }
                 ]
 
@@ -331,6 +396,7 @@ def tsugu_main(message: str, user_id: str, group_id: str):
         elif api == "JPlayerStatus":
             server = "jp"
             uid = get_data(user_id, server)
+            print(uid)
             if uid == "找不到用户":
                 return [
                     {
@@ -365,36 +431,36 @@ def tsugu_main(message: str, user_id: str, group_id: str):
         return None
 
     # 3.原生方法（url获取数据） # 折叠此函数获得更好的浏览体验
-    def native_way(text: str, default_servers=default_servers):
+    def native_way(text: str, default_servers=DEFAULT_SERVERS):
         if api == "/searchEvent":
             data = {
                 "default_servers": default_servers,
                 "text": text,
-                "useEasyBG": default_use_easy_bg,
+                "useEasyBG": USE_EASY_BG,
             }
         elif api == "/searchSong":
             data = {
                 "default_servers": default_servers,
                 "text": text,
-                "useEasyBG": default_use_easy_bg,
+                "useEasyBG": USE_EASY_BG,
             }
         elif api == "/searchCard":
             data = {
                 "default_servers": default_servers,
                 "text": text,
-                "useEasyBG": default_use_easy_bg,
+                "useEasyBG": USE_EASY_BG,
             }
         elif api == "/songMeta":
             if not text:
                 data = {
                     "default_servers": default_servers,
-                    "useEasyBG": default_use_easy_bg,
+                    "useEasyBG": USE_EASY_BG,
                     "server": default_servers[0],
                 }
             else:
                 data = {
                     "default_servers": default_servers,
-                    "useEasyBG": default_use_easy_bg,
+                    "useEasyBG": USE_EASY_BG,
                     "server": language_mapping.get(text, 3),
                 }
         elif api == "/getCardIllustration":
@@ -404,7 +470,7 @@ def tsugu_main(message: str, user_id: str, group_id: str):
         elif api == "/searchGacha":
             data = {
                 "default_servers": default_servers,
-                "useEasyBG": default_use_easy_bg,
+                "useEasyBG": USE_EASY_BG,
                 "gachaId": text,
             }
         elif api == "/searchPlayer":
@@ -422,10 +488,13 @@ def tsugu_main(message: str, user_id: str, group_id: str):
                 }
             )
         elif api == "/ycxAll":
-            data = {
-                "server": 3,
-                "eventId": text,
-            }
+            data = remove_none_value(
+                {
+                    "server": 3,
+                    "eventId": text if text.strip() != "0" else None,
+                }
+            )
+            print(data)
         elif api == "/ycx":
             data = remove_none_value(
                 {
@@ -486,10 +555,12 @@ def tsugu_main(message: str, user_id: str, group_id: str):
             data = None
 
         # print('data:', data)
+        rpl = get_data_from_backend(backend_url=BACKEND_URL, api=api, data=data)
+        room_list = []
 
-        return get_data_from_backend(backend_url=BACKEND_URL, api=api, data=data)
+        return rpl
     # 先检查本群是否被ban
-    if group_id in ban_group_data:
+    if group_id in config.get('BAN_GROUP_DATA', []):
         if message.startswith('swc'):
             pass
         else:
@@ -538,7 +609,7 @@ def tsugu_main(message: str, user_id: str, group_id: str):
 =======================单条测试=======================
 '''
 # result = tsugu_main("123231 q1", "1528593481")
-# result = tsugu_main("helpg 查卡", "1528593481", '1')
+# result = tsugu_main("lsycx", "3274007482", '1')
 #
 # if not result:
 #     print("[无指令]")
@@ -563,6 +634,7 @@ def tsugu_main(message: str, user_id: str, group_id: str):
 '''
 # user_id = "1528593481"
 # group_id = "666808414"
+# # user_id = "114514"
 # while True:
 #     user_input = input(f"USER({user_id}): ")
 #     result = tsugu_main(user_input, user_id, group_id)
@@ -585,6 +657,6 @@ def tsugu_main(message: str, user_id: str, group_id: str):
 #                 image.show()
 #             else:
 #                 print(item)
-#
-#
-#
+# #
+# #
+# #
