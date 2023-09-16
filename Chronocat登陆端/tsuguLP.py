@@ -77,7 +77,7 @@ config_file_path = f"{folder_path}/config.json"  # 配置文件路径
 
 class Config(BaseModel):
     同意免责声明: Optional[str] = "同意"
-    BACKEND_URL_RCD: Optional[str] = "http://192.168.0.103:3000"
+    BACKEND_URL_RCD: Optional[str] = "http://tsugubot.com:8080"
     USE_EASY_BG: Optional[bool] = True
     DEFAULT_SERVERS: Optional[List[str]] = ["3", "0"]
     BIND_PLAYER_URL: Optional[str] = "不填写没玩家状态用"

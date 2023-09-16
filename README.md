@@ -21,7 +21,7 @@
 pip -v
 
 # 安装所需外部库
-pip install pillow requests websockets aiohttp flask
+pip install pillow requests websockets aiohttp flask pydantic
 
 # 如果缺少内部库pip install即可
 # 可能需要尝试检查环境变量或使用pip3
