@@ -442,10 +442,7 @@ def tsugu_main(message: str, user_id: str, group_id: str):
 
                 # 保存回配置文件
                 with open(config_file_path, "w", encoding="utf-8") as config_file:
-                    json.dump(config, config_file, indent=4, ensure_ascii=False)
-                with open(config_file_path, "r", encoding="utf-8") as config_file:
-                    config = json.load(config_file)
-                print(config.get("BAN_GROUP_DATA", []))
+                    json.dump(config.dict(), config_file, indent=4, ensure_ascii=False)
 
             # 验权
             if "ALL" not in ADMIN_LIST:
@@ -647,24 +644,32 @@ def tsugu_main(message: str, user_id: str, group_id: str):
         elif api == "/roomList":
             try:
                 response = requests.get(
-                    "https://api.bandoristation.com/?function=query_room_number"
+                    "https://api.bandoristation.com/?function=query_room_number",
                 )
                 response.raise_for_status()
                 response_json: dict = response.json()
                 response_list: List[Dict[str, Any]] = response_json.get("response", [])
 
-                room_list = [
-                    {
-                        "number": int(item.get("number", 0)),
-                        "rawMessage": item.get("raw_message", ""),
-                        "source": item.get("source_info", {}).get("name", ""),
-                        "userId": str(item.get("user_info", {}).get("user_id", "")),
-                        "time": item["time"],
-                        "avanter": item.get("user_info", {}).get("avatar", None),
-                        "userName": item.get("user_info", {}).get("username", "Bob"),
-                    }
-                    for item in response_list
-                ]
+                room_dict = {}  # 用于存储最新时间的字典
+
+                # 遍历原始列表，更新每个"number"对应的最新时间戳
+                for item in response_list:
+                    number = int(item.get("number", 0))
+                    time = item["time"]
+                    if number not in room_dict or time > room_dict.get(number)["time"]:
+                        room_dict[number] = {
+                            "number": number,
+                            "rawMessage": item.get("raw_message", ""),
+                            "source": item.get("source_info", {}).get("name", ""),
+                            "userId": str(item.get("user_info", {}).get("user_id", "")),
+                            "time": time,
+                            "avanter": item.get("user_info", {}).get("avatar", None),
+                            "userName": item.get("user_info", {}).get(
+                                "username", "Bob"
+                            ),
+                        }
+                room_list = list(room_dict.values())
+
                 if room_list == []:
                     return [{"type": "string", "string": "myc"}]
 
