@@ -3,7 +3,7 @@
 
 
 <div align="center"> <img src="/logo.jpg" width="120"/> </div>
-
+<div align="center">v0.2.0</div>
 <div align="center">  Python编写的Tsugu前端、登陆端脚本 基于<a href="https://github.com/Yamamoto-2/tsugu-bangdream-bot">tsugu-bangdream-bot</a>后端
 </div>
 <div align="center">  Tsugu部署方法(长期更新)：http://ks.ksm.ink/#/tsugu </a>
@@ -48,26 +48,20 @@ class Msg:
 ```
 保存文件。
 
-2.打开同目录下`tsuguLP.py`文件，修改开头信息。
-```python
-BACKEND_URL = 'http://tsugubot.com:8080'  # 后端地址
-default_use_easy_bg = True  # 是否使用简易背景
-default_servers = ["3", "0"]   # 默认服务器顺序
-BindPlayer_url = ''  # 请填写玩家绑定数据库API
-self_id = 'tsugu'  # bot称呼，后面会用到 swc off 称呼 来关闭bot
-help_word = 'help'  # help 触发词（不能有空格）
-
-folder_path = Path('tsugu_config')  # 配置文件存储位置，可以不管
-bandoriStationToken = 'ZtV4EX2K9Onb'
-source = 'Tsugu'
+2.运行同目录下`tsuguLP.py`文件。
+```shell
+cd 目标文件夹
+python tsuguLP.py
+# python3 catbot3
 ```
-
+**此时会提升已创建好默认配置文件，请根据一并生成的帮助文档配置json。**   
+*注意json基本语法规则，不能有注释，注意英文逗号，英文双引号*   
 其中，玩家状态后端地址`BindPlayer_url`是必须要修改的，可加入[BanGDreamBot开发聊天群](https://qm.qq.com/q/zjUPQkrdpm)获取，或根据[方案](https://github.com/kumoSleeping/GetQPlayerUid)自己实现
 
 3.终端 / cmd / powershell 运行`catbot3.py`
 ```shell
 cd 目标文件夹
-python catbot3
+python catbot3.py
 # python3 catbot3
 ```
 **至此，如果不出意外，Tsugu已经可以使用。**
@@ -76,9 +70,10 @@ python catbot3
 
 ### 其他聊天平台登录程序...(非必需步骤)
 
-本项目含有Onebot登陆段(v11)但未经过测试。
-
+本项目含有Onebot登陆段(v11)经过测试可用。
 **使用Onebot ：[gocqhttp](https://docs.go-cqhttp.org) + [qsign](https://github.com/fuqiuluo/unidbg-fetch-qsign)**
+
+*默认Onebot对接gocq端使用string，如果您使用array请自行提取raw_message字段*
 
 使用gocqhttp需要选择http协议：
 ```yml
