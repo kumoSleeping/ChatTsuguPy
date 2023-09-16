@@ -432,6 +432,13 @@ def tsugu_main(message: str, user_id: str, group_id: str):
 
     # 3.原生方法（url获取数据） # 折叠此函数获得更好的浏览体验
     def native_way(text: str, default_servers=DEFAULT_SERVERS):
+        if "jp" in text.split() or "日服" in text.split():
+            default_servers: list = ["0", "3"]
+        elif "cn" in text.split() or "国服" in text.split():
+            default_servers: list = ["3", "0"]
+        else:
+            pass
+        text = text.replace("jp", "").replace("日服", "").strip()
         if api == "/searchEvent":
             data = {
                 "default_servers": default_servers,
@@ -482,7 +489,7 @@ def tsugu_main(message: str, user_id: str, group_id: str):
         elif api == "/lsycx":
             data = remove_none_value(
                 {
-                    "server": 3,
+                    "server": default_servers[0],
                     "tier": int(text.split()[0]),
                     "eventId": int(text.split()[1]) if len(text.split()) >= 2 else None,
                 }
@@ -490,15 +497,14 @@ def tsugu_main(message: str, user_id: str, group_id: str):
         elif api == "/ycxAll":
             data = remove_none_value(
                 {
-                    "server": 3,
+                    "server": default_servers[0],
                     "eventId": text if text.strip() != "0" else None,
                 }
             )
-            print(data)
         elif api == "/ycx":
             data = remove_none_value(
                 {
-                    "server": 3,
+                    "server": default_servers[0],
                     "tier": int(text.split()[0]),
                     "eventId": int(text.split()[1]) if len(text.split()) >= 2 else None,
                 }
@@ -514,7 +520,7 @@ def tsugu_main(message: str, user_id: str, group_id: str):
         elif api == "/gachaSimulate":
             data = remove_none_value(
                 {
-                    "server_mode": 3,
+                    "server_mode": default_servers[0],
                     "status": True,
                     "times": int(text.split()[0]) if text and int(text.split()[0]) < 10000 else 10,
                     "gachaId": int(text.split()[1]) if len(text.split()) >= 2 else None,
@@ -554,7 +560,7 @@ def tsugu_main(message: str, user_id: str, group_id: str):
         else:
             data = None
 
-        # print('data:', data)
+        print('data:', data)
         rpl = get_data_from_backend(backend_url=BACKEND_URL, api=api, data=data)
         room_list = []
 
@@ -658,5 +664,5 @@ def tsugu_main(message: str, user_id: str, group_id: str):
 #             else:
 #                 print(item)
 # #
-# #
-# #
+#
+#
