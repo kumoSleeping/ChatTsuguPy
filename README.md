@@ -6,12 +6,48 @@
 <div align="center">v0.3.0</div>
 <div align="center">  Python编写的Tsugu前端、登陆端脚本 基于<a href="https://github.com/Yamamoto-2/tsugu-bangdream-bot">tsugu-bangdream-bot</a>后端
 </div>
-<div align="center">  Tsugu部署方法(长期更新)：http://ks.ksm.ink/#/tsugu </a>
+<div align="center">  Tsugu部署方法(随机更新)：http://ks.ksm.ink/#/tsugu </a>
 </div>
 
 ***
 
-**环境需求:**
+<h2 align="center"> TsuguLitePthon好处都有啥？ </h2>
+<div align="center"> 谁说对了就给他（ </div>
+
+**1.用户优先性**   
+群聊开关，即开即关   
+`swc off <name>` `swc on <name>`   
+无空格指令触发，方便用户   
+`查卡947` `查活动ppp 红`    
+无空格cn/jp指定服务器，无需更改`日服模式`   
+`ycx20jp` `玩家状态jp`   
+统一的远程玩家状态绑定数据库，绑定方便，一次绑定多bot共享    
+`绑定玩家 xxxx jp`   
+
+**2.维护轻松**   
+部署/更新 方便。小版本更新只需替换`./tsuguLP.py`，大版本更新按需求替换文件 / 配置即可。      
+~~虽然koishi可能看起来比较简单，但是需要学习的Bot特性非常多，遇到问题需自行查阅论坛官网解决（我绝对没有别的意思我也是Koishi开发者（））~~   
+
+**3.极易扩展**   
+核心文件只有tsuguLP.py且为同步代码，可以轻松编写内容扩展，接入自己的PythonBot，如[Nonebot](https://github.com/nonebot/nonebot2).   
+导入后直接 `rpl: list = tsugu_main(mm, user_id, group_id)`，然后解析`rpl`即可。接入方法参考登陆端的`c_p_3`或`menu`即可。   
+
+**4.客服Ano酱在线指导安装（不是）**   
+[BanGDreamBot开发聊天群](https://qm.qq.com/q/zjUPQkrdpm) 过于温馨的聊天环境～   
+装不上自罚演奏春日影，包您安装成功～   
+
+**目前的不足:**   
+1.不支持国际化   
+2.ycm的时候显示车主战力（但是修了tsugu自己的bug）   
+3.玩家状态绑定数据库没有一键部署实例    
+4.help写的不完善   
+5.一些没人用功能没有跟进，比如你知道可以用`ycm 大分`来筛选大分车吗（车站都快倒闭了）   
+
+**未来还会继续完善以及同步更新的，感谢大家的支持！**   
+
+<h2 align="center"> 环境需求 </h2>
+
+
 > 推荐Python3.10 - 3.12
 > ~~安装时记得勾选添加到环境变量PATH~~
 
