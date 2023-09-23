@@ -131,7 +131,7 @@ def get_config():
             json.dump([], file, indent=4, ensure_ascii=False)
         print(f'已创建personal_config文件{personal_config_file_path}')
         with open(config_file_path, "w", encoding="utf-8") as file:
-            json.dump(Config().model_dump(), file, indent=4, ensure_ascii=False)
+            json.dump(Config().dict(), file, indent=4, ensure_ascii=False)
             disclaimer ="""
             这里是免责声明。🍊
             前面忘了
