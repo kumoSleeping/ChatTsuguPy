@@ -559,6 +559,8 @@ def tsugu_main(message: str, user_id: str, group_id: str):
                 ]
 
         elif api == "PlayerStatus":
+            if text and text not in language_mapping.keys() or text not in language_mapping.values():
+                return None
             if personal_server_list:
                 server = int(personal_server_list[0])
                 server_str = "jp" if server == 0 else "cn"
