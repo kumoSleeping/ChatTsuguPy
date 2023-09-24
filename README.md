@@ -11,7 +11,7 @@
 
 ***
 
-<h2 align="center"> TsuguLitePthon好处都有啥？ </h2>
+<h2 align="center"> TsuguLitePython好处都有啥？ </h2>
 <div align="center"> 谁说对了就给他（ </div>
 
 **1.用户优先性**   
