@@ -134,7 +134,7 @@ servers:
   - http: # HTTP 通信设置
       address: 0.0.0.0:5700 # HTTP(flask)监听地址
       version: 11     # OneBot协议版本, 支持 11/12
-      timeout: 5      # 反向 HTTP 超时时间, 单位秒，<5 时将被忽略
+      timeout: 600      # 反向 HTTP 超时时间, 单位秒，<5 时将被忽略 这个建议大于5分钟，有时候后端出图很慢
       long-polling:   # 长轮询拓展
         enabled: false       # 是否开启
         max-queue-size: 2000 # 消息队列大小，0 表示不限制队列大小，谨慎使用
