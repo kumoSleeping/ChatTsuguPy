@@ -29,7 +29,7 @@ class API:
             }
         url = f"http://127.0.0.1:{HTTP_PORT}/send_msg"
 
-        requests.get(url, params=params)
+        requests.post(url, json=params)  # Changed to POST and used json=params
 
 
 @app.route('/', methods=["POST"])
