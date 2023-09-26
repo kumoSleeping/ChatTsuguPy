@@ -14,7 +14,10 @@
 <h2 align="center"> TsuguLitePython好处都有啥？ </h2>
 <div align="center"> 谁说对了就给他（ </div>
 
-**1.用户优先性**   
+
+<details>
+<summary><b>1.用户优先性</b></summary>
+ 
 群聊开关，即开即关   
 `swc off <name>` `swc on <name>`   
 无空格指令触发，方便用户   
@@ -22,24 +25,40 @@
 cn / jp / en 指定服务器，无需使用 `主服务器` 命令   
 `ycx20 jp` `玩家状态 en`   
 统一的远程玩家状态绑定数据库，绑定方便，一次绑定多bot共享     
-`绑定玩家 xxxx jp`   
+`绑定玩家 xxxx jp`  
 
-**2.维护轻松**   
-部署/更新 方便。小版本更新只需替换`./tsuguLP.py`，大版本更新按需求替换文件 / 配置即可。 
+</details>
 
-**3.极易扩展**   
+
+ <details>
+<summary><b>2.维护轻松</b></summary>
+ 
+部署/更新 方便。小版本更新只需替换`./tsuguLP.py`
+大版本更新按需求替换文件 / 配置即可。 
+
+</details>
+ 
+
+
+ <details>
+<summary><b>3.扩展简单</b></summary>
+ 
 核心文件只有tsuguLP.py且为同步代码，可以轻松编写内容扩展，接入自己的PythonBot，如[Nonebot](https://github.com/nonebot/nonebot2).  
 
 导入后直接 `rpl: list = tsugu_main(mm, user_id, group_id)`，然后解析`rpl`即可。接入方法参考登陆端的`c_p_3`或`menu`即可。   
 
-**4.客服Ano酱在线指导安装（不是）**   
+
+</details>
+ 
+ <details>
+<summary><b>4.客服Ano酱在线指导安装（</b></summary>
+ 
 [BanGDreamBot开发聊天群](https://qm.qq.com/q/zjUPQkrdpm) 过于温馨的聊天环境～   
 装不上自罚演奏春日影，包您安装成功～   
 
-**目前的不足:**   
-1.ycm的时候显示车主战力（但是修了tsugu自己的bug）   
-2.help写的不完善    
-3.一些细节上的差异    
+</details>
+
+
 
 **未来还会继续完善以及同步更新的，感谢大家的支持！**   
 
@@ -86,17 +105,24 @@ class Msg:
     PORT = '16530'
     TOKEN = "your_token"
 ```
-**你需要将 TOKEN 的内容填入your_token**   
-在0.0.46版本以后，请浏览https://chronocat.vercel.app/config/    
+你需要将 TOKEN 的内容填入your_token   
+  
+**TOKEN获取(0.0.46版本以后):**   
 
-```markdown
-0.0.45方法：使用Chronocat无需配置，token 被默认存储在 `%AppData%/BetterUniverse/QQNT/RED_PROTOCOL_TOKEN` 或 `~/BetterUniverse/QQNT/RED_PROTOCOL_TOKEN` 中， 首次启动 Chronocat 时会自动生成，并保持不变。
+浏览 https://chronocat.vercel.app/config/    
+
+ <details>
+<summary><b>0.0.45及以前版本（目前0.0.46版本以后也可以用）</b></summary>
+     
+使用Chronocat无需配置，token 被默认存储在 `%AppData%/BetterUniverse/QQNT/RED_PROTOCOL_TOKEN` 或 `~/BetterUniverse/QQNT/RED_PROTOCOL_TOKEN` 中， 首次启动 Chronocat 时会自动生成，并保持不变。
 
 *Windows用户打开文件管理器，在地址栏输入`%AppData%`即可跳转*
 
 未来几个版本，如果是新安装的用户，RED_PROTOCOL_TOKEN文件仍然会生成，并保持和chronocat.yml里token一致，这样先前做了自动获取token逻辑的框架仍然能正常工作，不会因为用户安装的是0.0.46就找不到token了。
 但不建议再使用这个文件。新框架从0.0.46起建议让用户在chronocat.yml里获取token。
-```
+
+</details>
+
 
 ### 3.运行 catbot3.py  
 推荐命令行运行   
@@ -125,9 +151,11 @@ python catbot3.py
 
 *默认Onebot对接gocq端使用string，如果您使用array请自行提取raw_message字段*
 
-*默认 Onebot 文件夹内不存在`tsuguLP.py`，麻烦您动动小手把文件搬到 Onebot 文件夹内（）*
+***默认 Onebot 文件夹内不存在`tsuguLP.py`，麻烦您动动小手把文件搬到 Onebot 文件夹内（）***
+ <details>
+<summary><b>使用gocqhttp需要选择http协议，配置：</b></summary>
+ 
 
-使用gocqhttp需要选择http协议：
 ```yml
 # 连接服务列表
 servers:
@@ -145,7 +173,10 @@ servers:
         secret: ''                  # 密钥
         max-retries: 0             # 最大重试，0 时禁用
         retries-interval: 100000      # 重试时间，单位毫秒，0 时立即
-```
+``` 
+
+</details>
+
 
 *然后不出意外的运行就行了*  
 
