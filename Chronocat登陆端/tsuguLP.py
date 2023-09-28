@@ -783,20 +783,23 @@ def tsugu_main(message: str, user_id: str, group_id: str):
         #     default_servers = ["3", "0"]
         # else:
         #     pass
-        try:
-            for key in language_mapping:
-                text_list = text.split()
-                if key == text_list[-1]:
-                    default_servers_str = key
-                    server = language_mapping.get(default_servers_str, 3)
-                    # print(server)
-                    default_servers = [server]
-                    break
-        except:
+        if '查卡' in message or '查曲' in message or '查活动' in message:
             pass
-        print(default_servers)
-        for key in language_mapping:
-            text = text.replace(key, "")
+        else:
+            try:
+                for key in language_mapping:
+                    text_list = text.split()
+                    if key == text_list[-1]:
+                        default_servers_str = key
+                        server = language_mapping.get(default_servers_str, 3)
+                        # print(server)
+                        default_servers = [server]
+                        break
+            except:
+                pass
+            print(default_servers)
+            for key in language_mapping:
+                text = text.replace(key, "")
 
         text = text.strip()
 
