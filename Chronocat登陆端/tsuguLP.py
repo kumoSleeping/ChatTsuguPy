@@ -69,28 +69,27 @@ def get_config():
         print(f'已创建personal_config文件{personal_config_file_path}')
         with open(config_file_path, "w", encoding="utf-8") as file:
             json.dump(Config().dict(), file, indent=4, ensure_ascii=False)
-            disclaimer ="""
-            
-            kumo：
-            你可以看到，config 文件夹下config.json 里面的 BIND_PLAYER_URL 默认为 http://uid.ksm.ink:7722 ，是我的api实现绑定。
-            必须说的一点：我这里确实可以通过一个人的QQ号查找到绑定过的一个人的游戏uid，我觉得这根本不算什么，又不是uid查QQ号，
-            我做这个项目为的是让更多的群用上Tsugu，而不是为了某些人遮遮掩掩的特殊需求。
-            你要是觉得你数据绑定关系不安全，请务必不要绑定，已经绑了的再绑定一次覆盖掉，不会有存留。
-            这是一个很方便的Tsugu，我也希望大家都能使用。
-            有问题、建议、困难，需求 进群 666808414 问 就行，美少女客服在线解答（
-            这个项目大方向上支持 Tsugu 后端全部功能，细微操作上稍有出入，未来也会同步更新。
-            bug一经发现会修复，遇到问题欢迎来群里反馈，或者提issue，专栏评论回复。
-            感谢您的部署。
-            
-            已创建好默认配置文件，直接重启本程序即可运行。可以查看配置项是否需要修改，遇到问题欢迎从上方渠道交流反馈。
-            
-            zhaomaoniu：
-            我没意见。
-
-            """
-            print(f"默认配置已写入到: {config_file_path}\n请修改配置后重启。\n免责声明：\n{disclaimer}")
-            a = input()
-            exit()
+        disclaimer ="""
+        kumo：
+        你可以看到，config 文件夹下config.json 里面的 BIND_PLAYER_URL 默认为 http://uid.ksm.ink:7722 ，是我的api实现绑定。
+        必须说的一点：我这里确实可以通过一个人的QQ号查找到绑定过的一个人的游戏uid，我觉得这根本不算什么，又不是uid查QQ号，
+        我做这个项目为的是让更多的群用上Tsugu，而不是为了某些人遮遮掩掩的特殊需求。
+        你要是觉得你数据绑定关系不安全，请务必不要绑定，已经绑了的再绑定一次覆盖掉，不会有存留。
+        这是一个很方便的Tsugu，我也希望大家都能使用。
+        有问题、建议、困难，需求 进群 666808414 问 就行，美少女客服在线解答（
+        这个项目大方向上支持 Tsugu 后端全部功能，细微操作上稍有出入，未来也会同步更新。
+        bug一经发现会修复，遇到问题欢迎来群里反馈，或者提issue，专栏评论回复。
+        感谢您的部署。
+        
+        已创建好默认配置文件，直接重启本程序即可运行。可以查看配置项是否需要修改，遇到问题欢迎从上方渠道交流反馈。
+        
+        zhaomaoniu：
+        我没意见。
+        
+        """
+        print(f"默认配置已写入到: {config_file_path}\n请修改配置后重启。\n免责声明：\n{disclaimer}")
+        a = input()
+        exit()
 
     return config_data
 
