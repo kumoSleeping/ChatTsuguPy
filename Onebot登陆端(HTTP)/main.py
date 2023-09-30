@@ -38,6 +38,9 @@ def post_data():
     print(data)
     if data['post_type'] == 'message':
         message = data['message']
+        if "[CQ:" in message:
+            # 防止车牌误匹配
+            return "这条消息，不需要了"
         print(message)
         menu.menu()
     else:
