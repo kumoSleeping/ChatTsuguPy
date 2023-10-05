@@ -3,7 +3,7 @@
 
 
 <div align="center"> <img src="./logo.jpg" width="120"/> </div>
-<div align="center">v0.4.0</div>
+<div align="center">v1.0.0</div>
 <div align="center">  Python编写的Tsugu前端、登陆端脚本 基于<a href="https://github.com/Yamamoto-2/tsugu-bangdream-bot">tsugu-bangdream-bot</a>后端
 </div>
 
@@ -71,7 +71,7 @@ cn / jp / en 指定服务器，无需使用 `主服务器` 命令
 ### 2.下载并配置 tsuguLP_amd64_windows.exe
 > 目前只打包了 Windows 的 amd64 版本，不满足条件请跳到 [环境需求](https://github.com/kumoSleeping/tsugu-bangdream-bot-lite-py#-%E7%8E%AF%E5%A2%83%E9%9C%80%E6%B1%82-)
 
-在本项目的 release 中获取 tsuguLP_amd64_windows.exe 的最新版本后，双击运行，根据提示填写 config.yml
+在本项目的 [release](https://github.com/kumoSleeping/tsugu-bangdream-bot-lite-py/releases) 中获取 tsuguLP_amd64_windows.exe 的最新版本后，双击运行，根据提示填写 config.yml
 
 一般来说，你只需要修改 `token` 的值，使其与 [Chronocat 的配置文件](https://chronocat.vercel.app/config/#%E4%BD%8D%E7%BD%AE)中的 `token` 一致即可
 
