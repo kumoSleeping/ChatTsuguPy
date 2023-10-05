@@ -62,12 +62,28 @@ cn / jp / en 指定服务器，无需使用 `主服务器` 命令
 
 **未来还会继续完善以及同步更新的，感谢大家的支持！**   
 
+<h2 align="center"> 最简方案 </h2>
+
+### 1.配置Chronocat登录到“聊天平台”
+
+请前往 [Chronocat](https://chronocat.vercel.app/) 官网下载 LiteLoaderQQNT 版本的 Chronocat
+
+### 2.下载并配置 tsuguLP_amd64_windows.exe
+> 目前只打包了 Windows 的 amd64 版本，不满足条件请跳到 [环境需求](https://github.com/kumoSleeping/tsugu-bangdream-bot-lite-py#-%E7%8E%AF%E5%A2%83%E9%9C%80%E6%B1%82-)
+
+在本项目的 release 中获取 tsuguLP_amd64_windows.exe 的最新版本后，双击运行，根据提示填写 config.yml
+
+一般来说，你只需要修改 `token` 的值，使其与 [Chronocat 的配置文件](https://chronocat.vercel.app/config/#%E4%BD%8D%E7%BD%AE)中的 `token` 一致即可
+
+不出意外的话，当你第二次打开 tsuguLP_amd64_windows.exe 时，屏幕上会出现 `猫猫，启动！`
+
+结论：你已经成功配置并运行了 tsuguLP
+
 <h2 align="center"> 环境需求 </h2>
 
 
 > 推荐Python3.10 - 3.12
 > ~~安装时记得勾选添加到环境变量PATH~~
-
 ```shell
 # 检测是否安装pip
 pip -v
