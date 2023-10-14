@@ -228,3 +228,193 @@ tsugu的仓库：https://github.com/Yamamoto-2/tsugu-bangdream-bot
 
 
 
+
+
+# 下面全是大饼
+
+
+<h1 align="center"> tsugu-bangdream-bot-lite-py </h1>
+
+
+
+
+<div align="center"> <img src="./logo.jpg" width="120"/> </div>
+
+
+<div align="center">v2.0.0 ------------</div>
+
+
+
+<div align="center">  Py编写的Tsugu前端、登陆端脚本 基于<a href="https://github.com/Yamamoto-2/tsugu-bangdream-bot">Tsugu</a>后端
+</div>
+
+
+</div>
+
+***
+
+<h2 align="center"> 广泛的适用性 </h2>
+
+
+### Satori
+> 经过时间考验，面向未来的成熟协议
+
+Satori作为 koishi 的协议层，已经支持20余个主流聊天平台，拥有极强的跨平台性。
+
+[Chronocat](https://chronocat.vercel.app/)   
+[Satori.js](https://satori.js.org/zh-CN/)   
+[Koishi](https://koishi.chat/zh-CN/)   
+...
+
+### Onebot_v11（cqcode）
+> 截止2023年最广泛的生态，历史的见证
+
+[Shamrock](https://github.com/linxinrao/Shamrock)   
+[go-cqhttp](https://docs.go-cqhttp.org/)   
+[Mirai](https://github.com/mamoe/mirai)   
+...
+
+### Red-Protocol
+> 某聊天软件下产生的畸形协议
+
+[Chronocat](https://chronocat.vercel.app/)
+
+### Http 服务
+> 使用 `Http Post` 跨编程语言接入Tsugu
+
+例如您有自己编写的 Bot，可以使用 Http Post 服务让您的Bot在五分钟之内对接 Tsugu。
+
+
+### Web 服务
+> 让您在浏览器中使用Tsugu
+
+可用于啥我也不知道（
+### Console 服务
+> 让您在控制台中使用Tsugu
+
+可用于测试
+
+
+***
+
+
+<h2 align="center"> 应该选择什么服务 </h2>
+
+
+
+如果你指的是对接某T字开头公司Q字开头平台，可以选择 **Red-Protocol** 服务。
+然后对接[Chronocat](https://chronocat.vercel.app/)。
+```
+并前往请前往Chronocat官网
+下载LiteLoaderQQNT版本的Chronocat
+然后确保已按照Chronocat官网要求完成安装并启动
+
+生成的Config文件夹里有使用各个服务的配置教程，请仔细阅读。
+```
+</details>
+ 
+ <details>
+<summary><b>可以来这个平台的群里找客服Ano酱在线指导（</b></summary>
+
+**注意，如果没有相关bot疑问或者学习目的，请不要随意加群**    
+**注意，如果你不知道什么是BanGDream，也请不要随意加群**    
+**注意，本群还是欢迎加群的（**    
+[BanGDreamBot开发聊天群](https://qm.qq.com/q/zjUPQkrdpm)   
+温馨的聊天环境～   
+
+
+</details>
+
+***
+
+
+<h2 align="center"> 使用 .exe 文件开始 </h2>
+
+
+
+
+
+**下载并配置 tsuguLP_amd64_windows.exe**
+>   注意：使用exe运行就不需要使用Python运行了。
+> 
+> 目前只打包了 Windows 的 amd64 版本，不满足条件请跳到使用 Python 运行此项目。
+
+在本项目的 [release](https://github.com/kumoSleeping/tsugu-bangdream-bot-lite-py/releases) 中获取 tsuguLP_amd64_windows.exe 的最新版本后，双击运行，然后选择你**需要使用的服务**。
+
+此时会生成 config.yml 以及 Config 文件夹。  
+
+> config.yml 决定启动哪种服务。  
+> 服务各自的配置在 Config 文件夹里。  
+
+**Config文件夹里有使用各个服务的配置教程，请仔细阅读。**   
+
+
+
+***
+
+
+
+<h2 align="center"> 开始 Python 开始 </h2>
+
+
+> 推荐Python3.10 - 3.12
+> ~~安装时记得勾选添加到环境变量PATH~~
+```shell
+# 检测是否安装pip
+pip -v
+
+# 安装所需外部库
+pip install pillow requests websockets aiohttp flask pydantic
+
+# 如果缺少内部库pip install即可
+
+# 可能需要尝试检查环境变量或使用pip3
+python server.py
+# 可能需要尝试检查环境变量或使用python3
+```
+
+此时会生成 config.yml 以及 Config 文件夹。  
+
+> config.yml 决定启动哪种服务。  
+> 服务各自的配置在 Config 文件夹里。  
+
+**Config文件夹里有使用各个服务的配置教程，请仔细阅读。**   
+
+***
+
+<h2 align="center"> [开发] 利用 Http 服务跨语言 / 框架接入自己的Bot </h2>
+
+
+本项目提供了 Http 服务，您只需要每次把Bot收到的 `消息内容` `用户ID` `群组ID`  Http Post 到本程序，就会得到相应的返回json，您只需要解析即可。
+
+如果您使用Python，可以直接将 `Tsugu` 文件夹作为您项目插件的一部分，导入之后，依旧只需要传入每条消息的 `消息内容` `用户ID` `群组ID` 即可得到相应的返回json，您只需要解析即可。    
+提示：如果您的代码是异步还需要自己适配。
+
+
+
+***
+
+
+
+<h2 align="center"> 须知 </h2>
+
+
+本项目功能与官方Tsugu使用上略有不同
+ 
+ 
+1.无空格指令触发   
+`查卡947` `查活动ppp 红`    
+
+2.查询时可以使用 cn / jp / en 指定服务器   
+`ycx20 jp` `玩家状态 en`   
+
+3.用户服务器顺序，车牌转发等配置会被本地保留。   
+玩家状态绑定会被长期远程保留。
+
+4.提供群聊开关，即开即关   
+`swc off <name>` `swc on <name>`  
+
+此项目已得到Tsugu开发者认可（
+
+
+
