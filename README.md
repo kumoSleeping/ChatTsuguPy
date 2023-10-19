@@ -64,9 +64,8 @@ cn / jp / en 指定服务器，无需使用 `主服务器` 命令
 
 <h2 align="center"> 最简方案 </h2>
 
-### 1.配置Chronocat登录到“聊天平台”
-
-请前往 [Chronocat](https://chronocat.vercel.app/) 官网下载 LiteLoaderQQNT 版本的 Chronocat
+# 注意 ⚠️！！！Chronocat项目已结束，请使用Onebot + python运行此项目！
+或点击上面的4.客服Ano酱在线指导安装（查看解决方法
 
 ### 2.下载并配置 tsuguLP_amd64_windows.exe
 > 目前只打包了 Windows 的 amd64 版本，不满足条件请跳到 [环境需求](https://github.com/kumoSleeping/tsugu-bangdream-bot-lite-py#-%E7%8E%AF%E5%A2%83%E9%9C%80%E6%B1%82-)
