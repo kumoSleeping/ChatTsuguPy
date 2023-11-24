@@ -5,7 +5,15 @@ from tsuguLP import tsugu_main
 
 def menu():
     data = request.get_json()
-    message = data['message']
+    message = None
+    if type(data['message']) == str:
+        message = data['message']
+    elif type(data['message']) == list:
+        for d in data['message']:
+            if d['type'] == 'text':
+                message = d['data']['text']
+    if message is None:
+        return "不OK"
     user_id = data['user_id']
     group_id = data['group_id']
     rpl = tsugu_main(message, user_id, group_id)

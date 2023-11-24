@@ -4,6 +4,7 @@ import menu
 
 FLASK_PORT = 5701
 HTTP_PORT = 5700
+SEND_IP = "127.0.0.1"
 
 app = Flask(__name__)
 
@@ -27,7 +28,7 @@ class API:
                 "user_id": user_id,
                 "message": message
             }
-        url = f"http://127.0.0.1:{HTTP_PORT}/send_msg"
+        url = f"http://{SEND_IP}:{HTTP_PORT}/send_msg"
 
         requests.post(url, json=params)  # Changed to POST and used json=params
 
