@@ -162,7 +162,7 @@ python catbot3.py
 
 本项目含有Onebot登陆端(v11)   
 经过测试可用。
-**使用Onebot ：[gocqhttp](https://docs.go-cqhttp.org) + [qsign](https://github.com/fuqiuluo/unidbg-fetch-qsign)**
+**使用go-cqhttp ：[gocqhttp](https://docs.go-cqhttp.org) + [qsign](https://github.com/fuqiuluo/unidbg-fetch-qsign)**
 
 *默认Onebot对接gocq端使用string，如果您使用array请自行提取raw_message字段*
 
@@ -194,6 +194,59 @@ servers:
 
 
 *然后不出意外的运行就行了*  
+
+**使用shamrock ：[shamrock](https://whitechi73.github.io/OpenShamrock/)**
+ <details>
+<summary><b>使用shamrock需要注意的地方</b></summary>
+
+shamrock：状态-接口信息-主动HTTP端口 需要与main.py中的HTTP_PORT相同，默认为5700
+
+shamrock：状态-接口信息-回调HTTP地址设置为
+```
+http://{tsugu_IP}:{FLASK_PORT}/
+```
+其中tsugu_IP为tsugu运行在的IP，如果在本机环境一般为127.0.0.1，局域网环境可以参考tsugu的启动输出，其它情况请参考下方说明。
+FLASK_PORT默认为5701
+
+main.py中的 SEND_IP 需要改为shamrock所运行在的IP。
+
+如果您使用手机或模拟器运行shamrock，使用服务器运行tsugu，则可能需要使用frp将shamrock的主动HTTP端口穿透到公网。
+[frp 项目地址](https://github.com/fatedier/frp) 
+[frp Mobile 项目地址](https://github.com/HaidyCao/frp)
+
+*参考配置*
+
+服务器端的frps.ini
+
+```ini
+[common]
+bind_port = 您的frp service的运行端口 默认为7000
+token = 您的frp server token
+```
+
+shamrock端的frpc.ini：
+
+```ini
+
+[common]
+server_addr = 您的服务器地址
+server_port = 您的frp service的运行端口 默认为7000
+token = 您的frp server token
+
+[web]
+type = http
+local_ip = 127.0.0.1
+local_port = 5701
+remote_port = 5701
+```
+
+frp搭建完成后，将main.py中的 SEND_IP 改为frpc运行在的IP。
+
+最后，打开shamrock 状态-功能设置-HTTP回调，并完全重启QQ即可。
+
+
+</details>
+
 
 
 使用 Onebot 默认您具有一定的基础，当然如果您没有基础也欢迎来我们小群咨询～
