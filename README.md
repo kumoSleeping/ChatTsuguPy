@@ -15,14 +15,14 @@
     <img src="https://img.shields.io/github/license/kumoSleeping/TomorinBot" alt="license">
   </a>
 <a href="https://pypi.org/project/tsugu/">
-    <img src="https://img.shields.io/pypi/v/tsugu.svg
-" alt="license">
+    <img src="https://img.shields.io/pypi/v/tsugu.svg" alt="license">
   </a>
 
 </p>
 <p align="center">
 <br>  Python编写的 Tsugu 前端
 
+<p align="center">
 <br> 基于 <a href="https://github.com/Yamamoto-2/tsugu-bangdream-bot">tsugu-bangdream-bot</a> v2 api 后端
 
 
