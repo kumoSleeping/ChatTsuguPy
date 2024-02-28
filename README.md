@@ -34,7 +34,7 @@
 
 ## 安装 tsugu 模块
 ```shell
-pip install package_name --index-url https://pypi.org/simple/
+pip install tsugu --index-url https://pypi.org/simple/
 ```
 ## 后端需求
 
