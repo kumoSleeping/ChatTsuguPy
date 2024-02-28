@@ -1,0 +1,122 @@
+BACKEND: http://tsugubot.com:8080
+USER_DATA_BACKEND: http://tsugubot.com:8080
+UTILS_BACKEND: http://tsugubot.com:8080
+
+USE_PROXIES: false
+PROXIES:
+  http: http://127.0.0.1:7890
+  https: http://127.0.0.1:7890
+
+TOKEN_NAME: Tsugu
+BANDORI_STATION_TOKEN: ZtV4EX2K9Onb
+
+USE_DEFAULT_SERVER: false
+USE_EASY_BG: true
+compress: true
+useEasyBG: true
+
+BAN_GACHA_SIMULATE_GROUP_DATA:
+- '1919810'  # 因为是纯数字，所以用引号括起来
+- '114514'
+
+commands:
+  - action: "cardIllustration"
+    keys: ["查插画", "查卡面"]
+  - action: "card"
+    keys: ["查卡"]
+  - action: "player"
+    keys: ["查玩家", "查询玩家"]
+  - action: "gachaSimulate"
+    keys: ["抽卡模拟", "卡池模拟"]
+  - action: "event"
+    keys: ["查活动"]
+  - action: "song"
+    keys: ["查歌曲", "查曲"]
+  - action: "songMeta"
+    keys: ["查询分数表", "查分数表"]
+  - action: "character"
+    keys: ["查角色"]
+  - action: "chart"
+    keys: ["查铺面", "查谱面"]
+  - action: "ycxAll"
+    keys: ["ycxall", "ycx all"]
+  - action: "ycx"
+    keys: ["ycx", "预测线"]
+  - action: "lsycx"
+    keys: ["lsycx"]
+  - action: "ycm"
+    keys: ["ycm", "车来"]
+
+server_list:
+  0: 日服
+  1: 国际服
+  2: 台服
+  3: 国服
+  4: 韩服
+
+car_config:
+  car:
+    - q1
+    - q2
+    - q3
+    - q4
+    - Q1
+    - Q2
+    - Q3
+    - Q4
+    - 缺1
+    - 缺2
+    - 缺3
+    - 缺4
+    - 差1
+    - 差2
+    - 差3
+    - 差4
+    - 3火
+    - 三火
+    - 3把
+    - 三把
+    - 打满
+    - 清火
+    - 奇迹
+    - 中途
+    - 大e
+    - 大分e
+    - exi
+    - 大分跳
+    - 大跳
+    - 大a
+    - 大s
+    - 大分a
+    - 大分s
+    - 长途
+    - 生日车
+    - 军训
+    - 禁fc
+  fake:
+    - 114514
+    - 野兽
+    - 恶臭
+    - 1919
+    - 下北泽
+    - 粪
+    - 糞
+    - 臭
+    - 11451
+    - xiabeize
+    - 雀魂
+    - 麻将
+    - 打牌
+    - maj
+    - 麻
+    - "["
+    - "]"
+    - 断幺
+    - qq.com
+    - 腾讯会议
+    - master
+    - 疯狂星期四
+    - 离开了我们
+    - 日元
+    - av
+    - bv
