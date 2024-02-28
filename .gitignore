@@ -4,10 +4,11 @@
 .DS_Store
 
 
-tsugu.egg*
+tsugu.egg-info/
 
 
-
+dist/
+build/
 
 
 
