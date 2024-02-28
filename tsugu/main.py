@@ -1,14 +1,7 @@
-from utils import *
-
-yml_data = load_yaml(config_path)
-cmd_dict = load_commands_from_yaml(yml_data)
-USE_DEFAULT_SERVER = yml_data['USE_DEFAULT_SERVER']
-UTILS_BACKEND = yml_data['UTILS_BACKEND']
-BAN_GACHA_SIMULATE_GROUP_DATA = yml_data['BAN_GACHA_SIMULATE_GROUP_DATA']
-server_list = yml_data['server_list']
+from .utils import *
 
 
-def main(message, user_id, platform, channel_id):
+def tsugu(message, user_id, platform, channel_id):
     message = message.strip()
 
     # 进行车牌匹配
@@ -17,7 +10,7 @@ def main(message, user_id, platform, channel_id):
         return None  # 已经匹配了车牌，就不需要再匹配其他指令了
 
     # 进行 v2 api 命令匹配
-    command_matched, api = match_command(message, cmd_dict)
+    command_matched, api = match_command(message, load_commands_from_config(tsugu_config.commands))
     if command_matched:
         return v2_api_command(message, command_matched, api, platform, user_id, channel_id)
 
@@ -39,7 +32,7 @@ def main(message, user_id, platform, channel_id):
         return text_response(f'''正在绑定账号，请将您的 评论(个性签名) 或者 当前使用的 乐队编队名称改为\n{r.get('data')['verifyCode']}\n稍等片刻等待同步后，发送\n验证 + 空格 + 您的玩家ID 来完成本次身份验证\n例如：验证 114514''')
 
     if message.startswith('解除绑定'):
-        server = get_user_data(platform, user_id)['data']['server_mode'] if message[4:].strip() == '' else (r_ if (server_list(r_ := query_server_info(message[4:]))) else None)
+        server = get_user_data(platform, user_id)['data']['server_mode'] if message[4:].strip() == '' else (r_ if (tsugu_config.server_list(r_ := query_server_info(message[4:]))) else None)
         if not server:
             return text_response(f'未找到名为 {message[4:].strip()} 的服务器信息，请确保您输入的是服务器名而不是玩家ID，通常情况您只需要发送"解除绑定"即可')
         # 如果是400
@@ -86,6 +79,4 @@ def main(message, user_id, platform, channel_id):
             return text_response('默认服务器已设置为' + message[6:].strip())
         return text_response(r.get('data')) if ' ' in message else None
 
-
-test(main('国际服玩家状态', '114514', 'red', '666808414'))
 
