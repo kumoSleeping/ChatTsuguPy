@@ -167,9 +167,6 @@ from tsugu import tsugu_config, tsugu
 def tsugulp(event):
     # 设置代理
     tsugu_config.use_proxies = True
-    # 添加关闭抽卡模拟的群号
-    tsugu_config.add_ban_gacha_simulate_group_data('114514')
-    tsugu_config.add_ban_gacha_simulate_group_data('1919810')
     # 调用 tsugu
     rpl = tsugu(event.message.content, event.user.id, 'red', event.message.id)
     # 如果返回值为None，不发送任何消息
