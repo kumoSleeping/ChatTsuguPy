@@ -27,14 +27,12 @@ class TestTsugu(unittest.TestCase):
                     print(item)
 
         self.subTest(
-            tsugu_config.set_use_proxies(True)
+            tsugu_config.config_docs()
         )
-        self.subTest(
-            tsugu_config.set_proxies({
-                "http": "http://127.0.0.1:7890",
-                "https": "http://127.0.0.1:7890"
-            })
-        )
+        tsugu_config.proxies == {
+            "http": "http://127.0.0.1:7890",
+            "https": "http://127.0.0.1:7890"
+            }
         self.subTest(
             show_back_msg(
                 tsugu('查卡 ', '114514', 'red', '666808414'),

@@ -75,11 +75,6 @@ def v2api_from_backend(api, text, default_servers=None, server=3):
 def v2_api_command(message, command_matched, api, platform, user_id, channel_id):
     text = message[len(command_matched):].strip()
 
-    # print(f"command: {command_matched}, api: {api}, text: {text}")
-    if tsugu_config.use_default_server:
-        # 使用默认服务器列表
-        return v2api_from_backend(api, text)
-
     if api in ['cardIllustration', 'ycm']:  # 无需验证server信息
         return v2api_from_backend(api, text)
 
@@ -186,9 +181,9 @@ def load_commands_from_config(data):
     # 初始化一个空字典来存储命令到操作的映射
     cmd_dict = {}
     for item in data:
-        action = item['action']
-        for key in item['keys']:
-            cmd_dict[key] = action
+        api = item['api']
+        for command_name in item['command_name']:
+            cmd_dict[command_name] = api
     return cmd_dict
 
 

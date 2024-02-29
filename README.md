@@ -1,14 +1,11 @@
 
-
-
-[//]: # (<h1 align="center"> TomorinBOT  <img src="./DemoProject2/register/example/eg.jpg" width="30" height="30" alt="tmrn"/> </div></h1>)
 <h1 align="center"> Tsugu-Lite-Py  <img src="./logo.jpg" width="120"" width="30" height="30" alt="tmrn"/> </div></h1>
 
 
 <p align="center">
 
 <a href="https://github.com/Yamamoto-2/tsugu-bangdream-bot">
-    <img src="https://img.shields.io/badge/tsugu-bangdream bot-yellow" alt="license">
+    <img src="https://img.shields.io/badge/tsugubangdream bot - v2 api-yellow" alt="license">
   </a>
 
 <a href="https://github.com/kumoSleeping/tsugu-bangdream-bot-lite-py?tab=MIT-1-ov-file">
@@ -20,19 +17,20 @@
 
 </p>
 <p align="center">
-<br>  Python编写的 Tsugu 前端
-
-<p align="center">
-<br> 基于 <a href="https://github.com/Yamamoto-2/tsugu-bangdream-bot">tsugu-bangdream-bot</a> v2 api 后端
-
+<br>  Python编写的 Tsugu 前端模块
 
 
 ***
 
 
-<h2 align="center"> 安装 </h2>
+<h2 align="center"> 安装与更新 </h2>
 
 ## 安装 tsugu 模块
+```shell
+pip install tsugu
+```
+
+使用官方源安装，可以保证你安装的是最新版本。
 ```shell
 pip install tsugu --index-url https://pypi.org/simple/
 ```
@@ -44,7 +42,18 @@ pip install tsugu --index-url https://pypi.org/simple/
 
 > 三个后端可以设置为不同，默认全部设置为**公共后端**。
 
+## 更新
+```shell
+pip install tsugu --upgrade
+```
+使用官方源更新，可以保证你更新的是最新版本。
+```shell
+pip install tsugu --upgrade --index-url https://pypi.org/simple/
+```
+
 <h2 align="center"> 测试与接入 </h2>
+
+
 
 ***
 ## 调用 tsugu
@@ -99,31 +108,53 @@ for item in data:
 
 ## 更改 `tsugu_config` 配置
 
-当你在绝大部分只能编辑器打出 `tsugu_config.` 时，编辑器静态检查会提示你可以更改的配置，以及一系列 `set_xxx` 函数。   
+### 查看文档
 
+```py
+from tsugu import tsugu_config
+
+tsugu_config.config_docs()
+```
+将会在控制台输出文档。
+```
+Config 属性文档:
+
+backend (str)
+    默认值: "http://tsugubot.com:8080"
+    描述: 应用程序的后端服务地址，需要 v2 API 。
+    
+...
+```
 例如，你可以更改的后端地址。
 ```py
 from tsugu import tsugu_config
 
-tsugu_config.set_backend('http://127.0.0.1:3000')
+tsugu_config.backend = "http://127.0.0.0.1:3000"
 ```
 
 你可以设置代理。
 ```py
 from tsugu import tsugu_config
 
-tsugu_config.set_use_proxies(True)
-tsugu_config.set_proxies('http://127.0.0.1:1080')
+tsugu_config.use_proxies = True
+tsugu_config.proxies = {"http": "http://127.0.0.1:1145", "https": "http://127.0.0.1:1919"}
 ```
 
 你可以添加关闭抽卡模拟的群号。
 ```py
 from tsugu import tsugu_config
 
-tsugu_config.add_ban_gacha_simulate_group_data('114514')
+tsugu_config.ban_gacha_simulate_group_data = ["114514", "1919810"]
 ```
 
-等等... 文档会在后续更新中补充。
+你也可以使用 `add_command_name` 和 `remove_command_name` 方法添加或删除命令名以添加别名或关闭命令。
+```py
+from tsugu import tsugu_config
+
+tsugu_config.add_command_name(api="gacha", command_name="抽卡")
+```
+
+
 
 ## 机器人接入例
 
@@ -135,7 +166,7 @@ from tsugu import tsugu_config, tsugu
 @on.message_created
 def tsugulp(event):
     # 设置代理
-    tsugu_config.set_use_proxies(True)
+    tsugu_config.use_proxies = True
     # 添加关闭抽卡模拟的群号
     tsugu_config.add_ban_gacha_simulate_group_data('114514')
     tsugu_config.add_ban_gacha_simulate_group_data('1919810')
@@ -172,7 +203,7 @@ def tsugulp(event):
 ## 黑暗时代...
 
 因为这不是一个好的时代，当下一个好的时代到来时，我们会再次提供登录端。   
-但部署方式仍然是有不少的，如果有部署期望，可以翻到页面底部 `客服ano酱指导` 聊聊天，我们会尽力帮助你。
+但部署方式仍然是有不少的，如果有部署期望，可以看下面的 ▶️`客服ano酱指导` 进群聊聊天，我们会尽力帮助你。
 
 另外， `C#` + `Lagrange` 组合的登录端正由 [棱镜](https://github.com/DreamPrism) 开发中，敬请期待。   
 基于本项目的 `NoneBot2` 插件也由 [zhaomoaniu](https://github.com/zhaomaoniupi) 开发中，敬请期待。   

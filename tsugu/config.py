@@ -15,35 +15,32 @@ class Config:
         self.token_name = "Tsugu"
         self.bandori_station_token = "ZtV4EX2K9Onb"
 
-        self.use_default_server = False
         self.use_easy_bg = True
         self.compress = True
 
         self.ban_gacha_simulate_group_data = []
-
-        self.commands = [
-            {"action": "cardIllustration", "keys": ["查插画", "查卡面"]},
-            {"action": "card", "keys": ["查卡"]},
-            {"action": "player", "keys": ["查玩家", "查询玩家"]},
-            {"action": "gachaSimulate", "keys": ["抽卡模拟", "卡池模拟"]},
-            {"action": "event", "keys": ["查活动"]},
-            {"action": "song", "keys": ["查歌曲", "查曲"]},
-            {"action": "songMeta", "keys": ["查询分数表", "查分数表"]},
-            {"action": "character", "keys": ["查角色"]},
-            {"action": "chart", "keys": ["查铺面", "查谱面"]},
-            {"action": "ycxAll", "keys": ["ycxall", "ycx all"]},
-            {"action": "ycx", "keys": ["ycx", "预测线"]},
-            {"action": "lsycx", "keys": ["lsycx"]},
-            {"action": "ycm", "keys": ["ycm", "车来"]}
-        ]
-
         self.server_list = {
-            0: "日服",
-            1: "国际服",
-            2: "台服",
-            3: "国服",
+            1: "日服",
+            2: "国际服",
+            3: "台服",
             4: "韩服"
         }
+
+        self.commands = [
+            {"api": "cardIllustration", "command_name": ["查插画", "查卡面"]},
+            {"api": "card", "command_name": ["查卡"]},
+            {"api": "player", "command_name": ["查玩家", "查询玩家"]},
+            {"api": "gachaSimulate", "command_name": ["抽卡模拟", "卡池模拟"]},
+            {"api": "event", "command_name": ["查活动"]},
+            {"api": "song", "command_name": ["查歌曲", "查曲"]},
+            {"api": "songMeta", "command_name": ["查询分数表", "查分数表"]},
+            {"api": "character", "command_name": ["查角色"]},
+            {"api": "chart", "command_name": ["查铺面", "查谱面"]},
+            {"api": "ycxAll", "command_name": ["ycxall", "ycx all"]},
+            {"api": "ycx", "command_name": ["ycx", "预测线"]},
+            {"api": "lsycx", "command_name": ["lsycx"]},
+            {"api": "ycm", "command_name": ["ycm", "车来"]}
+        ]
 
         self.car_config = {
             "car": ["q1", "q2", "q3", "q4", "Q1", "Q2", "Q3", "Q4", "缺1", "缺2", "缺3", "缺4", "差1", "差2", "差3", "差4",
@@ -53,114 +50,98 @@ class Config:
                      "maj", "麻", "[", "]", "断幺", "qq.com", "腾讯会议", "master", "疯狂星期四", "离开了我们", "日元", "av", "bv"]
         }
 
-    def set_backend(self, backend_url: str) -> None:
-        self.backend = backend_url
-        print(f"Backend URL set to {backend_url}")
+    def config_docs(self):
+        '''
+Config 属性文档:
 
-    def set_user_data_backend(self, backend_url: str) -> None:
-        self.user_data_backend = backend_url
-        print(f"User data backend URL set to {backend_url}")
+backend (str)
+    默认值: "http://tsugubot.com:8080"
+    描述: 应用程序的后端服务地址，需要 v2 API 。
 
-    def set_utils_backend(self, backend_url: str) -> None:
-        self.utils_backend = backend_url
-        print(f"Utils backend URL set to {backend_url}")
+user_data_backend (str)
+    默认值: "http://tsugubot.com:8080"
+    描述: 应用程序的后端服务地址，需要 v2 API ， 需要启动数据库服务。
 
-    def set_use_proxies(self, use: bool) -> None:
-        self.use_proxies = use
-        print(f"Use proxies set to {use}")
+utils_backend (str)
+    默认值: "http://tsugubot.com:8080"
+    描述: utils api 的后端地址，需要 v2 API 。
 
-    def set_proxies(self, proxies: dict) -> None:
-        self.proxies = proxies
-        print(f"Proxies set to {proxies}")
+use_proxies (bool)
+    默认值: False
+    描述: 是否通过代理服务器访问网络服务。
 
-    def set_token_name(self, name: str) -> None:
-        self.token_name = name
-        print(f"Token name set to {name}")
+proxies (dict)
+    默认值: {"http": "http://127.0.0.1:7890", "https": "http://127.0.0.1:7890"}
+    描述: 代理服务器的地址配置，use_proxies 为 True 时生效。
 
-    def set_bandori_station_token(self, token: str) -> None:
-        self.bandori_station_token = token
-        print(f"Bandori Station token set to {token}")
+token_name (str)
+    默认值: "Tsugu"
+    描述: Bandori 车站 的上传令牌名称，通常需要和 bandori_station_token 一对应。
 
-    def set_use_default_server(self, use: bool) -> None:
-        self.use_default_server = use
-        print(f"Use default server set to {use}")
+bandori_station_token (str)
+    默认值: "ZtV4EX2K9Onb"
+    描述: Bandori 车站 的上传令牌，通常需要和 token_name 一对应。
 
-    def set_use_easy_bg(self, use: bool) -> None:
-        self.use_easy_bg = use
-        print(f"Use EasyBG set to {use}")
+use_easy_bg (bool)
+    默认值: True
+    描述: 是否使用简易背景模式。
 
-    def set_compress(self, compress: bool) -> None:
-        self.compress = compress
-        print(f"Compress set to {compress}")
+compress (bool)
+    默认值: True
+    描述: 是否开启数据压缩。
 
-    def add_ban_gacha_simulate_group_data(self, group_id: str) -> None:
-        if group_id not in self.ban_gacha_simulate_group_data:
-            self.ban_gacha_simulate_group_data.append(group_id)
-        else:
-            print(f"Group ID '{group_id}' already exists in ban gacha simulate group data.")
-        print(f"Group ID '{group_id}' added to ban gacha simulate group data.")
+ban_gacha_simulate_group_data (list)
+    默认值: []
+    描述: 禁止抽卡模拟的群组数据列表。
+    事例: ["114514", "1919810"]
 
-    def add_command_key(self, action: str, key: str) -> None:
+server_list (dict)
+    默认值: {1: "日服", 2: "国际服", 3: "台服", 4: "韩服"}
+    描述: 服务器列表及其对应的名称。
+
+commands (list[dict])
+    默认值: 包含多个字典，每个字典包含api和command_name键。
+    描述: 应用程序支持的命令列表及其对应的API接口。
+    查看默认值: https://github.com/kumoSleeping/tsugu-bangdream-bot-lite-py/blob/main/tsugu/config.py#L29
+    可用函数: add_command_name, remove_command_name
+
+car_config (dict)
+    默认值: 包含两个键car和fake，每个键对应一个字符串列表。
+    描述: 车辆配置，包含车辆相关的命令及排除词汇。
+    查看默认值: https://github.com/kumoSleeping/tsugu-bangdream-bot-lite-py/blob/main/tsugu/config.py#L45
+        '''
+        print(self.config_docs.__doc__)
+        return self.__doc__
+
+    def add_command_name(self, api: str, command_name: str) -> None:
         """
-        添加别名
+        添加指令名
         """
         for command in self.commands:
-            if command['action'] == action:
-                if key not in command['keys']:
-                    command['keys'].append(key)
+            if command['api'] == api:
+                if command_name not in command['command_name']:
+                    command['command_name'].append(command_name)
                 else:
-                    print(f"Key '{key}' already exists in action '{action}'.")
+                    print(f"command_name '{command_name}' already exists in api '{api}'.")
                 break
         else:
-            print(f"Action '{action}' not found.")
-        print(f"Key '{key}' added to action '{action}'.")
+            print(f"command_name '{command_name}' not found.")
+        print(f"command_name '{command_name}' added to api '{api}'.")
 
-    def remove_command_key(self, action: str, key: str) -> None:
+    def remove_command_name(self, api: str, command_name: str) -> None:
         """
-        删除别名
+        删除指令名 (如果全删了则不会触发此命令)
         """
         for command in self.commands:
-            if command['action'] == action:
-                if key in command['keys']:
-                    command['keys'].remove(key)
+            if command['api'] == api:
+                if command_name in command['command_name']:
+                    command['command_name'].remove(command_name)
                 else:
-                    print(f"Key '{key}' does not exist in action '{action}'.")
+                    print(f"command_name '{command_name}' does not exist in api '{api}'.")
                 break
         else:
-            print(f"Action '{action}' not found.")
-        print(f"Key '{key}' removed from action '{action}'.")
-
-    def set_server_list(self, server_list: dict[int, str]) -> None:
-        self.server_list = server_list
-        print(f"Server list set to {server_list}")
-
-    def add_car_config(self, category: str, value: str) -> None:
-        """
-        向car_config的特定类别（car或fake）添加一个新值。
-        category填写'car'或'fake'。
-        """
-        if category in ['car', 'fake']:
-            if value not in self.car_config[category]:
-                self.car_config[category].append(value)
-            else:
-                print(f"Value '{value}' already exists in '{category}'.")
-        else:
-            print(f"Category '{category}' is not valid. Choose 'car' or 'fake'.")
-        print(f"Value '{value}' added to '{category}'.")
-
-    def remove_car_config(self, category: str, value: str) -> None:
-        """
-        从car_config的特定类别（car或fake）移除一个已存在的值。
-        category填写'car'或'fake'。
-        """
-        if category in ['car', 'fake']:
-            if value in self.car_config[category]:
-                self.car_config[category].remove(value)
-            else:
-                print(f"Value '{value}' does not exist in '{category}'.")
-        else:
-            print(f"Category '{category}' is not valid. Choose 'car' or 'fake'.")
-        print(f"Value '{value}' removed from '{category}'.")
+            print(f"api '{api}' not found.")
+        print(f"command_name '{command_name}' removed from api '{api}'.")
 
 
 tsugu_config = Config()
