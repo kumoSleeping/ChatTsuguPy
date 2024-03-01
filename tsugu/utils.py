@@ -22,7 +22,7 @@ def requests_post(url, data):
         return response.json()
     except Exception as e:
         print(f"发生异常: {e}")
-        return text_response("发生异常")
+        return text_response(f"发生异常: {e}")
 
 
 def get_user_data(platform: str, user_id: str):
