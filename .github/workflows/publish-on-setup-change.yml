@@ -39,6 +39,7 @@ jobs:
         password: ${{ secrets.PYPI_TOKEN }}
 
     - name: Create GitHub Release
+      id: create_release  # 加上这个id
       uses: actions/create-release@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -53,7 +54,7 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./dist/
-        asset_name: "tsugu-${{ env.VERSION }}.tar.gz"  # 确保这个名称与你的实际文件名匹配
+        upload_url: ${{ steps.create_release.outputs.upload_url }}  # 确保这里使用了上面设置的id
+        asset_path: ./dist/tsugu-${{ env.VERSION }}.tar.gz
+        asset_name: tsugu-${{ env.VERSION }}.tar.gz
         asset_content_type: application/gzip
