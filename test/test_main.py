@@ -33,7 +33,7 @@ class TestTsugu(unittest.TestCase):
         tsugu_config.utils_backend = 'http://127.0.0.1:3000'
         self.subTest(
             show_back_msg(
-                tsugu('查卡 ', '114514', 'red', '666808414'),
+                tsugu_bot('查卡 ', '114514', 'red', '666808414'),
             )
         )
 

@@ -3,7 +3,7 @@ name: Publish on setup.py Change
 on:
   push:
     branches:
-      - main  # 根据需要替换为你的默认分支名
+      - main  # 你的默认分支
     paths:
       - 'setup.py'  # 只有 setup.py 文件变动时才触发
   workflow_dispatch:  # 允许手动触发
@@ -17,7 +17,7 @@ jobs:
     - name: Set up Python
       uses: actions/setup-python@v2
       with:
-        python-version: '3.8'  # 根据需要选择Python版本
+        python-version: '3.8'
 
     - name: Install dependencies
       run: |
@@ -27,9 +27,30 @@ jobs:
     - name: Build distribution
       run: |
         python setup.py sdist bdist_wheel
+        echo "VERSION=$(python setup.py --version)" >> $GITHUB_ENV
 
     - name: Publish to PyPI
       uses: pypa/gh-action-pypi-publish@release/v1
       with:
-        username: __token__
-        password: ${{ secrets.PYPI_TOKEN }}  # 确保在GitHub Secrets中设置了PYPI_TOKEN
+        user: __token__
+        password: ${{ secrets.PYPI_TOKEN }}
+
+    - name: Create GitHub Release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ env.VERSION }}
+        release_name: Release ${{ env.VERSION }}
+        draft: false
+        prerelease: false
+
+    - name: Upload Release Asset
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ./dist/
+        asset_name: "tsugu-python-frontend-${{ env.VERSION }}.tar.gz"  # 根据实际路径和命名调整
+        asset_content_type: application/gzip
