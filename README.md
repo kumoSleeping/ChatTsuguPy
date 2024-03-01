@@ -8,8 +8,8 @@
     <img src="https://img.shields.io/badge/tsugubangdream bot - v2 api-yellow" alt="license">
   </a>
 
-<a href="https://github.com/kumoSleeping/tsugu-bangdream-bot-lite-py?tab=MIT-1-ov-file">
-    <img src="https://img.shields.io/github/license/kumoSleeping/TomorinBot" alt="license">
+<a href="https://github.com/kumoSleeping/tsugu-python-frontend?tab=MIT-1-ov-file">
+    <img src="https://img.shields.io/github/license/kumoSleeping/tsugu-python-frontend" alt="license">
   </a>
 <a href="https://pypi.org/project/tsugu/">
     <img src="https://img.shields.io/pypi/v/tsugu.svg" alt="license">
@@ -30,7 +30,12 @@
 pip install tsugu
 ```
 
-使用官方源安装，可以保证你安装的是最新版本。
+## 更新
+```shell
+pip install tsugu --upgrade
+```
+
+## 使用官方源安装
 ```shell
 pip install tsugu --index-url https://pypi.org/simple/
 ```
@@ -42,16 +47,7 @@ pip install tsugu --index-url https://pypi.org/simple/
 
 > 三个后端可以设置为不同，默认全部设置为**公共后端**。
 
-## 更新
-```shell
-pip install tsugu --upgrade
-```
-使用官方源更新，可以保证你更新的是最新版本。
-```shell
-pip install tsugu --upgrade --index-url https://pypi.org/simple/
-```
-
-<h2 align="center"> 测试与接入 </h2>
+<h2 align="center"> 测试与调用 </h2>
 
 
 
@@ -109,101 +105,61 @@ for item in data:
 
 ## 更改 `tsugu_config` 配置
 
-### 查看文档
-
+### 输出文档
 ```py
 from tsugu import tsugu_config
 
-tsugu_config.config_docs()
+tsugu_config.config_docs()  # 输出文档到控制台
 ```
-将会在控制台输出文档。
-```
-Config 属性文档:
 
-backend (str)
-    默认值: "http://tsugubot.com:8080"
-    描述: 应用程序的后端服务地址，需要 v2 API 。
-    
-...
-```
-例如，你可以更改的后端地址。
+### 更改配置
+
+有了文档的简单介绍，你可以更改配置。   
 ```py
 from tsugu import tsugu_config
 
+# 更改的后端地址。
 tsugu_config.backend = "http://127.0.0.0.1:3000"
-```
 
-你可以设置代理。
-```py
-from tsugu import tsugu_config
-
+# 设置代理。
 tsugu_config.use_proxies = True
 tsugu_config.proxies = {"http": "http://127.0.0.1:1145", "https": "http://127.0.0.1:1919"}
-```
 
-你可以添加关闭抽卡模拟的群号。
-```py
-from tsugu import tsugu_config
-
+# 添加关闭抽卡模拟的群号。
 tsugu_config.ban_gacha_simulate_group_data = ["114514", "1919810"]
-```
 
-你也可以使用 `add_command_name` 和 `remove_command_name` 方法添加或删除命令名以添加别名或关闭命令。
-```py
-from tsugu import tsugu_config
-
+# 使用 `add_command_name` 和 `remove_command_name` 方法添加或删除命令名以添加别名或关闭命令。
 tsugu_config.add_command_name(api="gacha", command_name="抽卡")
 ```
 
 
 
-## 机器人接入例
+## 使用单独的路由
 
-```python
-from core import on
-from tsugu import tsugu_config, tsugu_bot
+如果想自己进行自然语言处理，你可以使用单独的路由。
 
-# 监听每一条文字消息
-@on.message_created
-def tsugulp(event):
-    # 设置代理
-    tsugu_config.use_proxies = True
-    # 调用 tsugu_bot
-    rpl = tsugu_bot(event.message.content, event.user.id, 'red', event.message.id)
-    # 如果返回值为None，不发送任何消息
-    if not rpl:
-        return
+```py
+from tsugu import get_user_data_router, gacha_router, set_car_forward_router
 
-    def handle_string(item):
-        return item['string']
+# 获取用户数据
+reply = get_user_data_router("red", "1234567890")
 
-    def handle_base64(item):
-        base64_data = item['string']
-        return f'<img src="data:image/png;base64,{base64_data}"/>'
+# 查卡
+reply = gacha_router("红 ksm", [0, 3], 5)
 
-    handlers = {
-        'string': handle_string,
-        'base64': handle_base64,
-    }
-    # 使用列表推导式，将返回值处理成字符串
-    modified_results = [handlers[item['type']](item) for item in rpl if item['type'] in handlers]
-    result_string = ''.join(modified_results)
-    # 发送消息
-    event.message_create(result_string)
+# 设置玩家车牌转发
+reply = set_car_forward_router("red", "1234567890", True)
 ```
-
-这是随机挑选的一个 `satori` 协议机器人框架的 `tsugu_bot` 接入实现，对于绝大部分 `Python` 机器人框架，接入方法大同小异。唯一可能需要处理的可能就是异步函数的调用问题。   
-
 
 
 <h2 align="center"> 为什么不再提供登录端？ </h2>
 
 ## 黑暗时代...
 
-因为这不是一个好的时代，当下一个好的时代到来时，我们会再次提供登录端。   
+因为这不是一个好的时代。   
 但部署方式仍然是有不少的，如果有部署期望，可以看下面的 ▶️`客服ano酱指导` 进群聊聊天，我们会尽力帮助你。
 
-另外， `C#` + `Lagrange` 组合的登录端正由 [棱镜](https://github.com/DreamPrism) 开发中，敬请期待。   
+基于 v2 api 的 `C#` + `Lagrange` 组合的登录端正由 [棱镜](https://github.com/DreamPrism) 开发中，敬请期待。   
 基于本项目的 `NoneBot2` 插件也由 [zhaomoaniu](https://github.com/zhaomaoniupi) 开发中，敬请期待。   
 
 

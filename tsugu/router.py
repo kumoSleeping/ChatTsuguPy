@@ -72,3 +72,8 @@ def set_default_server_router(platform, user_id, text):
 def set_server_mode_router(platform, user_id, text):
     return set_server_mode(platform, user_id, text)
 
+
+def get_user_data_router(platform, user_id):
+    return get_user_data(platform, user_id)
+
+

@@ -20,5 +20,6 @@ from .router import bind_player_verification_router
 from .router import set_car_forward_router
 from .router import set_default_server_router
 from .router import set_server_mode_router
+from .router import get_user_data_router
 
 
