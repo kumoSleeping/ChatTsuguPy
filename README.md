@@ -158,13 +158,13 @@ reply = tsugu.router.set_car_forward("red", "1234567890", True)
 
 <h2 align="center"> 开发者的话 </h2>
 
-> kumo:&emsp;&emsp;我草我要4了   
+> kumo: 我草我要4了   
 
-> kumo:&emsp;&emsp;未来还会继续完善以及同步更新喵，感谢大家的支持～  
-> &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;感谢提出建议的所有人～   
-> &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;也感谢山本和大家的付出与帮助!  
+> kumo: 未来还会继续完善以及同步更新喵，感谢大家的支持～  
+&emsp;&emsp;&emsp;感谢提出建议的所有人～   
+&emsp;&emsp;&emsp;也感谢山本和大家的付出与帮助!  
 
-> zhaomaoniu:&emsp;&emsp;这周末不是很想写代码
+> zhaomaoniu: 这周末不是很想写代码
 
 ***
 
