@@ -32,7 +32,7 @@ def bot(message, user_id, platform, channel_id):
         return text_response(f'''正在绑定账号，请将您的 评论(个性签名) 或者 当前使用的 乐队编队名称改为\n{r.get('data')['verifyCode']}\n稍等片刻等待同步后，发送\n验证 + 空格 + 您的玩家ID 来完成本次身份验证\n例如：验证 114514''')
 
     if message.startswith('解除绑定'):
-        server = get_user_data(platform, user_id)['data']['server_mode'] if message[4:].strip() == '' else (r_ if (tsugu_config.server_list(r_ := query_server_info(message[4:]))) else None)
+        server = get_user_data(platform, user_id)['data']['server_mode'] if message[4:].strip() == '' else (r_ if (config.server_list(r_ := query_server_info(message[4:]))) else None)
         if not server:
             return text_response(f'未找到名为 {message[4:].strip()} 的服务器信息，请确保您输入的是服务器名而不是玩家ID，通常情况您只需要发送"解除绑定"即可')
         # 如果是400
