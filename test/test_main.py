@@ -1,4 +1,4 @@
-from tsugu import tsugu_config, tsugu
+from tsugu import tsugu_config, tsugu_bot
 import unittest
 
 

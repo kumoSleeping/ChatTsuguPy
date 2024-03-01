@@ -1,7 +1,7 @@
 from .utils import *
 
 
-def tsugu(message, user_id, platform, channel_id):
+def tsugu_bot(message, user_id, platform, channel_id):
     message = message.strip()
 
     # 进行车牌匹配
