@@ -8,6 +8,9 @@ on:
       - 'setup.py'  # 只有 setup.py 文件变动时才触发
   workflow_dispatch:  # 允许手动触发
 
+permissions:  # 添加权限设置
+  contents: write
+
 jobs:
   publish:
     runs-on: ubuntu-latest
@@ -52,5 +55,5 @@ jobs:
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
         asset_path: ./dist/
-        asset_name: "tsugu-python-frontend-${{ env.VERSION }}.tar.gz"  # 根据实际路径和命名调整
+        asset_name: "tsugu-${{ env.VERSION }}.tar.gz"  # 确保这个名称与你的实际文件名匹配
         asset_content_type: application/gzip
