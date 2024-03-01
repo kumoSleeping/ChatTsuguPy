@@ -1,4 +1,4 @@
-from tsugu import tsugu_config, tsugu_bot, gacha_router
+import tsugu
 import unittest
 
 
@@ -24,18 +24,19 @@ class TestTsugu(unittest.TestCase):
                     print(item)
 
         self.subTest(
-            tsugu_config.config_docs()
+            tsugu.config.show_docs()
         )
-        tsugu_config.backend = 'http://127.0.0.1:3000'
-        tsugu_config.utils_backend = 'http://127.0.0.1:3000'
+        # tsugu.config.backend = 'http://127.0.0.1:3000'
+        # tsugu.config.utils_backend = 'http://127.0.0.1:3000'
+
         self.subTest(
             show_back_msg(
-                gacha_router('10', [3, 0], 0),
+                tsugu.router.gacha('10', [3, 0], 0),
             )
         )
         self.subTest(
             show_back_msg(
-                tsugu_bot('查卡 ', '114514', 'red', '666808414'),
+                tsugu.bot('查卡 ', '114514', 'red', '666808414'),
             )
         )
 

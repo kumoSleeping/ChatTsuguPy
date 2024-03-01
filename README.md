@@ -52,29 +52,9 @@ pip install tsugu --index-url https://pypi.org/simple/
 
 
 ***
-## 调用 `tsugu_bot`
-`tsugu_bot` 是 `tsugu` 的一个同步函数，用于直接处理用户输入的自然语言并返回结果。   
-需要 `message` `user_id` `platform` `channel_id` 四个参数，分别意味着 **消息内容** **用户id** **平台** **频道id**。   
-在常用的qqbot中，群号就是 `channel_id`。   
-当你使用QQ号作为 `user_id` 时，`platform` 可以填写 `red`。   
+## 调用 `tsugu.bot`
 
-
-```py
-from tsugu import tsugu_config, tsugu_bot
-
-data = tsugu_bot('查卡 红 ksm 5x', '114514', 'red', '666808414')
-```
-
-### 返回
-
-```json
-[{"type": "string", "string": string},
-{"type": "base64", "string": string}, ... ]
-```
-当 type 为 string 时，string 为消息内容，可以直接发送到客户端。   
-当 type 为 base64 时，string 为图片的 base64 编码，需要解码后发送到客户端。   
-可能会返回多个结果。  
-如果返回值为 `None` 代表bot不发送任何消息。   
+`bot` 是 `tsugu` 的一个同步函数，用于直接处理用户输入的自然语言并返回查询结果。   
 
 ### 测试例
 
@@ -83,10 +63,12 @@ import base64
 from PIL import Image
 import io
 
-from tsugu import tsugu_config, tsugu_bot
+import tsugu
 
-data = tsugu_bot('查卡 红 ksm 5x', '114514', 'red', '666808414')
+# 四个参数，分别意味着 消息内容 用户id 平台 频道id
+data = tsugu.bot('查卡 红 ksm 5x', '114514', 'red', '666808414')
 
+# 如果返回值为 None 代表bot不发送任何消息。
 if not data:
     print("[无反馈数据]")
 
@@ -100,16 +82,18 @@ for item in data:
     else:
         print(item)
 ```
-上面的代码使用 `pillow` 库，将返回值处理成字符串或者图片输出。
+
+在常用的qqbot中，群号就是 `channel_id`。   
+当你使用QQ号作为 `user_id` 时，`platform` 可以填写 `red`。   
 
 
-## 更改 `tsugu_config` 配置
+## 更改 `tsugu.config` 配置
 
 ### 输出文档
 ```py
-from tsugu import tsugu_config
+import tsugu
 
-tsugu_config.config_docs()  # 输出文档到控制台
+tsugu.config.show_docs()  # 输出文档到控制台
 ```
 
 ### 更改配置
@@ -139,16 +123,16 @@ tsugu_config.add_command_name(api="gacha", command_name="抽卡")
 如果想自己进行自然语言处理，你可以使用单独的路由。
 
 ```py
-from tsugu import get_user_data_router, gacha_router, set_car_forward_router
+import tsugu
 
 # 获取用户数据
-reply = get_user_data_router("red", "1234567890")
+reply = tsugu.router.get_user_data("red", "1234567890")
 
 # 查卡
-reply = gacha_router("红 ksm", [0, 3], 5)
+reply = tsugu.router.card("红 ksm", [0, 3], 5)
 
 # 设置玩家车牌转发
-reply = set_car_forward_router("red", "1234567890", True)
+reply = tsugu.router.set_car_forward("red", "1234567890", True)
 ```
 
 

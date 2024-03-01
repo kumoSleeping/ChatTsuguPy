@@ -50,7 +50,7 @@ class Config:
                      "maj", "麻", "[", "]", "断幺", "qq.com", "腾讯会议", "master", "疯狂星期四", "离开了我们", "日元", "av", "bv"]
         }
 
-    def config_docs(self):
+    def show_docs(self):
         '''
 Config 属性文档:
 
@@ -110,10 +110,10 @@ car_config (dict)
     描述: 车辆配置，包含车辆相关的命令及排除词汇。
     查看默认值: https://github.com/kumoSleeping/tsugu-bangdream-bot-lite-py/blob/main/tsugu/config.py#L45
         '''
-        print(self.config_docs.__doc__)
+        print(self.show_docs.__doc__)
         return self.__doc__
 
-    def add_command_name(self, api: str, command_name: str) -> None:
+    def add_command_name(self, api: str, command_name: str):
         """
         添加指令名
         """
@@ -127,8 +127,9 @@ car_config (dict)
         else:
             print(f"command_name '{command_name}' not found.")
         print(f"command_name '{command_name}' added to api '{api}'.")
+        return self
 
-    def remove_command_name(self, api: str, command_name: str) -> None:
+    def remove_command_name(self, api: str, command_name: str):
         """
         删除指令名 (如果全删了则不会触发此命令)
         """
@@ -144,6 +145,6 @@ car_config (dict)
         print(f"command_name '{command_name}' removed from api '{api}'.")
 
 
-tsugu_config = Config()
+config = Config()
 
 

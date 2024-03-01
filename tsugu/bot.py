@@ -1,7 +1,7 @@
 from .utils import *
 
 
-def tsugu_bot(message, user_id, platform, channel_id):
+def bot(message, user_id, platform, channel_id):
     message = message.strip()
 
     # 进行车牌匹配
@@ -10,7 +10,7 @@ def tsugu_bot(message, user_id, platform, channel_id):
         return None  # 已经匹配了车牌，就不需要再匹配其他指令了
 
     # 进行 v2 api 命令匹配
-    command_matched, api = match_command(message, load_commands_from_config(tsugu_config.commands))
+    command_matched, api = match_command(message, load_commands_from_config(config.commands))
     if command_matched:
         return v2_api_command(message, command_matched, api, platform, user_id, channel_id)
 

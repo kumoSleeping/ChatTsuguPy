@@ -1,6 +1,7 @@
 import requests
+from typing import List
 import re
-from .config import tsugu_config
+from .config import config
 
 
 def text_response(string):
@@ -15,8 +16,8 @@ def server_exists(server):
 
 def requests_post(url, data):
     try:
-        if tsugu_config.use_proxies:
-            response = requests.post(url, json=data, proxies=tsugu_config.proxies)
+        if config.use_proxies:
+            response = requests.post(url, json=data, proxies=config.proxies)
         else:
             response = requests.post(url, json=data)
         return response.json()
@@ -30,7 +31,7 @@ def get_user_data(platform: str, user_id: str):
         'platform': platform,
         'user_id': user_id
     }
-    result = requests_post(f"{tsugu_config.user_data_backend}/user/getUserData", data)
+    result = requests_post(f"{config.user_data_backend}/user/getUserData", data)
     return result
 
 
@@ -41,7 +42,7 @@ def bind_player_request(platform: str, user_id: str, server: int, bind_type: boo
         'server': server,
         'bindType': bind_type  # 布尔，表示绑定还是解绑
     }
-    result = requests_post(f"{tsugu_config.user_data_backend}/user/bindPlayerRequest", data)
+    result = requests_post(f"{config.user_data_backend}/user/bindPlayerRequest", data)
     return result
 
 
@@ -53,11 +54,11 @@ def bind_player_verification(platform: str, user_id: str, server: int, player_id
         'playerId': player_id,
         'bindType': bind_type  # 布尔，表示绑定还是解绑
     }
-    result = requests_post(f"{tsugu_config.user_data_backend}/user/bindPlayerVerification", data)
+    result = requests_post(f"{config.user_data_backend}/user/bindPlayerVerification", data)
     return result
 
 
-def v2api_from_backend(api, text, default_servers=None, server=3):
+def v2api_from_backend(api, text, default_servers: List[int] = None, server=3):
     if default_servers is None:
         default_servers = [3, 0]
     path = f"/v2/{api}"
@@ -65,10 +66,10 @@ def v2api_from_backend(api, text, default_servers=None, server=3):
         "default_servers": default_servers,
         "server": server,
         "text": text,
-        "useEasyBG": tsugu_config.use_easy_bg,
-        "compress": tsugu_config.compress
+        "useEasyBG": config.use_easy_bg,
+        "compress": config.compress
     }
-    res = requests_post(f"{tsugu_config.backend}{path}", data)
+    res = requests_post(f"{config.backend}{path}", data)
     return res
 
 
@@ -79,7 +80,7 @@ def v2_api_command(message, command_matched, api, platform, user_id, channel_id)
         return v2api_from_backend(api, text)
 
     if api == 'gachaSimulate':
-        if channel_id in tsugu_config.ban_gacha_simulate_group_data:
+        if channel_id in config.ban_gacha_simulate_group_data:
             return text_response('此群禁止使用模拟抽卡功能')
 
     # 获取用户数据
@@ -101,7 +102,7 @@ def player_status(user_id, platform, server=None):
         server = user_data['data']['server_mode']
     player_id = user_data['data']['server_list'][server]['playerId']
     if player_id == 0:
-        return text_response(f'未绑定玩家，请使用 绑定玩家 {tsugu_config.server_list[server]} 进行绑定')
+        return text_response(f'未绑定玩家，请使用 绑定玩家 {config.server_list[server]} 进行绑定')
     return v2api_from_backend('player', str(player_id), server=server)
 
 
@@ -111,7 +112,7 @@ def set_car_forward(platform, user_id, status):
         'user_id': user_id,
         'status': status
     }
-    result = requests_post(f"{tsugu_config.user_data_backend}/user/changeUserData/setCarForwarding", data)
+    result = requests_post(f"{config.user_data_backend}/user/changeUserData/setCarForwarding", data)
     return result
 
 
@@ -121,7 +122,7 @@ def set_default_server(platform, user_id, text):
         'user_id': user_id,
         'text': text
     }
-    result = requests_post(f"{tsugu_config.user_data_backend}/user/changeUserData/setDefaultServer", data)
+    result = requests_post(f"{config.user_data_backend}/user/changeUserData/setDefaultServer", data)
     return result
 
 
@@ -131,19 +132,19 @@ def set_server_mode(platform, user_id, text):
         'user_id': user_id,
         'text': text
     }
-    result = requests_post(f"{tsugu_config.user_data_backend}/user/changeUserData/setServerMode", data)
+    result = requests_post(f"{config.user_data_backend}/user/changeUserData/setServerMode", data)
     return result
 
 
 def submit_car_number_msg(message, user_id, platform):
     # 检查car_config['car']中的关键字
-    for keyword in tsugu_config.car_config["car"]:
+    for keyword in config.car_config["car"]:
         if str(keyword) in message:
             break
     else:
         return False
     # 检查car_config['fake']中的关键字
-    for keyword in tsugu_config.car_config["fake"]:
+    for keyword in config.car_config["fake"]:
         if str(keyword) in message:
             return False
     pattern = r"^\d{5}(\D|$)|^\d{6}(\D|$)"
@@ -158,7 +159,7 @@ def submit_car_number_msg(message, user_id, platform):
         if not car_id.isdigit() and car_id[:5].isdigit():
             car_id = car_id[:5]
         # 构建URL
-        url = f"https://api.bandoristation.com/index.php?function=submit_room_number&number={car_id}&user_id={user_id}&raw_message={message}&source={tsugu_config.token_name}&token={tsugu_config.bandori_station_token}"
+        url = f"https://api.bandoristation.com/index.php?function=submit_room_number&number={car_id}&user_id={user_id}&raw_message={message}&source={config.token_name}&token={config.bandori_station_token}"
         # 发送请求
         response = requests.get(url)
         if response.status_code != 200:
@@ -191,7 +192,7 @@ def query_server_info(msg):
     # print(f"请求服务器信息: {msg}")
     try:
         # 假设 _post 是已定义的发送POST请求的函数
-        r = requests_post(tsugu_config.utils_backend + '/v2/utils', {'text': msg})
+        r = requests_post(config.utils_backend + '/v2/utils', {'text': msg})
         if [{'type': 'string', 'string': '发生异常'}] == r:
             return None
         if not r['servers']:
