@@ -1,5 +1,5 @@
 
-<h1 align="center"> Tsugu Python Frontend <img src="./logo.jpg" width="120"" width="30" height="30" alt="tmrn"/> </div></h1>
+<h1 align="center"> Tsugu Python Frontend <img src="./logo.jpg" width="30" width="30" height="30" alt="tmrn"/> </h1>
 
 
 <p align="center">
@@ -45,18 +45,19 @@ pip install tsugu --index-url https://pypi.org/simple/
 - utils：需要支持 `v2 API` 
 - 用户数据：需要一个启用了**数据库**的后端，需要支持 `v2 API`
 
-> 三个后端可以设置为不同，默认全部设置为**公共后端**。
+> 三个后端设置可以不同，默认全部设置为**公共后端**。
+
+***
+
 
 <h2 align="center"> 测试与调用 </h2>
 
 
 
-***
+
 ## 调用 `tsugu.bot`
 
-`bot` 是 `tsugu` 的一个同步函数，用于直接处理用户输入的自然语言并返回查询结果。   
-
-### 测试例
+- `bot` 是 `tsugu` 的一个同步函数，用于直接处理用户输入的自然语言并返回查询结果: 
 
 ```python
 import base64
@@ -83,45 +84,41 @@ for item in data:
         print(item)
 ```
 
-在常用的qqbot中，群号就是 `channel_id`。   
-当你使用QQ号作为 `user_id` 时，`platform` 可以填写 `red`。   
+> 在常用的qqbot中，群号就是 `channel_id`。   
+> 当你使用QQ号作为 `user_id` 时，`platform` 可以填写 `red`。   
 
 
-## 更改 `tsugu.config` 配置
+## 查看与更改 `tsugu.config` 配置
 
-### 输出文档
+- 查看默认配置文档: 
 ```py
 import tsugu
 
-tsugu.config.show_docs()  # 输出文档到控制台
+tsugu.config.show_docs()  # 输出默认配置文档到控制台
 ```
-
-### 更改配置
-
-有了文档的简单介绍，你可以更改配置。   
+- 你可以更改配置:   
 ```py
-from tsugu import tsugu_config
+import tsugu
 
 # 更改的后端地址。
-tsugu_config.backend = "http://127.0.0.0.1:3000"
+tsugu.config.backend = "http://127.0.0.0.1:3000"
 
 # 设置代理。
-tsugu_config.use_proxies = True
-tsugu_config.proxies = {"http": "http://127.0.0.1:1145", "https": "http://127.0.0.1:1919"}
+tsugu.config.use_proxies = True
+tsugu.config.proxies = {"http": "http://127.0.0.1:1145", "https": "http://127.0.0.1:1919"}
 
 # 添加关闭抽卡模拟的群号。
-tsugu_config.ban_gacha_simulate_group_data = ["114514", "1919810"]
+tsugu.config.ban_gacha_simulate_group_data = ["114514", "1919810"]
 
 # 使用 `add_command_name` 和 `remove_command_name` 方法添加或删除命令名以添加别名或关闭命令。
-tsugu_config.add_command_name(api="gacha", command_name="抽卡")
+tsugu.config.add_command_name(api="gacha", command_name="抽卡")
 ```
 
 
 
-## 使用单独的路由
+## 使用 `tsugu.router` 路由
 
-如果想自己进行自然语言处理，你可以使用单独的路由。
-
+- 如果想自己进行自然语言处理，你可以使用单独的路由:
 ```py
 import tsugu
 
@@ -136,12 +133,11 @@ reply = tsugu.router.set_car_forward("red", "1234567890", True)
 ```
 
 
-<h2 align="center"> 为什么不再提供登录端？ </h2>
+***
 
-## 黑暗时代...
+<h2 align="center"> 相对应登录端？ </h2>
 
-因为这不是一个好的时代。   
-但部署方式仍然是有不少的，如果有部署期望，可以看下面的 ▶️`客服ano酱指导` 进群聊聊天，我们会尽力帮助你。
+这不是一个好的时代， 但部署方式仍然是有不少的，如果有部署期望，可以看下面的 ▶️`客服ano酱指导` 进群聊聊天，我们会尽力帮助你。
 
 基于 v2 api 的 `C#` + `Lagrange` 组合的登录端正由 [棱镜](https://github.com/DreamPrism) 开发中，敬请期待。   
 基于本项目的 `NoneBot2` 插件也由 [zhaomoaniu](https://github.com/zhaomaoniupi) 开发中，敬请期待。   
@@ -149,7 +145,7 @@ reply = tsugu.router.set_car_forward("red", "1234567890", True)
 
 
  <details>
-<summary><b>客服ano酱指导</b></summary>
+<summary><b>客服ano酱指导(这里可以点击)</b></summary>
  
 **注意，如果你不知道什么是BanGDream，请不要随意加群**    
 **本群还是欢迎加群的（**    
@@ -158,8 +154,17 @@ reply = tsugu.router.set_car_forward("red", "1234567890", True)
 
 </details>
 
-**未来还会继续完善以及同步更新的，感谢大家的支持！**   
-**也感谢山本和大家的付出**
+***
+
+<h2 align="center"> 开发者的话 </h2>
+
+> kumo:&emsp;&emsp;我草我要4了   
+
+> kumo:&emsp;&emsp;未来还会继续完善以及同步更新喵，感谢大家的支持～  
+> &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;感谢提出建议的所有人～   
+> &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;也感谢山本和大家的付出与帮助!  
+
+> zhaomaoniu:&emsp;&emsp;这周末不是很想写代码
 
 ***
 
