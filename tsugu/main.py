@@ -79,5 +79,5 @@ def tsugu_bot(message, user_id, platform, channel_id):
             return text_response('默认服务器已设置为' + message[6:].strip())
         return text_response(r.get('data')) if ' ' in message else None
 
-    if message in ['帮助文档', 'help']:
+    if message in ['帮助文档', 'help', '帮助']:
         return text_response('https://k.mygo.fun/#/tsugu')

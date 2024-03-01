@@ -5,9 +5,6 @@ import unittest
 class TestTsugu(unittest.TestCase):
 
     def test_tsugu(self):
-        def text_response(string):
-            return [{"type": "string", "string": string}]
-
         def show_back_msg(data):
             import base64
             from PIL import Image
@@ -26,9 +23,9 @@ class TestTsugu(unittest.TestCase):
                 else:
                     print(item)
 
-        self.subTest(
-            tsugu_config.config_docs()
-        )
+        # self.subTest(
+        #     tsugu_config.config_docs()
+        # )
         tsugu_config.backend = 'http://127.0.0.1:3000'
         tsugu_config.utils_backend = 'http://127.0.0.1:3000'
         self.subTest(

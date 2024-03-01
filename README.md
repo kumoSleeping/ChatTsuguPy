@@ -1,5 +1,5 @@
 
-<h1 align="center"> Tsugu-Lite-Py  <img src="./logo.jpg" width="120"" width="30" height="30" alt="tmrn"/> </div></h1>
+<h1 align="center"> Tsugu Python Frontend <img src="./logo.jpg" width="120"" width="30" height="30" alt="tmrn"/> </div></h1>
 
 
 <p align="center">
@@ -56,19 +56,20 @@ pip install tsugu --upgrade --index-url https://pypi.org/simple/
 
 
 ***
-## 调用 tsugu
-`tsugu` 是一个同步函数，需要 `message` `user_id` `platform` `channel_id` 四个参数，分别意味着 **消息内容** **用户id** **平台** **频道id**。   
+## 调用 `tsugu_bot`
+`tsugu_bot` 是 `tsugu` 的一个同步函数，用于直接处理用户输入的自然语言并返回结果。   
+需要 `message` `user_id` `platform` `channel_id` 四个参数，分别意味着 **消息内容** **用户id** **平台** **频道id**。   
 在常用的qqbot中，群号就是 `channel_id`。   
 当你使用QQ号作为 `user_id` 时，`platform` 可以填写 `red`。   
 
 
 ```py
-from tsugu import tsugu_config, tsugu
+from tsugu import tsugu_config, tsugu_bot
 
-data = tsugu('查卡 红 ksm 5x', '114514', 'red', '666808414')
+data = tsugu_bot('查卡 红 ksm 5x', '114514', 'red', '666808414')
 ```
 
-## 返回
+### 返回
 
 ```json
 [{"type": "string", "string": string},
@@ -79,16 +80,16 @@ data = tsugu('查卡 红 ksm 5x', '114514', 'red', '666808414')
 可能会返回多个结果。  
 如果返回值为 `None` 代表bot不发送任何消息。   
 
-## 测试例
+### 测试例
 
 ```python
 import base64
 from PIL import Image
 import io
 
-from tsugu import tsugu_config, tsugu
+from tsugu import tsugu_config, tsugu_bot
 
-data = tsugu('查卡 红 ksm 5x', '114514', 'red', '666808414')
+data = tsugu_bot('查卡 红 ksm 5x', '114514', 'red', '666808414')
 
 if not data:
     print("[无反馈数据]")
@@ -160,15 +161,15 @@ tsugu_config.add_command_name(api="gacha", command_name="抽卡")
 
 ```python
 from core import on
-from tsugu import tsugu_config, tsugu
+from tsugu import tsugu_config, tsugu_bot
 
 # 监听每一条文字消息
 @on.message_created
 def tsugulp(event):
     # 设置代理
     tsugu_config.use_proxies = True
-    # 调用 tsugu
-    rpl = tsugu(event.message.content, event.user.id, 'red', event.message.id)
+    # 调用 tsugu_bot
+    rpl = tsugu_bot(event.message.content, event.user.id, 'red', event.message.id)
     # 如果返回值为None，不发送任何消息
     if not rpl:
         return
@@ -191,7 +192,7 @@ def tsugulp(event):
     event.message_create(result_string)
 ```
 
-这是随机挑选的一个 `satori` 协议机器人框架的 `tsugu` 接入实现，对于绝大部分 `Python` 机器人框架，接入方法大同小异。唯一可能需要处理的可能就是异步函数的调用问题。   
+这是随机挑选的一个 `satori` 协议机器人框架的 `tsugu_bot` 接入实现，对于绝大部分 `Python` 机器人框架，接入方法大同小异。唯一可能需要处理的可能就是异步函数的调用问题。   
 
 
 
