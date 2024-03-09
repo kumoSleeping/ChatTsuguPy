@@ -23,22 +23,24 @@ class TestTsugu(unittest.TestCase):
                 else:
                     print(item)
 
-        self.subTest(
-            tsugu.config.show_docs()
-        )
-        # tsugu.config.backend = 'http://127.0.0.1:3000'
+        # self.subTest(
+        #     tsugu.config.show_docs()
+        # )
+
         # tsugu.config.utils_backend = 'http://127.0.0.1:3000'
+        # tsugu.config.ban_gacha_simulate_group_data = ['666808414']
 
         self.subTest(
             show_back_msg(
-                tsugu.router.gacha('10', [3, 0], 0),
+                tsugu.bot('解除绑定', '1528593481', 'red', '666808414'),
             )
         )
-        self.subTest(
-            show_back_msg(
-                tsugu.bot('查卡 ', '114514', 'red', '666808414'),
-            )
-        )
+
+        # self.subTest(
+        #     show_back_msg(
+        #         tsugu.router.ycx('100', [3, 0], 0),
+        #     )
+        # )
 
 
 if __name__ == '__main__':

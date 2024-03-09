@@ -27,6 +27,8 @@ def bot(message, user_id, platform, channel_id):
         server = get_user_data(platform, user_id)['data']['server_mode'] if message[4:].strip() == '' else (r_ if server_exists(r_ := query_server_info(message[4:])) else None)
         if not server:
             return text_response(f'未找到名为 {message[4:]} 的服务器信息，请确保您输入的是服务器名而不是玩家ID，通常情况您只需要发送"绑定玩家"或"绑定玩家 服务器"即可')
+        
+        
         if r := bind_player_request(platform, user_id, server, True).get('status') == 'failed':
             return text_response(r.get('data') + ' 喵')
         return text_response(f'''正在绑定账号，请将您的 评论(个性签名) 或者 当前使用的 乐队编队名称改为\n{r.get('data')['verifyCode']}\n稍等片刻等待同步后，发送\n验证 + 空格 + 您的玩家ID 来完成本次身份验证\n例如：验证 114514''')
@@ -35,11 +37,11 @@ def bot(message, user_id, platform, channel_id):
         server = get_user_data(platform, user_id)['data']['server_mode'] if message[4:].strip() == '' else (r_ if (config.server_list(r_ := query_server_info(message[4:]))) else None)
         if not server:
             return text_response(f'未找到名为 {message[4:].strip()} 的服务器信息，请确保您输入的是服务器名而不是玩家ID，通常情况您只需要发送"解除绑定"即可')
-        # 如果是400
-        if r := bind_player_request(platform, user_id, server, False).get('status') == 'failed':
-            return text_response(r.get('data') + ' 喵')
+        response = bind_player_request(platform, user_id, server, False)  # 获取响应
+        if response.get('status') == 'failed':  # 检查状态
+            return text_response(response.get('data') + ' 喵')
         # 如果是200
-        return text_response(f'''正在解除，请将您的 评论(个性签名) 或者 当前使用的 乐队编队名称改为\n{r.get('data')['verifyCode']}\n稍等片刻等待同步后，发送\n验证解绑 {server}\n来完成本次身份验证(没错只需要加上 {server} 来确定您需要解绑的服务器)''')
+        return text_response(f'''正在解除，请将您的 评论(个性签名) 或者 当前使用的 乐队编队名称改为\n{response.get('data')['verifyCode']}\n稍等片刻等待同步后，发送\n验证解绑 {server}\n来完成本次身份验证(没错只需要加上 {server} 来确定您需要解绑的服务器)''')
 
     if message.startswith('验证解绑'):
         if not message[4:].strip().isdigit():
@@ -81,3 +83,7 @@ def bot(message, user_id, platform, channel_id):
 
     if message in ['帮助文档', 'help', '帮助', '使用说明']:
         return text_response('https://k.mygo.fun/#/tsugu')
+
+
+
+
