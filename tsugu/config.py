@@ -4,7 +4,7 @@ class Config:
         # 设置默认值
         self.backend = "http://tsugubot.com:8080"
         self.user_data_backend = "http://tsugubot.com:8080"
-        self.utils_backend = "http://tsugubot.com:8080"
+        self.user_database_path = None
 
         self.use_proxies = False
         self.proxies = {
@@ -19,11 +19,41 @@ class Config:
         self.compress = True
 
         self.ban_gacha_simulate_group_data = []
+
         self.server_list = {
-            1: "日服",
-            2: "国际服",
-            3: "台服",
+            0: "日服",
+            1: "国际服",
+            2: "台服",
+            3: "国服",
             4: "韩服"
+        }
+        self.server_name_to_index = {
+            "日服": "0",
+            "国际服": "1",
+            "台服": "2",
+            "国服": "3",
+            "韩服": "4",
+            "jp": "0",
+            "en": "1",
+            "tw": "2",
+            "cn": "3",
+            "kr": "4",
+        }
+
+        self.server_index_to_name = {
+            "0": "日服",
+            "1": "国际服",
+            "2": "台服",
+            "3": "国服",
+            "4": "韩服",
+        }
+
+        self.server_index_to_s_name = {
+            "0": "jp",
+            "1": "en",
+            "2": "tw",
+            "3": "cn",
+            "4": "kr",
         }
 
         self.commands = [
@@ -98,6 +128,18 @@ ban_gacha_simulate_group_data (list)
 server_list (dict)
     默认值: {1: "日服", 2: "国际服", 3: "台服", 4: "韩服"}
     描述: 服务器列表及其对应的名称。
+
+server_index_to_name (dict)
+    默认值: {"1": "日服", "2": "国际服", "3": "台服", "4": "韩服"}
+    描述: 服务器索引到名称的映射。
+
+server_index_to_s_name (dict)
+    默认值: {"1": "jp", "2": "en", "3": "tw", "4": "kr"}
+    描述: 服务器索引到简称的映射。
+
+name_to_server_index (dict)
+    默认值: {"日服": "1", "国际服": "2", "台服": "3", "韩服": "4"}
+    描述: 服务器名称到索引的映射。
 
 commands (list[dict])
     默认值: 包含多个字典，每个字典包含api和command_name键。

@@ -14,13 +14,23 @@
 <a href="https://pypi.org/project/tsugu/">
     <img src="https://img.shields.io/pypi/v/tsugu.svg" alt="license">
   </a>
-
 </p>
+
+
 <p align="center">
-<br>  Python编写的 Tsugu 前端模块
+<br>  Python 编写的 Tsugu 前端模块
 
 
 ***
+
+<h2 align="center"> 实现 </h2>
+
+
+- [x] 自然语言输入 -> 返回结果
+- [ ] 独立路由输入 -> 返回结果 `目前仅基础路由`
+- [x] 本地数据库 (sqlite3)
+- [x] 远程数据库 (客户端)
+- [x] 配置项 (基础配置、代理、命令别名 等)
 
 
 <h2 align="center"> 安装与更新 </h2>
@@ -88,6 +98,18 @@ for item in data:
 > 当你使用QQ号作为 `user_id` 时，`platform` 可以填写 `red`。   
 
 
+## 调用 `tsugu.database`
+
+```python
+import tsugu
+
+tsugu.database(path="./data.db")
+
+# 此操作会自动创建或使用本地数据库为 tsugu.bot 提供用户数据。
+# 远程数据库将不使用。
+# 更多功能可能在未来版本中添加。
+```
+
 ## 查看与更改 `tsugu.config` 配置
 
 - 查看默认配置文档: 
@@ -97,6 +119,7 @@ import tsugu
 tsugu.config.show_docs()  # 输出默认配置文档到控制台
 ```
 - 你可以更改配置:   
+
 ```py
 import tsugu
 
@@ -113,6 +136,7 @@ tsugu.config.ban_gacha_simulate_group_data = ["114514", "1919810"]
 # 使用 `add_command_name` 和 `remove_command_name` 方法添加或删除命令名以添加别名或关闭命令。
 tsugu.config.add_command_name(api="gacha", command_name="抽卡")
 ```
+> 注意，不清楚的配置项请不要更改，更改配置项可能会导致不可预知的错误。
 
 
 

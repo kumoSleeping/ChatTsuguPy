@@ -1,5 +1,6 @@
 import tsugu
 import unittest
+import os
 
 
 class TestTsugu(unittest.TestCase):
@@ -23,24 +24,11 @@ class TestTsugu(unittest.TestCase):
                 else:
                     print(item)
 
-        # self.subTest(
-        #     tsugu.config.show_docs()
-        # )
 
-        # tsugu.config.utils_backend = 'http://127.0.0.1:3000'
-        # tsugu.config.ban_gacha_simulate_group_data = ['666808414']
+        tsugu.database(os.path.join(os.path.dirname(__file__), 'user_data.db'))
+        # tsugu.database('./user_data.db')
 
-        self.subTest(
-            show_back_msg(
-                tsugu.bot('解除绑定', '1528593481', 'red', '666808414'),
-            )
-        )
-
-        # self.subTest(
-        #     show_back_msg(
-        #         tsugu.router.ycx('100', [3, 0], 0),
-        #     )
-        # )
+        show_back_msg(tsugu.bot('玩家状态', '114514', 'red', '666808414'))
 
 
 if __name__ == '__main__':

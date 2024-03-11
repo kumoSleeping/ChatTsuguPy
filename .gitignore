@@ -6,6 +6,7 @@
 
 tsugu.egg-info/
 
+user_data.db
 
 dist/
 build/
@@ -166,6 +167,8 @@ dmypy.json
 
 # Cython debug symbols
 cython_debug/
+
+test/test.py
 
 # PyCharm
 #  JetBrains specific template is maintained in a separate JetBrains.gitignore that can
