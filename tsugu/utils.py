@@ -20,7 +20,7 @@ class DatabaseManager:
 
     def init_db(self, path):
         if path:
-            self.conn = sqlite3.connect(path)
+            self.conn = sqlite3.connect(path, check_same_thread=False)
             print('数据库连接成功，路径:', path)
             self.cursor = self.conn.cursor()
             self.cursor.execute('''
