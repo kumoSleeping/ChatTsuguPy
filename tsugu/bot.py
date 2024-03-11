@@ -88,7 +88,7 @@ def bot_extra_remote_server(message, user_id, platform):
 
     if message.startswith('玩家状态'):
         # 如果匹配 玩家状态 则查询默认服务器的玩家状态 如果用户输入了服务器名 则查询对应服务器的玩家状态，如果服务器名无效则返回None
-        return Remote.player_status(user_id, platform) if (arg_ := message[4:].strip()) == '' else (Remote.player_status(platform, r_) if server_exists(r_ := query_server_info(arg_)) else None)
+        return Remote.player_status(user_id, platform) if (arg_ := message[4:].strip()) == '' else (Remote.player_status(user_id, platform, r_) if server_exists(r_ := query_server_info(arg_)) else None)
 
     if message.startswith('绑定玩家'):
         # 如果匹配 绑定玩家 则绑定默认服务器的玩家 如果用户输入了服务器名 则绑定对应服务器的玩家，如果服务器名无效则 赋值为 None

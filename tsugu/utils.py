@@ -61,13 +61,7 @@ def database(path: str | None = None):
     初始化数据库
     :return:
     '''
-    if path:
-        # 检查是否位于本包附近，如果是返回并警告，例如./
-        if os.path.dirname(sys.modules['__main__'].__file__) == os.path.dirname(__file__):
-            print('警告: 数据库文件路径不应该位于本包内。')
-            return None
-        # 初始化数据库
-    else:
+    if not path:
         path = (os.path.dirname(sys.modules['__main__'].__file__))
     config.user_database_path = path
     db_manager.init_db(path)
@@ -103,8 +97,9 @@ def requests_post(url, data):
             response = requests.post(url, json=data)
         return response.json()
     except Exception as e:
-        print(f"发生异常: {e}")
-        return text_response(f"发生异常: {e}")
+        print(response, response.text)
+        # raise e
+        return text_response(f"发生异常: {str(response)}")
 
 
 def v2api_from_backend(api, text, default_servers: List[int] = None, server=3):
@@ -509,6 +504,7 @@ class Remote:
         print(user_data)
         if server is None:
             server = user_data['data']['server_mode']
+        print(server)
         player_id = user_data['data']['server_list'][server]['playerId']
         if player_id == 0:
             return text_response(f'未绑定玩家，请使用 绑定玩家 进行绑定')
