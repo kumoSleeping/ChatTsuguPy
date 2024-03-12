@@ -35,7 +35,7 @@ def bot_extra_local_database(message, user_id, platform):
             return text_response('没找到您要求的服务器或记录喵')
 
 
-    if message.startswith('绑定玩家'):
+    if message.startswith('绑定玩家') and len(message.replace('绑定玩家', '').strip()) < 4:
         # 如果匹配 绑定玩家 则绑定默认服务器的玩家 如果用户输入了服务器名 则绑定对应服务器的玩家，如果服务器名无效则 赋值为 None
         return bind_player_request(platform, user_id)
 
