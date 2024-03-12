@@ -16,6 +16,10 @@ class Router:
 
     @staticmethod
     def gacha(text: str, default_servers: List[int], server: int):
+        return v2api_from_backend('gacha', text, default_servers, server)
+
+    @staticmethod
+    def gachaSimulate(text: str, default_servers: List[int], server: int):
         return v2api_from_backend('gachaSimulate', text, default_servers, server)
 
     @staticmethod

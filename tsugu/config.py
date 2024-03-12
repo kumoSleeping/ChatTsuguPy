@@ -58,9 +58,9 @@ class Config:
 
         self.commands = [
             {"api": "cardIllustration", "command_name": ["查插画", "查卡面"]},
-            {"api": "card", "command_name": ["查卡"]},
             {"api": "player", "command_name": ["查玩家", "查询玩家"]},
             {"api": "gachaSimulate", "command_name": ["抽卡模拟", "卡池模拟"]},
+            {"api": "gacha", "command_name": ["查卡池"]},
             {"api": "event", "command_name": ["查活动"]},
             {"api": "song", "command_name": ["查歌曲", "查曲"]},
             {"api": "songMeta", "command_name": ["查询分数表", "查分数表"]},
@@ -69,7 +69,9 @@ class Config:
             {"api": "ycxAll", "command_name": ["ycxall", "ycx all"]},
             {"api": "ycx", "command_name": ["ycx", "预测线"]},
             {"api": "lsycx", "command_name": ["lsycx"]},
-            {"api": "ycm", "command_name": ["ycm", "车来"]}
+            {"api": "ycm", "command_name": ["ycm", "车来"]},
+            {"api": "card", "command_name": ["查卡"]},
+
         ]
 
         self.car_config = {
