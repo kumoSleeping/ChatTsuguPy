@@ -384,7 +384,7 @@ def unbind_player_request(platform: str, user_id: str):
      if not record:
          return text_response('你还没有绑定哦，是要解绑个吉他吗（？')
 
-     return text_response(f'您当前有 {len(record)} 个记录，发送"解除绑定 {record}"来获解除您的第{record}个记录，以此类推。')
+     return text_response(f'您当前有 {len(record)} 个记录，发送"解除绑定 {len(record)}"来获解除您的第{len(record)}个记录，以此类推。')
 
 
 def bind_player_verification(platform: str, user_id: str, server: int | None, player_id: str, bind_type: bool):
