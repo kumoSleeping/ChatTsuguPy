@@ -136,7 +136,8 @@ def v2_api_command(message, command_matched, api, platform, user_id, channel_id)
             return text_response('获取用户数据失败')
         return v2api_from_backend(api, text, user_data['data']['default_server'], user_data['data']['server_mode'])
     except:
-        return text_response('获取用户数据失败')
+
+        return text_response('前端错误')
 
 
 def set_car_forward(platform, user_id, status):
@@ -370,7 +371,7 @@ def bind_player_request(platform: str, user_id: str):
 
     verify_code = generate_verify_code()
     # verify_code = "000000"
-    rpl_true = f'正在绑定您的第{bind_count + 1}个记录，请将您的 评论(个性签名) 或者 当前使用的 乐队编队名称改为\n{verify_code}\n稍等片刻等待同步后，发送\n验证 您的玩家ID 服务器 来完成本次身份验证\n例如：验证 114514 国服'
+    rpl_true = f'正在绑定您的第{bind_count + 1}个记录，请将您的 评论(个性签名) 或者 当前使用的 乐队编队名称改为\n{verify_code}\n稍等片刻等待同步后，发送\n验证 您的玩家ID 来完成本次身份验证\n例如：验证 10000xxxx 国服'
     # 存入verify_code
     cursor.execute("UPDATE users SET verify_code = ? WHERE user_id = ? AND platform = ?", (verify_code, user_id, platform))
     db_manager.conn.commit()
@@ -443,7 +444,7 @@ def unbind_player_verification(platform: str, user_id: str, record: int | None):
 
     if row:
         # 用户存在，解析game_ids字段
-        game_ids = user_data['data']['game_ids']
+        game_ids = json.loads(user_data['data']['game_ids'])  # Convert JSON string to list
 
         if record and 1 <= record <= len(game_ids):  # 如果record是一个有效的索引
             # 将record从1-based转换为0-based索引

@@ -93,7 +93,7 @@ def bot_extra_remote_server(message, user_id, platform):
     if message.startswith('绑定玩家'):
         # 如果匹配 绑定玩家 则绑定默认服务器的玩家 如果用户输入了服务器名 则绑定对应服务器的玩家，如果服务器名无效则 赋值为 None
         server = Remote.get_user_data(platform, user_id)['data']['server_mode'] if message[4:].strip() == '' else (r_ if server_exists(r_ := query_server_info(message[4:])) else None)
-        if not server:
+        if not server_exists(server):
             return text_response(f'未找到名为 {message[4:]} 的服务器信息，请确保您输入的是服务器名而不是玩家ID，通常情况您只需要发送"绑定玩家"或"绑定玩家 服务器"即可')
 
         res = Remote.bind_player_request(platform, user_id, server, True)
@@ -103,7 +103,7 @@ def bot_extra_remote_server(message, user_id, platform):
             return text_response(res.get('data') + ' 喵')
         # if not res.get('status') == 'failed':
         #     return text_response('未知错误喵')
-        return text_response(f'''正在绑定账号，请将您的 评论(个性签名) 或者 当前使用的 乐队编队名称改为\n{res.get('data')['verifyCode']}\n稍等片刻等待同步后，发送\n验证 + 空格 + 您的玩家ID 来完成本次身份验证\n例如：验证 114514''')
+        return text_response(f'''正在绑定账号，请将您的 评论(个性签名) 或者 当前使用的 乐队编队名称改为\n{res.get('data')['verifyCode']}\n稍等片刻等待同步后，发送\n验证 + 空格 + 您的玩家ID 来完成本次身份验证\n验证 10000xxxx 国服''')
 
     if message.startswith('解除绑定'):
         server = Remote.get_user_data(platform, user_id)['data']['server_mode'] if message[4:].strip() == '' else (r_ if (config.server_list(r_ := query_server_info(message[4:]))) else None)
