@@ -40,13 +40,20 @@ def bot_extra_local_database(message, user_id, platform):
         return bind_player_request(platform, user_id)
 
     if message.startswith('验证'):
-        arg_list = message.replace('验证', '').strip().split(' ')
-        if len(arg_list) < 1:  # 如果长度小于2
-            return text_response('请输入正确')
-        if not arg_list[0].isdigit():  # 如果第一个不是数字
+        arg = message.replace('验证', '').strip()
+        # if len(arg_list) < 1:  # 如果长度小于2
+        #     return text_response('请输入正确')
+        # if not arg_list[0].isdigit():  # 如果第一个不是数字
+        #     return text_response('请确保您输入正确(例如: 验证 123456 cn)')
+        # server = query_server_info(arg_list[-1])
+        # player_id = arg_list[0]
+        # 正则出数字
+        player_ids = re.findall(r'\d+', arg)
+        if not player_ids or len(player_ids) > 1:
             return text_response('请确保您输入正确(例如: 验证 123456 cn)')
-        server = query_server_info(arg_list[-1])
-        player_id = arg_list[0]
+        player_id = player_ids[0]
+        server = query_server_info(arg.replace(player_id, ''))  # 后续自动处理 None
+        print(server, type(server))
         return bind_player_verification(platform, user_id, server, player_id, True)
 
     if message.startswith('解除绑定'):
