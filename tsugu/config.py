@@ -353,7 +353,7 @@ class Config:
 
     def reload_from_json(self, path):
         """Reloads configuration data from a JSON string or a JSON file path."""
-        with open(path, "r") as file:
+        with open(path, "r", encoding="utf-8") as file:
             config_data = json.load(file)
         # Iterate over all keys in the input JSON and update the config attributes
         for key, value in config_data.items():
