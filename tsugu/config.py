@@ -1,3 +1,4 @@
+import json
 
 class Config:
     def __init__(self):
@@ -147,7 +148,6 @@ commands (list[dict])
     默认值: 包含多个字典，每个字典包含api和command_name键。
     描述: 应用程序支持的命令列表及其对应的API接口。
     查看默认值: https://github.com/kumoSleeping/tsugu-bangdream-bot-lite-py/blob/main/tsugu/config.py#L29
-    可用函数: add_command_name, remove_command_name
 
 car_config (dict)
     默认值: 包含两个键car和fake，每个键对应一个字符串列表。
@@ -156,37 +156,106 @@ car_config (dict)
         '''
         print(self.show_docs.__doc__)
         return self.__doc__
+    
+    
+    def output_config_json(self, path="./config.json"):
+        config_pre_json = {
+    "backend": "http://tsugubot.com:8080",
+    "user_data_backend": "http://tsugubot.com:8080",
+    "user_database_path": None,
 
-    def add_command_name(self, api: str, command_name: str):
-        """
-        添加指令名
-        """
-        for command in self.commands:
-            if command['api'] == api:
-                if command_name not in command['command_name']:
-                    command['command_name'].append(command_name)
-                else:
-                    print(f"command_name '{command_name}' already exists in api '{api}'.")
-                break
-        else:
-            print(f"command_name '{command_name}' not found.")
-        print(f"command_name '{command_name}' added to api '{api}'.")
-        return self
+    "use_proxies": True,
+    "proxies": {
+        "http": "http://localhost:7890",
+        "https": "http://localhost:7890"
+    },
 
-    def remove_command_name(self, api: str, command_name: str):
-        """
-        删除指令名 (如果全删了则不会触发此命令)
-        """
-        for command in self.commands:
-            if command['api'] == api:
-                if command_name in command['command_name']:
-                    command['command_name'].remove(command_name)
-                else:
-                    print(f"command_name '{command_name}' does not exist in api '{api}'.")
-                break
-        else:
-            print(f"api '{api}' not found.")
-        print(f"command_name '{command_name}' removed from api '{api}'.")
+    "token_name": "TsuguToken",
+    "bandori_station_token": "NewToken123456",
+
+    "use_easy_bg": False,
+    "compress": False,
+
+    "ban_gacha_simulate_group_data": ["123456", "789010"],
+
+    "server_list": {
+        "0": "日服",
+        "1": "国际服",
+        "2": "台服",
+        "3": "国服",
+        "4": "韩服"
+    },
+
+    "server_name_to_index": {
+        "日服": "0",
+        "国际服": "1",
+        "台服": "2",
+        "国服": "3",
+        "韩服": "4",
+        "jp": "0",
+        "en": "1",
+        "tw": "2",
+        "cn": "3",
+        "kr": "4"
+    },
+
+    "server_index_to_name": {
+        "0": "日服",
+        "1": "国际服",
+        "2": "台服",
+        "3": "国服",
+        "4": "韩服"
+    },
+
+    "server_index_to_s_name": {
+        "0": "jp",
+        "1": "en",
+        "2": "tw",
+        "3": "cn",
+        "4": "kr"
+    },
+    "commands": [
+        {"api": "cardIllustration", "command_name": ["查插画", "查卡面"]},
+        {"api": "player", "command_name": ["查玩家", "查询玩家"]},
+        {"api": "gachaSimulate", "command_name": ["抽卡模拟", "卡池模拟"]},
+        {"api": "gacha", "command_name": ["查卡池"]},
+        {"api": "event", "command_name": ["查活动"]},
+        {"api": "song", "command_name": ["查歌曲", "查曲"]},
+        {"api": "songMeta", "command_name": ["查询分数表", "查分数表"]},
+        {"api": "character", "command_name": ["查角色"]},
+        {"api": "chart", "command_name": ["查铺面", "查谱面"]},
+        {"api": "ycxAll", "command_name": ["ycxall", "ycx all"]},
+        {"api": "ycx", "command_name": ["ycx", "预测线"]},
+        {"api": "lsycx", "command_name": ["lsycx"]},
+        {"api": "ycm", "command_name": ["ycm", "车来"]},
+        {"api": "card", "command_name": ["查卡"]}
+    ],
+    "car_config": {
+        "car": [
+            "q1", "q2", "q3", "q4", "Q1", "Q2", "Q3", "Q4", "缺1", "缺2", "缺3", "缺4",
+            "差1", "差2", "差3", "差4", "3火", "三火", "3把", "三把", "打满", "清火", "奇迹", "中途",
+            "大e", "大分e", "exi", "大分跳", "大跳", "大a", "大s", "大分a", "大分s", "长途", "生日车", "军训", "禁fc"
+        ],
+        "fake": [
+            "114514", "野兽", "恶臭", "1919", "下北泽", "粪", "糞", "臭", "11451", "xiabeize", "雀魂", "麻将", "打牌",
+            "maj", "麻", "[", "]", "断幺", "qq.com", "腾讯会议", "master", "疯狂星期四", "离开了我们", "日元", "av", "bv"
+        ]
+    }
+}
+        with open(path, 'w', encoding='utf-8') as f:
+            json.dump(config_pre_json, f, ensure_ascii=False, indent=4)
+        print(f"Config data has been output to '{path}'.")
+
+    def reload_from_json(self, path):
+        """Reloads configuration data from a JSON string or a JSON file path."""
+        with open(path, 'r') as file:
+            config_data = json.load(file)
+        # Iterate over all keys in the input JSON and update the config attributes
+        for key, value in config_data.items():
+            if hasattr(self, key):
+                setattr(self, key, value)
+            else:
+                print(f"Warning: {key} is not a recognized configuration attribute.")
 
 
 config = Config()

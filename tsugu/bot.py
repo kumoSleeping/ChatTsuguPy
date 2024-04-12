@@ -20,7 +20,7 @@ def bot(message, user_id, platform, channel_id):
 
 def bot_extra_local_database(message, user_id, platform):
     if message.endswith('服玩家状态'):
-        return player_status(user_id, platform, message[:-4]) if server_exists(r_ := query_server_info(message[:-4])) else text_response('服务器没找到喵') if len(message) <= 7 else None
+        return player_status(user_id, platform, message[:-4]) if server_exists(r_ := query_server_info(message[:-4])) else text_response('未找到被指定的服务器') if len(message) <= 7 else None
 
     if message.startswith('玩家状态'):
         if (arg_ := message[4:].strip()) == '':
@@ -32,7 +32,7 @@ def bot_extra_local_database(message, user_id, platform):
         if server_exists(r_ := query_server_info(arg_)):
             return player_status(user_id, platform, arg_)
         else:
-            return text_response('没找到您要求的服务器或记录喵')
+            return text_response('未找到绑定记录')
 
 
     if message.startswith('绑定玩家') and len(message.replace('绑定玩家', '').strip()) < 4:
@@ -44,13 +44,13 @@ def bot_extra_local_database(message, user_id, platform):
         # if len(arg_list) < 1:  # 如果长度小于2
         #     return text_response('请输入正确')
         # if not arg_list[0].isdigit():  # 如果第一个不是数字
-        #     return text_response('请确保您输入正确(例如: 验证 123456 cn)')
+        #     return text_response('请确保输入正确(例如: 验证 123456 cn)')
         # server = query_server_info(arg_list[-1])
         # player_id = arg_list[0]
         # 正则出数字
         player_ids = re.findall(r'\d+', arg)
         if not player_ids or len(player_ids) > 1:
-            return text_response('请确保您输入正确(例如: 验证 123456 cn)')
+            return text_response('请确保输入正确(例如: 验证 10000xxxxx cn)')
         player_id = player_ids[0]
         server = query_server_info(arg.replace(player_id, ''))  # 后续自动处理 None
         print(server, type(server))
@@ -66,7 +66,7 @@ def bot_extra_local_database(message, user_id, platform):
             return unbind_player_request(platform, user_id)
         record = int(msg_list[-1])
         if record == 0:
-            return text_response('为什么会有0啊（')
+            return text_response('为什么会有0啊，服了')
         return unbind_player_verification(platform, user_id, record)
 
     if message in ['开启车牌转发', '开启个人车牌转发']:
@@ -91,7 +91,7 @@ def bot_extra_local_database(message, user_id, platform):
 def bot_extra_remote_server(message, user_id, platform):
     if message.endswith('服玩家状态'):
         # 如果匹配 *服玩家状态 则查询对应服务器的玩家状态 前提是用户输入的 * 是一个有效的服务器名 否则返回None
-        return Remote.player_status(user_id, platform, r_) if server_exists(r_ := query_server_info(message[:-4])) else text_response('服务器没找到喵') if len(message) <= 7 else None
+        return Remote.player_status(user_id, platform, r_) if server_exists(r_ := query_server_info(message[:-4])) else text_response('未找到服务器') if len(message) <= 7 else None
 
     if message.startswith('玩家状态'):
         # 如果匹配 玩家状态 则查询默认服务器的玩家状态 如果用户输入了服务器名 则查询对应服务器的玩家状态，如果服务器名无效则返回None
@@ -101,41 +101,42 @@ def bot_extra_remote_server(message, user_id, platform):
         # 如果匹配 绑定玩家 则绑定默认服务器的玩家 如果用户输入了服务器名 则绑定对应服务器的玩家，如果服务器名无效则 赋值为 None
         server = Remote.get_user_data(platform, user_id)['data']['server_mode'] if message[4:].strip() == '' else (r_ if server_exists(r_ := query_server_info(message[4:])) else None)
         if not server_exists(server):
-            return text_response(f'未找到名为 {message[4:]} 的服务器信息，请确保您输入的是服务器名而不是玩家ID，通常情况您只需要发送"绑定玩家"或"绑定玩家 服务器"即可')
+            return text_response(f'未找到名为 {message[4:]} 的服务器信息，请确保输入是服务器名而不是玩家ID，通常情况发送"绑定玩家"或"绑定玩家 服务器"即可')
 
         res = Remote.bind_player_request(platform, user_id, server, True)
         if res.get('status') != 'success':
             print(res)
             # {'status': 'success', 'data': {'verifyCode': 12492}}
-            return text_response(res.get('data') + ' 喵')
+            return text_response(res.get('data'))
         # if not res.get('status') == 'failed':
         #     return text_response('未知错误喵')
-        return text_response(f'''正在绑定账号，请将您的 评论(个性签名) 或者 当前使用的 乐队编队名称改为\n{res.get('data')['verifyCode']}\n稍等片刻等待同步后，发送\n验证 + 空格 + 您的玩家ID 来完成本次身份验证\n验证 10000xxxx 国服''')
+        return text_response(f'''正在绑定账号，请将 评论(个性签名) 或者 当前使用的 乐队编队名称改为\n{res.get('data')['verifyCode']}\n稍等片刻等待同步后，发送\n验证 + 空格 + 玩家ID 来完成本次身份验证\n验证 10000xxxx 国服''')
 
     if message.startswith('解除绑定'):
         server = Remote.get_user_data(platform, user_id)['data']['server_mode'] if message[4:].strip() == '' else (r_ if (config.server_list(r_ := query_server_info(message[4:]))) else None)
-        if not server:
-            return text_response(f'未找到名为 {message[4:].strip()} 的服务器信息，请确保您输入的是服务器名而不是玩家ID，通常情况您只需要发送"解除绑定"即可')
+        if server_exists(server) is False:
+            # print(server)
+            return text_response(f'未找到名为 {message[4:].strip()} 的服务器信息，请确保输入的是服务器名而不是玩家ID，通常情况发送"解除绑定"即可')
         response = Remote.bind_player_request(platform, user_id, server, False)  # 获取响应
         if response.get('status') == 'failed':  # 检查状态
-            return text_response(response.get('data') + ' 喵')
+            return text_response(response.get('data'))
         # 如果是200
-        return text_response(f'''正在解除，请将您的 评论(个性签名) 或者 当前使用的 乐队编队名称改为\n{response.get('data')['verifyCode']}\n稍等片刻等待同步后，发送\n验证解绑 {server}\n来完成本次身份验证(没错只需要加上 {server} 来确定您需要解绑的服务器)''')
+        return text_response(f'''正在解除，请将 评论(个性签名) 或者 当前使用的 乐队编队名称改为\n{response.get('data')['verifyCode']}\n稍等片刻等待同步后，发送\n验证解绑 {server}\n来完成本次身份验证(没错只需要加上 {server} 来确定需要解绑的服务器)''')
 
     if message.startswith('验证解绑'):
         if not message[4:].strip().isdigit():
             return text_response('请输入解绑时提供的serverID(数字)')
         r = Remote.bind_player_verification(platform, user_id, int(message[4:].strip()), Remote.get_user_data(platform, user_id)['data']['server_list'][int(message[4:].strip())]['playerId'], False)
         if r.get('status') == 'failed':
-            return text_response(r.get('data') + ' 喵')
-        return text_response('解绑成功喵！')
+            return text_response(r.get('data'))
+        return text_response('解绑成功')
 
     if message.startswith('验证'):
         if not message[2:].strip().isdigit():
             return text_response('请输入正确的玩家ID(数字)')
         if r := Remote.bind_player_verification(platform, user_id, Remote.get_user_data(platform, user_id)['data']['server_mode'], message[2:].strip(), True).get('status') == 'failed':
-            return text_response(r.get('data') + ' 喵') if r.get('data') != '错误: 未请求绑定或解除绑定玩家' else None
-        return text_response('绑定成功！现在可以使用"玩家状态"来查询玩家信息了～')
+            return text_response(r.get('data')) if r.get('data') != '错误: 未请求绑定或解除绑定玩家' else None
+        return text_response('绑定成功！现在可以使用"玩家状态"来查询玩家信息')
 
     if message in ['开启车牌转发', '开启个人车牌转发']:
         r = Remote.set_car_forward(platform, user_id, True)

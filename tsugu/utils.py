@@ -135,10 +135,8 @@ def v2_api_command(message, command_matched, api, platform, user_id, channel_id)
         if user_data['status'] != 'success':
             return text_response('获取用户数据失败')
         return v2api_from_backend(api, text, user_data['data']['default_server'], user_data['data']['server_mode'])
-    except:
-
-        return text_response('前端错误')
-
+    except Exception as e:
+        return text_response('前端错误: ' + str(e))
 
 def set_car_forward(platform, user_id, status):
     data = {
@@ -278,14 +276,14 @@ def player_status(user_id, platform, args: str | int | None = None):
                 player_id = str(i.get("game_id"))
                 server = int(i.get("server"))
 
-                text = f'已为您查找默认服务器 {config.server_index_to_name[str(server)]} 的记录。'
+                text = f'已查找默认服务器 {config.server_index_to_name[str(server)]} 的记录'
                 # print(player_id, server)
                 break
         else:
             # 再查找第一个记录
             if game_ids:
                 # print(player_id, server)
-                return text_response(f'未在您的 {len(game_ids)} 条记录中找到 {config.server_index_to_name[str(server)]} 的记录喵。')
+                return text_response(f'未在 {len(game_ids)} 条记录中找到 {config.server_index_to_name[str(server)]} 的记录')
             else:
                 pass  # 前面已经判断过了没绑定任何的情况
     elif isinstance(args, int):
@@ -293,11 +291,11 @@ def player_status(user_id, platform, args: str | int | None = None):
         if args == 0:
             return text_response('哪来的0（')
         if args > len(game_ids) or args < 1:
-            return text_response(f'您只有 {len(game_ids)} 条记录可以查喵')
+            return text_response(f'总共绑定了 {len(game_ids)} 条记录')
         player_id, server = str(game_ids[args - 1].get("game_id")), game_ids[args - 1].get("server")
-        text = f'已为您查找第{args}条记录。'
+        text = f'已为查找第{args}条记录'
         if not player_id:
-            return text_response(f'未找到此服务器的记录，请检查您的是否绑定过此服务器。')
+            return text_response(f'未找到此服务器的记录，请检查是否绑定过此服务器')
 
     elif isinstance(args, str):
         server = query_server_info(args)
@@ -305,12 +303,12 @@ def player_status(user_id, platform, args: str | int | None = None):
         for i in game_ids:
             if i.get("server") == server:
                 player_id = str(i.get("game_id"))
-                text = f'已为您查找服务器 {config.server_index_to_name[str(server)]} 的记录。'
+                text = f'已查找服务器 {config.server_index_to_name[str(server)]} 的记录'
                 break
         else:
-            return text_response(f'未找到记录，请检查您的是否绑定过此服务器。')
+            return text_response(f'未找到记录，请检查是否绑定过此服务器')
     else:
-        return text_response('参数错误，您输入的服务器可能不合法。')
+        return text_response('参数错误，的服务器可能不合法')
     result: list = v2api_from_backend('player', player_id, server=server)
     new_item = {"type": "string", "string": text}
     result.append(new_item)
@@ -346,7 +344,7 @@ def set_server_mode(platform, user_id, text):
 
     server = int(convert_server_names_to_indices(text)[0]) if convert_server_names_to_indices(text) else None
     if server is None:
-        return text_response(f'未找到名为 {text} 的服务器信息。')
+        return text_response(f'未找到名为 {text} 的服务器信息')
     get_user_data(platform, user_id)
     cursor = db_manager.conn.cursor()
     cursor.execute("UPDATE users SET server_mode = ? WHERE user_id = ? AND platform = ?",
@@ -371,7 +369,7 @@ def bind_player_request(platform: str, user_id: str):
 
     verify_code = generate_verify_code()
     # verify_code = "000000"
-    rpl_true = f'正在绑定您的第{bind_count + 1}个记录，请将您的 评论(个性签名) 或者 当前使用的 乐队编队名称改为\n{verify_code}\n稍等片刻等待同步后，发送\n验证 您的玩家ID 来完成本次身份验证\n例如：验证 10000xxxx 国服'
+    rpl_true = f'正在绑定第{bind_count + 1}个记录，请将 评论(个性签名) 或者 当前使用的 乐队编队名称改为\n{verify_code}\n稍等片刻等待同步后，发送\n验证 玩家ID 来完成本次身份验证\n例如：验证 10000xxxx 国服'
     # 存入verify_code
     cursor.execute("UPDATE users SET verify_code = ? WHERE user_id = ? AND platform = ?", (verify_code, user_id, platform))
     db_manager.conn.commit()
@@ -383,9 +381,9 @@ def unbind_player_request(platform: str, user_id: str):
      data = get_user_data(platform, user_id)
      record = json.loads(data['data']['game_ids'])
      if not record:
-         return text_response('你还没有绑定哦，是要解绑个吉他吗（？')
+         return text_response('未找到绑定记录')
 
-     return text_response(f'您当前有 {len(record)} 个记录，发送"解除绑定 {len(record)}"来获解除您的第{len(record)}个记录，以此类推。')
+     return text_response(f'当前有 {len(record)} 个记录，发送"解除绑定 {len(record)}"来获解除第{len(record)}个记录，以此类推')
 
 
 def bind_player_verification(platform: str, user_id: str, server: int | None, player_id: str, bind_type: bool):
@@ -400,14 +398,14 @@ def bind_player_verification(platform: str, user_id: str, server: int | None, pl
         print('server is None')
         server = user_data['data']['server_mode']
     if verify_code == "" or not verify_code:
-        return text_response('请先获取验证代码。')
+        return text_response('请先获取验证代码')
     # 检测重复性
     game_ids = json.loads(user_data['data']['game_ids'])
     print(game_ids)
     print(type(game_ids))
     for i in game_ids:
         if i.get("game_id") == player_id and i.get("server") == server:
-            return text_response('您已经绑定过这个玩家了。')
+            return text_response('请勿重复绑定')
     server_s_name = config.server_index_to_s_name[str(server)]
     print(server_s_name)
     url = f'https://bestdori.com/api/player/{server_s_name}/{player_id}?mode=2'
@@ -415,12 +413,12 @@ def bind_player_verification(platform: str, user_id: str, server: int | None, pl
     response = requests.get(url)
     data = response.json()
     if data.get("data").get("profile") is None or data.get("profile") == {}:
-        return text_response('玩家ID不存在，请检查您的输入是否正确，或服务器是否对应。')
+        return text_response('玩家ID不存在，请检查输入，或服务器是否对应')
     introduction = data.get("data", {}).get("profile", {}).get("introduction")
     deck_name = data.get("data", {}).get("profile", {}).get("mainUserDeck", {}).get("deckName")
     print(verify_code, introduction, deck_name)
     if verify_code != introduction and verify_code != deck_name:
-        return text_response('验证失败，您的签名或者乐队编队名称与您的验证代码不匹配喵，可以整顿后再次尝试(无需重复发送绑定玩家)。')
+        return text_response('验证失败，签名或者乐队编队名称与验证代码不匹配喵，可以检查后再次尝试(无需重复发送绑定玩家)')
     # 验证成功
     print(data['data'])
     game_ids = json.loads(user_data['data']['game_ids'])
@@ -430,7 +428,7 @@ def bind_player_verification(platform: str, user_id: str, server: int | None, pl
     cursor.execute("UPDATE users SET verify_code = ? WHERE user_id = ? AND platform = ?",
                    ("", user_id, platform))  # 清空verify_code
     db_manager.conn.commit()
-    return text_response('绑定成功！现在可以使用"玩家状态"来查询玩家信息了～')
+    return text_response('绑定成功！现在可以使用"玩家状态"来查询玩家信息了')
 
 
 def unbind_player_verification(platform: str, user_id: str, record: int | None):
@@ -460,8 +458,8 @@ def unbind_player_verification(platform: str, user_id: str, record: int | None):
             cursor.execute("UPDATE users SET game_ids = ? WHERE user_id = ? AND platform = ?", (updated_game_ids_json, user_id, platform))
             db_manager.conn.commit()
             return text_response('解绑成功喵')
-        return text_response(f'解绑失败，您当前有 {record} 个记录，发送"解除绑定 {record}"来获解除您的第{record}个记录，以此类推。')
-    return text_response('解绑失败，请检查您的输入是否正确。')
+        return text_response(f'解绑失败，当前有 {record} 个记录，发送"解除绑定 {record}"来获解除第{record}个记录，以此类推')
+    return text_response('解绑失败，请检查输入是否正确')
 
 
 class Remote:
