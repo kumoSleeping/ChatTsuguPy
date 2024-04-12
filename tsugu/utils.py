@@ -113,7 +113,7 @@ def v2api_from_backend(api, text, default_servers: List[int] = None, server=3):
         "useEasyBG": config.use_easy_bg,
         "compress": config.compress
     }
-    print(data)
+    # print(data)
     res = requests_post(f"{config.backend}{path}", data)
     return res
 
@@ -130,43 +130,13 @@ def v2_api_command(message, command_matched, api, platform, user_id, channel_id)
 
     # 获取用户数据
     user_data = get_user_data(platform, user_id) if config.user_database_path else Remote.get_user_data(platform, user_id)
-    print(user_data)
+    # print(user_data)
     try:
         if user_data['status'] != 'success':
             return text_response('获取用户数据失败')
         return v2api_from_backend(api, text, user_data['data']['default_server'], user_data['data']['server_mode'])
     except Exception as e:
         return text_response('前端错误: ' + str(e))
-
-def set_car_forward(platform, user_id, status):
-    data = {
-        'platform': platform,
-        'user_id': user_id,
-        'status': status
-    }
-    result = requests_post(f"{config.user_data_backend}/user/changeUserData/setCarForwarding", data)
-    return result
-
-
-def set_default_server(platform, user_id, text):
-    data = {
-        'platform': platform,
-        'user_id': user_id,
-        'text': text
-    }
-    result = requests_post(f"{config.user_data_backend}/user/changeUserData/setDefaultServer", data)
-    return result
-
-
-def set_server_mode(platform, user_id, text):
-    data = {
-        'platform': platform,
-        'user_id': user_id,
-        'text': text
-    }
-    result = requests_post(f"{config.user_data_backend}/user/changeUserData/setServerMode", data)
-    return result
-
 
 def submit_car_number_msg(message, user_id, platform):
     # 检查car_config['car']中的关键字
@@ -261,13 +231,11 @@ def get_user_data(platform: str, user_id: str):
 
 def player_status(user_id, platform, args: str | int | None = None):
     user_data = get_user_data(platform, user_id)
-    print(user_data)
     game_ids = user_data['data']['game_ids']
     if game_ids == "[]" or not game_ids:
         return text_response(f'未绑定玩家，请发送 绑定玩家 进行绑定')
     game_ids = json.loads(game_ids)
     text = ''
-    print(args)
     if args is None:
         # 先查找默认服务器对应的记录
         server: int = user_data['data']['server_mode']
@@ -277,12 +245,10 @@ def player_status(user_id, platform, args: str | int | None = None):
                 server = int(i.get("server"))
 
                 text = f'已查找默认服务器 {config.server_index_to_name[str(server)]} 的记录'
-                # print(player_id, server)
                 break
         else:
             # 再查找第一个记录
             if game_ids:
-                # print(player_id, server)
                 return text_response(f'未在 {len(game_ids)} 条记录中找到 {config.server_index_to_name[str(server)]} 的记录')
             else:
                 pass  # 前面已经判断过了没绑定任何的情况
@@ -331,7 +297,6 @@ def set_car_forward(platform, user_id, status: bool):
 def set_default_server(platform, user_id, text):
 
     default_server = convert_server_names_to_indices(text)
-    # print(default_server)
     get_user_data(platform, user_id)
     cursor = db_manager.conn.cursor()
     cursor.execute("UPDATE users SET default_server = ? WHERE user_id = ? AND platform = ?",
@@ -395,32 +360,25 @@ def bind_player_verification(platform: str, user_id: str, server: int | None, pl
     verify_code = user_data['data']['verify_code']
 
     if server is None:
-        print('server is None')
         server = user_data['data']['server_mode']
     if verify_code == "" or not verify_code:
         return text_response('请先获取验证代码')
     # 检测重复性
     game_ids = json.loads(user_data['data']['game_ids'])
-    print(game_ids)
-    print(type(game_ids))
     for i in game_ids:
         if i.get("game_id") == player_id and i.get("server") == server:
             return text_response('请勿重复绑定')
     server_s_name = config.server_index_to_s_name[str(server)]
-    print(server_s_name)
     url = f'https://bestdori.com/api/player/{server_s_name}/{player_id}?mode=2'
-    print(url)
     response = requests.get(url)
     data = response.json()
     if data.get("data").get("profile") is None or data.get("profile") == {}:
         return text_response('玩家ID不存在，请检查输入，或服务器是否对应')
     introduction = data.get("data", {}).get("profile", {}).get("introduction")
     deck_name = data.get("data", {}).get("profile", {}).get("mainUserDeck", {}).get("deckName")
-    print(verify_code, introduction, deck_name)
     if verify_code != introduction and verify_code != deck_name:
         return text_response('验证失败，签名或者乐队编队名称与验证代码不匹配喵，可以检查后再次尝试(无需重复发送绑定玩家)')
     # 验证成功
-    print(data['data'])
     game_ids = json.loads(user_data['data']['game_ids'])
     game_ids.append({"game_id": player_id, "server": server})
     cursor.execute("UPDATE users SET game_ids = ? WHERE user_id = ? AND platform = ?",
@@ -500,10 +458,8 @@ class Remote:
         user_data = Remote.get_user_data(platform, user_id)
         if user_data['status'] != 'success':
             return text_response('获取用户数据失败')
-        print(user_data)
         if server is None:
             server = user_data['data']['server_mode']
-        print(server)
         player_id = user_data['data']['server_list'][server]['playerId']
         if player_id == 0:
             return text_response(f'未绑定玩家，请使用 绑定玩家 进行绑定')

@@ -41,19 +41,13 @@ def bot_extra_local_database(message, user_id, platform):
 
     if message.startswith('验证'):
         arg = message.replace('验证', '').strip()
-        # if len(arg_list) < 1:  # 如果长度小于2
-        #     return text_response('请输入正确')
-        # if not arg_list[0].isdigit():  # 如果第一个不是数字
-        #     return text_response('请确保输入正确(例如: 验证 123456 cn)')
-        # server = query_server_info(arg_list[-1])
-        # player_id = arg_list[0]
         # 正则出数字
         player_ids = re.findall(r'\d+', arg)
         if not player_ids or len(player_ids) > 1:
             return text_response('请确保输入正确(例如: 验证 10000xxxxx cn)')
         player_id = player_ids[0]
         server = query_server_info(arg.replace(player_id, ''))  # 后续自动处理 None
-        print(server, type(server))
+        # print(server, type(server))
         return bind_player_verification(platform, user_id, server, player_id, True)
 
     if message.startswith('解除绑定'):
@@ -105,7 +99,7 @@ def bot_extra_remote_server(message, user_id, platform):
 
         res = Remote.bind_player_request(platform, user_id, server, True)
         if res.get('status') != 'success':
-            print(res)
+            # print(res)
             # {'status': 'success', 'data': {'verifyCode': 12492}}
             return text_response(res.get('data'))
         # if not res.get('status') == 'failed':
@@ -115,7 +109,6 @@ def bot_extra_remote_server(message, user_id, platform):
     if message.startswith('解除绑定'):
         server = Remote.get_user_data(platform, user_id)['data']['server_mode'] if message[4:].strip() == '' else (r_ if (config.server_list(r_ := query_server_info(message[4:]))) else None)
         if server_exists(server) is False:
-            # print(server)
             return text_response(f'未找到名为 {message[4:].strip()} 的服务器信息，请确保输入的是服务器名而不是玩家ID，通常情况发送"解除绑定"即可')
         response = Remote.bind_player_request(platform, user_id, server, False)  # 获取响应
         if response.get('status') == 'failed':  # 检查状态

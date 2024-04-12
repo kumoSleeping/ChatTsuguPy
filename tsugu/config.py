@@ -218,15 +218,15 @@ class Config:
             "backend": "http://tsugubot.com:8080",
             "user_data_backend": "http://tsugubot.com:8080",
             "user_database_path": None,
-            "use_proxies": True,
+            "use_proxies": False,
             "proxies": {
                 "http": "http://localhost:7890",
                 "https": "http://localhost:7890",
             },
             "token_name": "Tsugu",
             "bandori_station_token": "ZtV4EX2K9Onb",
-            "use_easy_bg": False,
-            "compress": False,
+            "use_easy_bg": True,
+            "compress": True,
             "ban_gacha_simulate_group_data": [],
             "server_list": {
                 "0": "日服",
