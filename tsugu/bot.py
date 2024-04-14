@@ -2,20 +2,24 @@ from .utils import *
 
 
 def bot(message, user_id, platform, channel_id):
-    message = message.strip()
+    try:
+        message = message.strip()
 
-    # 进行车牌匹配
-    status = submit_car_number_msg(message, user_id, platform)
-    if status:
-        return None  # 已经匹配了车牌，就不需要再匹配其他指令了
+        # 进行车牌匹配
+        status = submit_car_number_msg(message, user_id, platform)
+        if status:
+            return None  # 已经匹配了车牌，就不需要再匹配其他指令了
 
-    # 进行 v2 api 命令匹配
-    command_matched, api = match_command(message, load_commands_from_config(config.commands))
-    if command_matched:
-        return v2_api_command(message, command_matched, api, platform, user_id, channel_id)
-    if config.user_database_path:
-        return bot_extra_local_database(message, user_id, platform)
-    return bot_extra_remote_server(message, user_id, platform)
+        # 进行 v2 api 命令匹配
+        command_matched, api = match_command(message, load_commands_from_config(config.commands))
+        if command_matched:
+            return v2_api_command(message, command_matched, api, platform, user_id, channel_id)
+        if config.user_database_path:
+            return bot_extra_local_database(message, user_id, platform)
+        return bot_extra_remote_server(message, user_id, platform)
+    except Exception as e:
+        print(e)
+        return []
 
 
 def bot_extra_local_database(message, user_id, platform):
