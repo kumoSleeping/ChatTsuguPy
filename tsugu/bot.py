@@ -34,10 +34,11 @@ def bot_extra_local_database(message, user_id, platform):
         else:
             return text_response('未找到绑定记录')
 
-
-    if message.startswith('绑定玩家') and len(message.replace('绑定玩家', '').strip()) < 4:
-        # 如果匹配 绑定玩家 则绑定默认服务器的玩家 如果用户输入了服务器名 则绑定对应服务器的玩家，如果服务器名无效则 赋值为 None
-        return bind_player_request(platform, user_id)
+    if message.startswith('绑定玩家'):
+        if server_exists(query_server_info(message[4:].strip())) or message[4:].strip() == '':
+            return bind_player_request(platform, user_id)
+        else:
+            return text_response(f'未找到名为 {(message[4:]).strip()} 的服务器信息，请确保输入的是服务器名而不是玩家ID，通常情况发送"绑定玩家"即可')
 
     if message.startswith('验证'):
         arg = message.replace('验证', '').strip()
@@ -95,7 +96,7 @@ def bot_extra_remote_server(message, user_id, platform):
         # 如果匹配 绑定玩家 则绑定默认服务器的玩家 如果用户输入了服务器名 则绑定对应服务器的玩家，如果服务器名无效则 赋值为 None
         server = Remote.get_user_data(platform, user_id)['data']['server_mode'] if message[4:].strip() == '' else (r_ if server_exists(r_ := query_server_info(message[4:])) else None)
         if not server_exists(server):
-            return text_response(f'未找到名为 {message[4:]} 的服务器信息，请确保输入是服务器名而不是玩家ID，通常情况发送"绑定玩家"或"绑定玩家 服务器"即可')
+            return text_response(f'未找到名为 {(message[4:]).strip()} 的服务器信息，请确保输入的是服务器名而不是玩家ID，通常情况发送"绑定玩家"即可')
 
         res = Remote.bind_player_request(platform, user_id, server, True)
         if res.get('status') != 'success':
@@ -109,7 +110,7 @@ def bot_extra_remote_server(message, user_id, platform):
     if message.startswith('解除绑定'):
         server = Remote.get_user_data(platform, user_id)['data']['server_mode'] if message[4:].strip() == '' else (r_ if (config.server_list(r_ := query_server_info(message[4:]))) else None)
         if server_exists(server) is False:
-            return text_response(f'未找到名为 {message[4:].strip()} 的服务器信息，请确保输入的是服务器名而不是玩家ID，通常情况发送"解除绑定"即可')
+            return text_response(f'未找到名为 {(message[4:]).strip()} 的服务器信息，请确保输入的是服务器名而不是玩家ID，通常情况发送"绑定玩家"即可')
         response = Remote.bind_player_request(platform, user_id, server, False)  # 获取响应
         if response.get('status') == 'failed':  # 检查状态
             return text_response(response.get('data'))
