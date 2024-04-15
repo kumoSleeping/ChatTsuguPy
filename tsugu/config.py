@@ -53,6 +53,7 @@ class Config:
         }
 
         self.features = {
+                "car_number_forwarding": True,
                 "change_main_server": True,
                 "switch_car_forwarding": True,
                 "bind_player": True,
@@ -331,6 +332,7 @@ class Config:
                 "4": "kr",
             },
             "features": {
+                "car_number_forwarding": True,
                 "change_main_server": True,
                 "switch_car_forwarding": True,
                 "bind_player": True,
