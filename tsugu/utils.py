@@ -420,6 +420,17 @@ def unbind_player_verification(platform: str, user_id: str, record: int | None):
     return text_response('解绑失败，请检查输入是否正确')
 
 
+def help_command(command_name=None):
+    if not command_name:
+        # 读取 config.help_doc_dict 中的所有键
+        command_list = list(config.help_doc_dict.keys())
+        command_list.sort()
+        return text_response(f'当前支持的命令有：\n{", ".join(command_list)}\n 请使用"help 命令名"来查看命令的详细帮助')
+    else:
+        # 读取 config.help_doc_dict 中的指定键
+        return text_response(config.help_doc_dict.get(command_name, '未找到对应的帮助文档'))
+
+
 class Remote:
     @staticmethod
     def get_user_data(platform: str, user_id: str):
@@ -494,4 +505,5 @@ class Remote:
         }
         result = requests_post(f"{config.user_data_backend}/user/changeUserData/setServerMode", data)
         return result
+
 
