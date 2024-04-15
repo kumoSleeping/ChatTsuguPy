@@ -119,7 +119,7 @@ class InteriorLocal:
         return get_user_data(platform, user_id)
 
     @staticmethod
-    def submit_car_number_msg(message: str, user_id: str, platform: str):
+    def submit_car_number_msg(message: str, user_id: str, platform: str | None = None):
         return submit_car_number_msg(message, user_id, platform)
 
 
@@ -155,7 +155,7 @@ class InteriorRemote:
         return Remote.get_user_data(platform, user_id)
 
     @staticmethod
-    def submit_car_number_msg(message: str, user_id: str, platform: str):
+    def submit_car_number_msg(message: str, user_id: str, platform: str | None = None):
         return submit_car_number_msg(message, user_id, platform)
 
 
