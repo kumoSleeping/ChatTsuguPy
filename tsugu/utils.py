@@ -138,7 +138,7 @@ def v2_api_command(message, command_matched, api, platform, user_id, channel_id)
     except Exception as e:
         return text_response('前端错误: ' + str(e))
 
-def submit_car_number_msg(message, user_id, platform):
+def submit_car_number_msg(message, user_id, platform=None):
     # 检查car_config['car']中的关键字
     for keyword in config.car_config["car"]:
         if str(keyword) in message:
@@ -152,10 +152,18 @@ def submit_car_number_msg(message, user_id, platform):
     pattern = r"^\d{5}(\D|$)|^\d{6}(\D|$)"
     if not re.match(pattern, message):
         return False
+
     # 获取用户数据
-    user_data = get_user_data(platform, user_id) if config.user_database_path else Remote.get_user_data(platform, user_id)
-    if not user_data['data']['car']:
-        return True
+    try:
+        if platform:
+            user_data = get_user_data(platform, user_id) if config.user_database_path else Remote.get_user_data(platform, user_id)
+            if not user_data['data']['car']:
+                return True
+    except Exception as e:
+        print('unknown user')
+        # 默认不开启关闭车牌，继续提交
+        pass
+
     try:
         car_id = message[:6]
         if not car_id.isdigit() and car_id[:5].isdigit():
@@ -171,7 +179,6 @@ def submit_car_number_msg(message, user_id, platform):
     except Exception as e:
         print(f"[Tsugu] 发生异常: {e}")
         return True  # 虽然提交失败，但是确定了是车牌消息
-
 
 def match_command(message, cmd_dict):
     for command, api_value in cmd_dict.items():
