@@ -3,10 +3,11 @@ from typing import List
 import re
 import json
 import sqlite3
-import atexit
 import os
 import sys
 import random
+from requests.exceptions import HTTPError
+# import atexit
 
 from .config import config
 
@@ -95,11 +96,19 @@ def requests_post(url, data):
             response = requests.post(url, json=data, proxies=config.proxies)
         else:
             response = requests.post(url, json=data)
+
+        # 检查响应的状态码是否为 200
+        response.raise_for_status()
+
         return response.json()
+
+    except HTTPError as http_err:
+        print(f'HTTP 错误：{http_err}')
+        return text_response("服务器出现了问题，请稍后再试。")
+
     except Exception as e:
-        print(response, response.text)
-        # raise e
-        return text_response(f"发生异常: {str(response)}")
+        print(f'发生异常：{e}')
+        return text_response("发生了未知错误。")
 
 
 def v2api_from_backend(api, text, default_servers: List[int] = None, server=3):
