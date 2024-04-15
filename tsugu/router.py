@@ -119,8 +119,8 @@ class InteriorLocal:
         return get_user_data(platform, user_id)
 
     @staticmethod
-    def submit_car_number_msg(platform: str, user_id: str, car_number: str):
-        return submit_car_number_msg(platform, user_id, car_number)
+    def submit_car_number_msg(message: str, user_id: str, platform: str):
+        return submit_car_number_msg(message, user_id, platform)
 
 
 interior_local_method = InteriorLocal()
@@ -155,8 +155,8 @@ class InteriorRemote:
         return Remote.get_user_data(platform, user_id)
 
     @staticmethod
-    def submit_car_number_msg(platform: str, user_id: str, car_number: str):
-        return submit_car_number_msg(platform, user_id, car_number)
+    def submit_car_number_msg(message: str, user_id: str, platform: str):
+        return submit_car_number_msg(message, user_id, platform)
 
 
 interior_remote_method = InteriorRemote()
