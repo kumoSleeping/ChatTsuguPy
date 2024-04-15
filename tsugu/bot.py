@@ -31,6 +31,7 @@ def bot(message, user_id, platform, channel_id):
         return bot_extra_remote_server(message, user_id, platform)
     except Exception as e:
         print(e)
+        raise e
         return []
 
 

@@ -51,16 +51,16 @@ class Config:
             "3": "cn",
             "4": "kr",
         }
-        self.features = (
-            {
+
+        self.features = {
                 "change_main_server": True,
                 "switch_car_forwarding": True,
                 "bind_player": True,
                 "change_server_list": True,
                 "player_status": True,
                 "help": True,
-            },
-        )
+            }
+
         self.commands = [
             {"api": "cardIllustration", "command_name": ["查插画", "查卡面"]},
             {"api": "player", "command_name": ["查玩家", "查询玩家"]},
@@ -197,7 +197,7 @@ class Config:
 """,
             "卡池模拟": """
 模拟抽卡，如果没有卡池ID的话，卡池为当前活动的卡池
-使用示例：å
+使用示例：
     抽卡模拟:模拟抽卡10次
     抽卡模拟 300 922 :模拟抽卡300次，卡池为922号卡池
 """,
