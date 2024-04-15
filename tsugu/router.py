@@ -118,6 +118,10 @@ class InteriorLocal:
     def get_user_data(platform: str, user_id: str):
         return get_user_data(platform, user_id)
 
+    @staticmethod
+    def submit_car_number_msg(platform: str, user_id: str, car_number: str):
+        return submit_car_number_msg(platform, user_id, car_number)
+
 
 interior_local_method = InteriorLocal()
 
@@ -149,6 +153,10 @@ class InteriorRemote:
     @staticmethod
     def get_user_data(platform: str, user_id: str):
         return Remote.get_user_data(platform, user_id)
+
+    @staticmethod
+    def submit_car_number_msg(platform: str, user_id: str, car_number: str):
+        return submit_car_number_msg(platform, user_id, car_number)
 
 
 interior_remote_method = InteriorRemote()
