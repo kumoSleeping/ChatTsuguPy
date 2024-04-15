@@ -7,6 +7,10 @@ class Router:
         pass
 
     @staticmethod
+    def help(text: str, default_servers: List[int], server: int):
+        return help_command(text)
+
+    @staticmethod
     def player(text: str, default_servers: List[int], server: int):
         return v2api_from_backend('player', text, default_servers, server)
 

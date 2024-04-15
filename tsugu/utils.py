@@ -435,7 +435,7 @@ def help_command(command_name=None):
         return text_response(f'当前支持的命令有：\n{", ".join(command_list)}\n 请使用"help 命令名"来查看命令的详细帮助')
     else:
         # 读取 config.help_doc_dict 中的指定键
-        return text_response(config.help_doc_dict.get(command_name, '未找到对应的帮助文档'))
+        return None
 
 
 class Remote:
