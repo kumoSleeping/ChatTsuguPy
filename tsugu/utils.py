@@ -168,10 +168,10 @@ def v2_api_command(message, command_matched, api, platform, user_id, channel_id)
     # print(user_data)
     try:
         if user_data['status'] != 'success':
-            return text_response('获取用户数据失败')
+            return text_response('获取用户数据失败：内部错误')
         return v2api_from_backend(api, text, user_data['data']['default_server'], user_data['data']['server_mode'])
     except Exception as e:
-        return text_response('前端错误: ' + str(e))
+        return text_response('获取用户数据失败：网络 / 前端错误')
 
 
 def submit_car_number_msg(message, user_id, platform=None):
