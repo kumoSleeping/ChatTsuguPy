@@ -5,7 +5,7 @@ with open('README.md', 'r') as readme:
 
 setup(
     name='tsugu',
-    version='0.4.7',
+    version='0.4.8',
     author='kumoSleeping',
     author_email='zjr2992@outlook.com',
     license="MIT",
@@ -20,7 +20,7 @@ setup(
         'Operating System :: OS Independent'
     ],
     install_requires=[
-            "requests",
+            "urllib3",
         ],
     python_requires='>=3.8',
     include_package_data=False,

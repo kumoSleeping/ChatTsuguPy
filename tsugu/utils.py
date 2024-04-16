@@ -1,4 +1,3 @@
-import requests
 from typing import List
 import re
 import json
@@ -6,8 +5,8 @@ import sqlite3
 import os
 import sys
 import random
-from requests.exceptions import HTTPError
-# import atexit
+import urllib3
+from urllib3.exceptions import HTTPError
 
 from .config import config
 
@@ -90,17 +89,44 @@ def server_exists(server):
     return False
 
 
-def requests_post(url, data):
+def requests_post_for_user(url, data):
+    if config.user_data_backend_use_proxy:
+        http = urllib3.ProxyManager(config.proxy_url)
+    else:
+        http = urllib3.PoolManager()
     try:
-        if config.use_proxies:
-            response = requests.post(url, json=data, proxies=config.proxies)
-        else:
-            response = requests.post(url, json=data)
+        response = http.request('POST', url, headers={'Content-Type': 'application/json'}, body=json.dumps(data))
 
         # 检查响应的状态码是否为 200
-        response.raise_for_status()
+        if response.status == 200:
+            return json.loads(response.data.decode('utf-8'))
+        else:
+            # 处理其他状态码
+            return text_response("服务器出现了问题，请稍后再试。")
 
-        return response.json()
+    except HTTPError as http_err:
+        print(f'HTTP 错误：{http_err}')
+        return text_response("服务器出现了问题，请稍后再试。")
+
+    except Exception as e:
+        print(f'发生异常：{e}')
+        return text_response("发生了未知错误。")
+
+
+def requests_post_for_backend(url, data):
+    if config.backend_use_proxy:
+        http = urllib3.ProxyManager(config.proxy_url)
+    else:
+        http = urllib3.PoolManager()
+    try:
+        response = http.request('POST', url, headers={'Content-Type': 'application/json'}, body=json.dumps(data))
+
+        # 检查响应的状态码是否为 200
+        if response.status == 200:
+            return json.loads(response.data.decode('utf-8'))
+        else:
+            # 处理其他状态码
+            return text_response("服务器出现了问题，请稍后再试。")
 
     except HTTPError as http_err:
         print(f'HTTP 错误：{http_err}')
@@ -123,7 +149,7 @@ def v2api_from_backend(api, text, default_servers: List[int] = None, server=3):
         "compress": config.compress
     }
     # print(data)
-    res = requests_post(f"{config.backend}{path}", data)
+    res = requests_post_for_backend(f"{config.backend}{path}", data)
     return res
 
 
@@ -146,6 +172,7 @@ def v2_api_command(message, command_matched, api, platform, user_id, channel_id)
         return v2api_from_backend(api, text, user_data['data']['default_server'], user_data['data']['server_mode'])
     except Exception as e:
         return text_response('前端错误: ' + str(e))
+
 
 def submit_car_number_msg(message, user_id, platform=None):
     # 检查car_config['car']中的关键字
@@ -177,17 +204,29 @@ def submit_car_number_msg(message, user_id, platform=None):
         car_id = message[:6]
         if not car_id.isdigit() and car_id[:5].isdigit():
             car_id = car_id[:5]
-        # 构建URL
+
+        # 构建 URL
         url = f"https://api.bandoristation.com/index.php?function=submit_room_number&number={car_id}&user_id={user_id}&raw_message={message}&source={config.token_name}&token={config.bandori_station_token}"
+
+        if config.submit_car_number_use_proxy:
+            http = urllib3.ProxyManager(config.proxy_url)
+        else:
+            http = urllib3.PoolManager()
+
         # 发送请求
-        response = requests.get(url)
-        if response.status_code != 200:
-            print(f"[Tsugu] 提交车牌失败，HTTP响应码: {response.status_code}")
+        response = http.request('GET', url)
+
+        # 检查响应的状态码是否为 200
+        if response.status == 200:
+            return True
+        else:
+            print(f"[Tsugu] 提交车牌失败，HTTP响应码: {response.status}")
             return True  # 虽然提交失败，但是确定了是车牌消息
-        return True
+
     except Exception as e:
         print(f"[Tsugu] 发生异常: {e}")
         return True  # 虽然提交失败，但是确定了是车牌消息
+
 
 def match_command(message, cmd_dict):
     for command, api_value in cmd_dict.items():
@@ -385,9 +424,23 @@ def bind_player_verification(platform: str, user_id: str, server: int | None, pl
         if i.get("game_id") == player_id and i.get("server") == server:
             return text_response('请勿重复绑定')
     server_s_name = config.server_index_to_s_name[str(server)]
+
+    # 构建 URL
     url = f'https://bestdori.com/api/player/{server_s_name}/{player_id}?mode=2'
-    response = requests.get(url)
-    data = response.json()
+    if config.verify_player_bind_use_proxy:
+        http = urllib3.ProxyManager(config.proxy_url)
+    else:
+        http = urllib3.PoolManager()
+    # 发送请求
+    response = http.request('GET', url)
+    # 检查响应的状态码是否为 200
+    if response.status == 200:
+        # 解析 JSON 响应数据
+        data = json.loads(response.data.decode('utf-8'))
+    else:
+        print(f"获取玩家数据失败，HTTP响应码: {response.status}")
+        return None
+
     if data.get("data").get("profile") is None or data.get("profile") == {}:
         return text_response('玩家ID不存在，请检查输入，或服务器是否对应')
     introduction = data.get("data", {}).get("profile", {}).get("introduction")
@@ -454,7 +507,7 @@ class Remote:
             'platform': platform,
             'user_id': user_id
         }
-        result = requests_post(f"{config.user_data_backend}/user/getUserData", data)
+        result = requests_post_for_user(f"{config.user_data_backend}/user/getUserData", data)
         return result
 
     @staticmethod
@@ -465,7 +518,7 @@ class Remote:
             'server': server,
             'bindType': bind_type  # 布尔，表示绑定还是解绑
         }
-        result = requests_post(f"{config.user_data_backend}/user/bindPlayerRequest", data)
+        result = requests_post_for_user(f"{config.user_data_backend}/user/bindPlayerRequest", data)
         return result
 
     @staticmethod
@@ -477,7 +530,7 @@ class Remote:
             'playerId': player_id,
             'bindType': bind_type  # 布尔，表示绑定还是解绑
         }
-        result = requests_post(f"{config.user_data_backend}/user/bindPlayerVerification", data)
+        result = requests_post_for_user(f"{config.user_data_backend}/user/bindPlayerVerification", data)
         return result
 
     @staticmethod
@@ -499,7 +552,7 @@ class Remote:
             'user_id': user_id,
             'status': status
         }
-        result = requests_post(f"{config.user_data_backend}/user/changeUserData/setCarForwarding", data)
+        result = requests_post_for_user(f"{config.user_data_backend}/user/changeUserData/setCarForwarding", data)
         return result
 
     @staticmethod
@@ -509,7 +562,7 @@ class Remote:
             'user_id': user_id,
             'text': text
         }
-        result = requests_post(f"{config.user_data_backend}/user/changeUserData/setDefaultServer", data)
+        result = requests_post_for_user(f"{config.user_data_backend}/user/changeUserData/setDefaultServer", data)
         return result
 
     @staticmethod
@@ -519,7 +572,7 @@ class Remote:
             'user_id': user_id,
             'text': text
         }
-        result = requests_post(f"{config.user_data_backend}/user/changeUserData/setServerMode", data)
+        result = requests_post_for_user(f"{config.user_data_backend}/user/changeUserData/setServerMode", data)
         return result
 
 

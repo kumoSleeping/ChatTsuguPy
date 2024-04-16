@@ -6,14 +6,12 @@ class Config:
         # 设置默认值
         self.backend = "http://tsugubot.com:8080"
         self.user_data_backend = "http://tsugubot.com:8080"
+        self.backend_use_proxy = False
+        self.user_data_backend_use_proxy = False
+        self.submit_car_number_use_proxy = False
+        self.verify_player_bind_use_proxy = False
+        self.proxy_url = "http://localhost:7890"
         self.user_database_path = None
-
-        self.use_proxies = False
-        self.proxies = {
-            "http": "http://127.0.0.1:7890",
-            "https": "http://127.0.0.1:7890",
-        }
-
         self.token_name = "Tsugu"
         self.bandori_station_token = "ZtV4EX2K9Onb"
 
@@ -287,12 +285,12 @@ class Config:
         config_pre_json = {
             "backend": "http://tsugubot.com:8080",
             "user_data_backend": "http://tsugubot.com:8080",
+            "backend_use_proxy": False,
+            "user_data_backend_use_proxy": False,
+            "submit_car_number_use_proxy": False,
+            "verify_player_bind_use_proxy": False,
+            "proxy_url": "http://localhost:7890",
             "user_database_path": None,
-            "use_proxies": False,
-            "proxies": {
-                "http": "http://localhost:7890",
-                "https": "http://localhost:7890",
-            },
             "token_name": "Tsugu",
             "bandori_station_token": "ZtV4EX2K9Onb",
             "use_easy_bg": True,
