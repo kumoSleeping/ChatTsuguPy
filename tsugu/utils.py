@@ -11,9 +11,6 @@ from urllib3.exceptions import HTTPError
 from .config import config
 
 
-urllib3.disable_warnings()
-
-
 class DatabaseManager:
     def __init__(self, path):
         self.path = path
@@ -94,9 +91,9 @@ def server_exists(server):
 
 def requests_post_for_user(url, data):
     if config.user_data_backend_use_proxy:
-        http = urllib3.ProxyManager(config.proxy_url)
+        http = urllib3.ProxyManager(config.proxy_url, cert_reqs='CERT_NONE')
     else:
-        http = urllib3.PoolManager()
+        http = urllib3.PoolManager(cert_reqs='CERT_NONE')
     try:
         response = http.request('POST', url, headers={'Content-Type': 'application/json'}, body=json.dumps(data))
 
@@ -118,9 +115,9 @@ def requests_post_for_user(url, data):
 
 def requests_post_for_backend(url, data):
     if config.backend_use_proxy:
-        http = urllib3.ProxyManager(config.proxy_url)
+        http = urllib3.ProxyManager(config.proxy_url, cert_reqs='CERT_NONE')
     else:
-        http = urllib3.PoolManager()
+        http = urllib3.PoolManager(cert_reqs='CERT_NONE')
     try:
         response = http.request('POST', url, headers={'Content-Type': 'application/json'}, body=json.dumps(data))
 
@@ -212,9 +209,9 @@ def submit_car_number_msg(message, user_id, platform=None):
         url = f"https://api.bandoristation.com/index.php?function=submit_room_number&number={car_id}&user_id={user_id}&raw_message={message}&source={config.token_name}&token={config.bandori_station_token}"
 
         if config.submit_car_number_use_proxy:
-            http = urllib3.ProxyManager(config.proxy_url)
+            http = urllib3.ProxyManager(config.proxy_url, cert_reqs='CERT_NONE')
         else:
-            http = urllib3.PoolManager()
+            http = urllib3.PoolManager(cert_reqs='CERT_NONE')
 
         # 发送请求
         response = http.request('GET', url)
@@ -431,9 +428,9 @@ def bind_player_verification(platform: str, user_id: str, server: int | None, pl
     # 构建 URL
     url = f'https://bestdori.com/api/player/{server_s_name}/{player_id}?mode=2'
     if config.verify_player_bind_use_proxy:
-        http = urllib3.ProxyManager(config.proxy_url)
+        http = urllib3.ProxyManager(config.proxy_url, cert_reqs='CERT_NONE')
     else:
-        http = urllib3.PoolManager()
+        http = urllib3.PoolManager(cert_reqs='CERT_NONE')
     # 发送请求
     response = http.request('GET', url)
     # 检查响应的状态码是否为 200
