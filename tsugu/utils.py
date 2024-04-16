@@ -11,6 +11,9 @@ from urllib3.exceptions import HTTPError
 from .config import config
 
 
+urllib3.disable_warnings()
+
+
 class DatabaseManager:
     def __init__(self, path):
         self.path = path
