@@ -5,7 +5,7 @@ with open('README.md', 'r') as readme:
 
 setup(
     name='tsugu',
-    version='0.4.13',
+    version='0.4.14',
     author='kumoSleeping',
     author_email='zjr2992@outlook.com',
     license="MIT",
@@ -21,6 +21,7 @@ setup(
     ],
     install_requires=[
             "urllib3",
+            "loguru",
         ],
     python_requires='>=3.8',
     include_package_data=False,
