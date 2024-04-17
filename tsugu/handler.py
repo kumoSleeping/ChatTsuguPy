@@ -55,6 +55,8 @@ def handler(message: str, user_id: str, platform: str, channel_id: str) -> List[
     '''
     data = bot(message, user_id, platform, channel_id)
     response = []
+    if not data:
+        return response
     for item in data:
         if item['type'] == 'string':
             response.append(item['string'])
