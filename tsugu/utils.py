@@ -97,9 +97,10 @@ def requests_post_for_user(url, data):
         http = urllib3.PoolManager(cert_reqs='CERT_NONE')
     try:
         response = http.request('POST', url, headers={'Content-Type': 'application/json'}, body=json.dumps(data))
-
         # 检查响应的状态码是否为 200
         if response.status == 200:
+            return json.loads(response.data.decode('utf-8'))
+        elif response.status == 400:
             return json.loads(response.data.decode('utf-8'))
         else:
             # 处理其他状态码

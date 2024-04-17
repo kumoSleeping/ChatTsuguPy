@@ -158,6 +158,7 @@ def bot_extra_remote_server(message, user_id, platform):
                 return text_response(f'未找到名为 {(message[4:]).strip()} 的服务器信息，请确保输入的是服务器名而不是玩家ID，通常情况发送"绑定玩家"即可')
 
             res = Remote.bind_player_request(platform, user_id, server, True)
+
             if res.get('status') != 'success':
                 # {'status': 'success', 'data': {'verifyCode': 12492}}
                 return text_response(res.get('data'))
