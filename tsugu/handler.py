@@ -1,7 +1,18 @@
+import base64
+from typing import List, Union
+
 from .utils import *
 
 
 def bot(message, user_id, platform, channel_id):
+    '''
+    不再建议直接使用此函数，请使用 handler 函数
+    :param message:
+    :param user_id:
+    :param platform:
+    :param channel_id:
+    :return:
+    '''
     try:
         message = message.strip()
 
@@ -33,6 +44,25 @@ def bot(message, user_id, platform, channel_id):
         logger.error(f'Error: {e}')
         # raise e
         return []
+
+
+def handler(message: str, user_id: str, platform: str, channel_id: str) -> List[Union[bytes, str]]:
+    '''
+    :param message: 用户消息
+    :param user_id: 用户ID
+    :param platform: 平台名称 默认 red
+    :param channel_id: 频道ID / 群号
+    :return: List[Union[bytes, str]] bytes 为图片 str 为文字
+    '''
+    data = bot(message, user_id, platform, channel_id)
+    response = []
+    for item in data:
+        if item['type'] == 'string':
+            response.append(item['string'].encode('utf-8'))
+        elif item['type'] == 'base64':
+            bytes_data = base64.b64decode(item['string'].encode('utf-8'))
+            response.append(bytes_data)
+    return response
 
 
 def bot_extra_local_database(message, user_id, platform):
