@@ -22,7 +22,7 @@ class DatabaseManager:
     def init_db(self, path):
         if path:
             self.conn = sqlite3.connect(path, check_same_thread=False)
-            logger.success('数据库连接成功，路径:', path)
+            logger.success(f'数据库连接成功，路径: {path}')
             self.cursor = self.conn.cursor()
             self.cursor.execute('''
                 CREATE TABLE IF NOT EXISTS users (
