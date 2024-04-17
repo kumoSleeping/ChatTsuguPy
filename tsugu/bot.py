@@ -30,8 +30,8 @@ def bot(message, user_id, platform, channel_id):
             return bot_extra_local_database(message, user_id, platform)
         return bot_extra_remote_server(message, user_id, platform)
     except Exception as e:
-        print(e)
-        raise e
+        logger.error(f'Error: {e}')
+        # raise e
         return []
 
 
@@ -68,7 +68,6 @@ def bot_extra_local_database(message, user_id, platform):
                 return text_response('请确保输入正确(例如: 验证 10000xxxxx cn)')
             player_id = player_ids[0]
             server = query_server_info(arg.replace(player_id, ''))  # 后续自动处理 None
-            # print(server, type(server))
             return bind_player_verification(platform, user_id, server, player_id, True)
 
         if message.startswith('解除绑定'):
@@ -129,7 +128,6 @@ def bot_extra_remote_server(message, user_id, platform):
 
             res = Remote.bind_player_request(platform, user_id, server, True)
             if res.get('status') != 'success':
-                # print(res)
                 # {'status': 'success', 'data': {'verifyCode': 12492}}
                 return text_response(res.get('data'))
             # if not res.get('status') == 'failed':

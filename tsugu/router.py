@@ -67,15 +67,15 @@ class Router:
         return v2api_from_backend('cardIllustration', text, default_servers, server)
 
     @staticmethod
-    def bind_player_request(platform: str, user_id: str, server: int, status: bool):
-        return bind_player_request(platform, user_id, server, status)
+    def bind_player_request(platform: str, user_id: str):
+        return bind_player_request(platform, user_id)
 
     @staticmethod
     def bind_player_verification(platform: str, user_id: str, server: int, player_id: str, status: bool):
         return bind_player_verification(platform, user_id, server, player_id, status)
 
     @staticmethod
-    def set_car_forward(platform: str, user_id: str, status: str):
+    def set_car_forward(platform: str, user_id: str, status: bool):
         return set_car_forward(platform, user_id, status)
 
     @staticmethod

@@ -7,6 +7,7 @@ import sys
 import random
 import urllib3
 from urllib3.exceptions import HTTPError
+from loguru import logger
 
 from .config import config
 
@@ -21,7 +22,7 @@ class DatabaseManager:
     def init_db(self, path):
         if path:
             self.conn = sqlite3.connect(path, check_same_thread=False)
-            print('数据库连接成功，路径:', path)
+            logger.success('数据库连接成功，路径:', path)
             self.cursor = self.conn.cursor()
             self.cursor.execute('''
                 CREATE TABLE IF NOT EXISTS users (
@@ -39,7 +40,7 @@ class DatabaseManager:
         else:
             # 如果不使用数据库，设置连接为 None
             self.conn = None
-            # print('不使用数据库')
+            # logger.info('不使用数据库')
 
     def close_db(self):
         if self.conn:
@@ -105,11 +106,11 @@ def requests_post_for_user(url, data):
             return text_response("服务器出现了问题，请稍后再试。")
 
     except HTTPError as http_err:
-        print(f'HTTP 错误：{http_err}')
+        logger.error(f'HTTP 错误：{http_err}')
         return text_response("服务器出现了问题，请稍后再试。")
 
     except Exception as e:
-        print(f'发生异常：{e}')
+        logger.error(f'发生异常：{e}')
         return text_response("发生了未知错误。")
 
 
@@ -129,11 +130,11 @@ def requests_post_for_backend(url, data):
             return text_response("服务器出现了问题，请稍后再试。")
 
     except HTTPError as http_err:
-        print(f'HTTP 错误：{http_err}')
+        logger.error(f'HTTP 错误：{http_err}')
         return text_response("服务器出现了问题，请稍后再试。")
 
     except Exception as e:
-        print(f'发生异常：{e}')
+        logger.error(f'发生异常：{e}')
         return text_response("发生了未知错误。")
 
 
@@ -148,7 +149,6 @@ def v2api_from_backend(api, text, default_servers: List[int] = None, server=3):
         "useEasyBG": config.use_easy_bg,
         "compress": config.compress
     }
-    # print(data)
     res = requests_post_for_backend(f"{config.backend}{path}", data)
     return res
 
@@ -164,8 +164,9 @@ def v2_api_command(message, command_matched, api, platform, user_id, channel_id)
             return text_response('此群禁止使用模拟抽卡功能')
 
     # 获取用户数据
+    import logging
+    logging.debug(config.user_database_path)
     user_data = get_user_data(platform, user_id) if config.user_database_path else Remote.get_user_data(platform, user_id)
-    # print(user_data)
     try:
         if user_data['status'] != 'success':
             return text_response('获取用户数据失败：内部错误')
@@ -196,7 +197,7 @@ def submit_car_number_msg(message, user_id, platform=None):
             if not user_data['data']['car']:
                 return True
     except Exception as e:
-        print('unknown user')
+        logger.error('unknown user')
         # 默认不开启关闭车牌，继续提交
         pass
 
@@ -220,11 +221,11 @@ def submit_car_number_msg(message, user_id, platform=None):
         if response.status == 200:
             return True
         else:
-            print(f"[Tsugu] 提交车牌失败，HTTP响应码: {response.status}")
+            logger.error(f"[Tsugu] 提交车牌失败，HTTP响应码: {response.status}")
             return True  # 虽然提交失败，但是确定了是车牌消息
 
     except Exception as e:
-        print(f"[Tsugu] 发生异常: {e}")
+        logger.error(f"[Tsugu] 发生异常: {e}")
         return True  # 虽然提交失败，但是确定了是车牌消息
 
 
@@ -438,7 +439,7 @@ def bind_player_verification(platform: str, user_id: str, server: int | None, pl
         # 解析 JSON 响应数据
         data = json.loads(response.data.decode('utf-8'))
     else:
-        print(f"获取玩家数据失败，HTTP响应码: {response.status}")
+        logger.error(f"获取玩家数据失败，HTTP响应码: {response.status}")
         return None
 
     if data.get("data").get("profile") is None or data.get("profile") == {}:
