@@ -352,7 +352,10 @@ def set_car_forward(platform, user_id, status: bool):
 
 
 def set_default_server(platform, user_id, text):
-
+    print(text)
+    for i in text.strip().split(' '):
+        if server_exists(r_ := query_server_info(i)) is False:
+            return text_response(f'未找到服务器 {i}')
     default_server = convert_server_names_to_indices(text)
     get_user_data(platform, user_id)
     cursor = db_manager.conn.cursor()

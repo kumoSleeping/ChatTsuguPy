@@ -133,7 +133,7 @@ def bot_extra_local_database(message, user_id, platform):
     # 设置默认服务器列表
     if config.features.get('change_server_list', True):
         if message.startswith('设置默认服务器'):
-            return set_default_server(platform, user_id, message[6:].strip())
+            return set_default_server(platform, user_id, message[7:].strip())
 
     return None
 
@@ -204,11 +204,15 @@ def bot_extra_remote_server(message, user_id, platform):
     # 切换服务器模式
     if config.features.get('change_main_server', True):
         if message.endswith('服模式'):
+            if server_exists(r_ := query_server_info(message[:-2])) is False:
+                return text_response('未找到服务器') if len(message) <= 5 else None
             if r := Remote.set_server_mode(platform, user_id, message[:-2]).get('status') == 'success':
                 return text_response('已切换为' + message[:-2] + '模式')
             return text_response(r.get('data')) if len(message) <= 5 else None
 
         if message.startswith('主服务器'):
+            if server_exists(r_ := query_server_info(message[4:].strip())) is False:
+                return text_response('未找到服务器') if len(message) <= 7 else None
             if r := Remote.set_server_mode(platform, user_id, message[4:].strip()).get('status') == 'success':
                 return text_response('主服务器已切换为' + message[4:].strip())
             return text_response(r.get('data')) if ' ' in message else None
@@ -216,6 +220,9 @@ def bot_extra_remote_server(message, user_id, platform):
     # 设置默认服务器列表
     if config.features.get('change_server_list', True):
         if message.startswith('设置默认服务器'):
+            for i in message[7:].strip().split(' '):
+                if server_exists(r_ := query_server_info(i)) is False:
+                    return text_response(f'未找到服务器 {i}')
             if r := Remote.set_default_server(platform, user_id, message[6:].strip()).get('status') == 'success':
                 return text_response('默认服务器已设置为' + message[6:].strip())
             return text_response(r.get('data')) if ' ' in message else None
