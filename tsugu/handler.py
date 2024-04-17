@@ -42,8 +42,7 @@ def bot(message, user_id, platform, channel_id):
         return bot_extra_remote_server(message, user_id, platform)
     except Exception as e:
         logger.error(f'Error: {e}')
-        # raise e
-        return []
+        raise e
 
 
 def handler(message: str, user_id: str, platform: str, channel_id: str) -> List[Union[bytes, str]]:
@@ -58,7 +57,7 @@ def handler(message: str, user_id: str, platform: str, channel_id: str) -> List[
     response = []
     for item in data:
         if item['type'] == 'string':
-            response.append(item['string'].encode('utf-8'))
+            response.append(item['string'])
         elif item['type'] == 'base64':
             bytes_data = base64.b64decode(item['string'].encode('utf-8'))
             response.append(bytes_data)
