@@ -103,15 +103,15 @@ def requests_post_for_user(url, data):
             return json.loads(response.data.decode('utf-8'))
         else:
             # 处理其他状态码
-            return text_response("服务器出现了问题，请稍后再试。")
+            return {"status": "error", "message": "服务器出现了问题，请稍后再试。"}
 
     except HTTPError as http_err:
         logger.error(f'HTTP 错误：{http_err}')
-        return text_response("服务器出现了问题，请稍后再试。")
+        return {"status": "error", "message": "服务器出现了问题，请稍后再试。"}
 
     except Exception as e:
         logger.error(f'发生异常：{e}')
-        return text_response("发生了未知错误。")
+        return {"status": "error", "message": "发生了未知错误。"}
 
 
 def requests_post_for_backend(url, data):
