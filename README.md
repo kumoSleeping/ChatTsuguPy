@@ -119,7 +119,7 @@ tsugu.database(path="./data.db")
 # 远程数据库将不使用。
 # 更多功能可能在未来版本中添加。
 ```
-> 注意，先进行此操作，后进行 `load_config_json` 操作，会覆盖数据库路径，导致数据库无法使用。
+> 注意，先进行此操作，后进行 `load_config_json` 操作，旧版本 `config.json` 会覆盖数据库路径，导致数据库无法使用。
 
 
 ## 查看与更改 `tsugu.config` 配置

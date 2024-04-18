@@ -3,6 +3,7 @@ import json
 
 class Config:
     def __init__(self):
+        self.user_database_path = None
         # 设置默认值
         self.backend = "http://tsugubot.com:8080"
         self.user_data_backend = "http://tsugubot.com:8080"
@@ -11,7 +12,6 @@ class Config:
         self.submit_car_number_use_proxy = False
         self.verify_player_bind_use_proxy = False
         self.proxy_url = "http://localhost:7890"
-        self.user_database_path = None
         self.token_name = "Tsugu"
         self.bandori_station_token = "ZtV4EX2K9Onb"
 
@@ -283,6 +283,7 @@ class Config:
 
     def output_config_json(self, path="./config.json"):
         config_pre_json = {
+            # 不输出数据库路径
             "backend": "http://tsugubot.com:8080",
             "user_data_backend": "http://tsugubot.com:8080",
             "backend_use_proxy": False,
@@ -290,7 +291,6 @@ class Config:
             "submit_car_number_use_proxy": False,
             "verify_player_bind_use_proxy": False,
             "proxy_url": "http://localhost:7890",
-            "user_database_path": None,
             "token_name": "Tsugu",
             "bandori_station_token": "ZtV4EX2K9Onb",
             "use_easy_bg": True,
