@@ -499,9 +499,13 @@ def help_command(command_name=None):
         # 读取 config.help_doc_dict 中的所有键
         command_list = list(config.help_doc_dict.keys())
         command_list.sort()
+        print(command_list)
         return text_response(f'当前支持的命令有：\n{", ".join(command_list)}\n 请使用"help 命令名"来查看命令的详细帮助')
     else:
         # 读取 config.help_doc_dict 中的指定键
+        help_text = config.help_doc_dict.get(command_name)
+        if help_text:
+            return text_response(help_text)
         return None
 
 
