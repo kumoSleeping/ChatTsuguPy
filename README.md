@@ -52,15 +52,11 @@ pip install tsugu
 
 <h2 align="center"> 测试与调用 </h2>
 
-
-
-
 ## 调用 `tsugu.handler`
 
 - `handler` 是 `tsugu` 的一个同步函数，用于直接处理用户输入的自然语言并返回查询结果: 
 
 ```python
-import io
 import tsugu
 
 # 四个参数，分别意味着 消息内容 用户id 平台 频道id
@@ -77,6 +73,15 @@ for i in tsugu.handler(message='查卡 ars 1x', user_id='1528593481', platform='
 > ~~未来会支持异步版本~~   
 > run_in_executor 一辈子吧
 
+如果你方便使用 base64，`handler_old` 方法或许会更好:
+```python
+import tsugu
+
+for i in tsugu.handler_old(message='查卡 ars 1x', user_id='1528593481', platform='red', channel_id='666808414'):
+    print('文本: ',i) if i['type'] == 'text' else None
+    print(f"[图片]") if i['type'] == 'base64' else None
+```
+
 ## 使用本地数据库
 
 ```py
@@ -85,11 +90,8 @@ import tsugu
 tsugu.database(path="./data.db")
 ```
 
-# 此操作会自动创建或使用本地数据库为 tsugu.bot 提供用户数据。
-# 远程数据库将不使用。
-
-> 注意，先进行此操作，后进行 `load_config_json` 操作，旧版本 `config.json` 会覆盖数据库路径，导致数据库无法使用。
-
+> 此操作会自动创建或使用本地数据库为 tsugu.bot 提供用户数据。  
+> 远程数据库将不使用。
 
 ## 使用配置文件
 
@@ -165,7 +167,7 @@ tsugu.interior_local_method.submit_car_number_msg("123456 大分q1", "1234567890
 
 </details>
 
-# 关于安装
+***
 
 ## 更新
 ```shell
