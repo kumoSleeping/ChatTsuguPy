@@ -1,15 +1,35 @@
-from typing import List
-import re
-import json
-import sqlite3
 import os
 import sys
+import sqlite3
+from loguru import logger
+import json
 import random
 import urllib3
-from urllib3.exceptions import HTTPError
-from loguru import logger
+import re
 
-from .config import config
+from ...universal_utils import config
+from ...universal_utils import text_response, convert_server_names_to_indices, query_server_info, server_exists
+from ...universal_utils import v2api_from_backend
+
+
+def v2_api_command(message, command_matched, api, platform, user_id, channel_id):
+    text = message[len(command_matched):].strip()
+
+    if api in ['cardIllustration', 'ycm']:  # 无需验证server信息
+        return v2api_from_backend(api, text)
+
+    if api == 'gachaSimulate':
+        if channel_id in config.ban_gacha_simulate_group_data:
+            return text_response('此群禁止使用模拟抽卡功能')
+
+    # 获取用户数据
+    user_data = get_user_data(platform, user_id)
+    try:
+        if user_data['status'] != 'success':
+            return text_response('获取用户数据失败：内部错误')
+        return v2api_from_backend(api, text, user_data['data']['default_server'], user_data['data']['server_mode'])
+    except Exception as e:
+        return text_response('获取用户数据失败：数据库错误')
 
 
 class DatabaseManager:
@@ -54,198 +74,20 @@ class DatabaseManager:
             return []
 
 
-db_manager = DatabaseManager(config.user_database_path)
+db_manager = DatabaseManager(config._user_database_path)
 
 
-def database(path: str | None = None):
+def database(path: str = None):
     '''
-    初始化数据库
+    启用本地用户数据库，同时不再使用远程数据库
+    本地数据库不存在时自动创建
+    :param path: 数据库文件路径
     :return:
     '''
     if not path:
         path = (os.path.dirname(sys.modules['__main__'].__file__))
-    config.user_database_path = path
+    config._user_database_path = path
     db_manager.init_db(path)
-
-
-def text_response(string):
-    return [{"type": "string", "string": string}]
-
-
-def convert_server_names_to_indices(server_names: str) -> list:
-    indices_list = [config.server_name_to_index.get(name, "Unknown") for name in server_names.split(" ")]
-    result = [index for index in indices_list if index != "Unknown"]
-    # 转化成数字，例如 ["0", "1"] -> [0, 1]
-    return [int(i) for i in result]
-
-
-def query_server_info(server_name: str) -> int:
-    server = convert_server_names_to_indices(server_name)[0] if convert_server_names_to_indices(server_name) else None
-    return server
-
-
-def server_exists(server):
-    if server or server == 0:
-        return True
-    return False
-
-
-def requests_post_for_user(url, data):
-    if config.user_data_backend_use_proxy:
-        http = urllib3.ProxyManager(config.proxy_url, cert_reqs='CERT_NONE')
-    else:
-        http = urllib3.PoolManager(cert_reqs='CERT_NONE')
-    try:
-        response = http.request('POST', url, headers={'Content-Type': 'application/json'}, body=json.dumps(data))
-        # 检查响应的状态码是否为 200
-        if response.status == 200:
-            return json.loads(response.data.decode('utf-8'))
-        elif response.status == 400:
-            return json.loads(response.data.decode('utf-8'))
-        else:
-            # 处理其他状态码
-            return {"status": "error", "message": "服务器出现了问题，请稍后再试。"}
-
-    except HTTPError as http_err:
-        logger.error(f'HTTP 错误：{http_err}')
-        return {"status": "error", "message": "服务器出现了问题，请稍后再试。"}
-
-    except Exception as e:
-        logger.error(f'发生异常：{e}')
-        return {"status": "error", "message": "发生了未知错误。"}
-
-
-def requests_post_for_backend(url, data):
-    if config.backend_use_proxy:
-        http = urllib3.ProxyManager(config.proxy_url, cert_reqs='CERT_NONE')
-    else:
-        http = urllib3.PoolManager(cert_reqs='CERT_NONE')
-    try:
-        response = http.request('POST', url, headers={'Content-Type': 'application/json'}, body=json.dumps(data))
-
-        # 检查响应的状态码是否为 200
-        if response.status == 200:
-            return json.loads(response.data.decode('utf-8'))
-        else:
-            # 处理其他状态码
-            return text_response("服务器出现了问题，请稍后再试。")
-
-    except HTTPError as http_err:
-        logger.error(f'HTTP 错误：{http_err}')
-        return text_response("服务器出现了问题，请稍后再试。")
-
-    except Exception as e:
-        logger.error(f'发生异常：{e}')
-        return text_response("发生了未知错误。")
-
-
-def v2api_from_backend(api, text, default_servers: List[int] = None, server=3):
-    if default_servers is None:
-        default_servers = [3, 0]
-    path = f"/v2/{api}"
-    data = {
-        "default_servers": default_servers,
-        "server": server,
-        "text": text,
-        "useEasyBG": config.use_easy_bg,
-        "compress": config.compress
-    }
-    res = requests_post_for_backend(f"{config.backend}{path}", data)
-    return res
-
-
-def v2_api_command(message, command_matched, api, platform, user_id, channel_id):
-    text = message[len(command_matched):].strip()
-
-    if api in ['cardIllustration', 'ycm']:  # 无需验证server信息
-        return v2api_from_backend(api, text)
-
-    if api == 'gachaSimulate':
-        if channel_id in config.ban_gacha_simulate_group_data:
-            return text_response('此群禁止使用模拟抽卡功能')
-
-    # 获取用户数据
-    import logging
-    logging.debug(config.user_database_path)
-    user_data = get_user_data(platform, user_id) if config.user_database_path else Remote.get_user_data(platform, user_id)
-    try:
-        if user_data['status'] != 'success':
-            return text_response('获取用户数据失败：内部错误')
-        return v2api_from_backend(api, text, user_data['data']['default_server'], user_data['data']['server_mode'])
-    except Exception as e:
-        return text_response('获取用户数据失败：网络 / 前端错误')
-
-
-def submit_car_number_msg(message, user_id, platform=None):
-    # 检查car_config['car']中的关键字
-    for keyword in config.car_config["car"]:
-        if str(keyword) in message:
-            break
-    else:
-        return False
-    # 检查car_config['fake']中的关键字
-    for keyword in config.car_config["fake"]:
-        if str(keyword) in message:
-            return False
-    pattern = r"^\d{5}(\D|$)|^\d{6}(\D|$)"
-    if not re.match(pattern, message):
-        return False
-
-    # 获取用户数据
-    try:
-        if platform:
-            user_data = get_user_data(platform, user_id) if config.user_database_path else Remote.get_user_data(platform, user_id)
-            if not user_data['data']['car']:
-                return True
-    except Exception as e:
-        logger.error('unknown user')
-        # 默认不开启关闭车牌，继续提交
-        pass
-
-    try:
-        car_id = message[:6]
-        if not car_id.isdigit() and car_id[:5].isdigit():
-            car_id = car_id[:5]
-
-        # 构建 URL
-        url = f"https://api.bandoristation.com/index.php?function=submit_room_number&number={car_id}&user_id={user_id}&raw_message={message}&source={config.token_name}&token={config.bandori_station_token}"
-
-        if config.submit_car_number_use_proxy:
-            http = urllib3.ProxyManager(config.proxy_url, cert_reqs='CERT_NONE')
-        else:
-            http = urllib3.PoolManager(cert_reqs='CERT_NONE')
-
-        # 发送请求
-        response = http.request('GET', url)
-
-        # 检查响应的状态码是否为 200
-        if response.status == 200:
-            return True
-        else:
-            logger.error(f"[Tsugu] 提交车牌失败，HTTP响应码: {response.status}")
-            return True  # 虽然提交失败，但是确定了是车牌消息
-
-    except Exception as e:
-        logger.error(f"[Tsugu] 发生异常: {e}")
-        return True  # 虽然提交失败，但是确定了是车牌消息
-
-
-def match_command(message, cmd_dict):
-    for command, api_value in cmd_dict.items():
-        if message.startswith(command):
-            return command, api_value
-    return None, None
-
-
-def load_commands_from_config(data):
-    # 初始化一个空字典来存储命令到操作的映射
-    cmd_dict = {}
-    for item in data:
-        api = item['api']
-        for command_name in item['command_name']:
-            cmd_dict[command_name] = api
-    return cmd_dict
-
 
 
 def get_user_data(platform: str, user_id: str):
@@ -301,12 +143,12 @@ def player_status(user_id, platform, args: str | int | None = None):
                 player_id = str(i.get("game_id"))
                 server = int(i.get("server"))
 
-                text = f'已查找默认服务器 {config.server_index_to_name[str(server)]} 的记录'
+                text = f'已查找默认服务器 {config._server_index_to_name[str(server)]} 的记录'
                 break
         else:
             # 再查找第一个记录
             if game_ids:
-                return text_response(f'未在 {len(game_ids)} 条记录中找到 {config.server_index_to_name[str(server)]} 的记录')
+                return text_response(f'未在 {len(game_ids)} 条记录中找到 {config._server_index_to_name[str(server)]} 的记录')
             else:
                 pass  # 前面已经判断过了没绑定任何的情况
     elif isinstance(args, int):
@@ -326,7 +168,7 @@ def player_status(user_id, platform, args: str | int | None = None):
         for i in game_ids:
             if i.get("server") == server:
                 player_id = str(i.get("game_id"))
-                text = f'已查找服务器 {config.server_index_to_name[str(server)]} 的记录'
+                text = f'已查找服务器 {config._server_index_to_name[str(server)]} 的记录'
                 break
         else:
             return text_response(f'未找到记录，请检查是否绑定过此服务器')
@@ -428,7 +270,7 @@ def bind_player_verification(platform: str, user_id: str, server: int | None, pl
     for i in game_ids:
         if i.get("game_id") == player_id and i.get("server") == server:
             return text_response('请勿重复绑定')
-    server_s_name = config.server_index_to_s_name[str(server)]
+    server_s_name = config._server_index_to_s_name[str(server)]
 
     # 构建 URL
     url = f'https://bestdori.com/api/player/{server_s_name}/{player_id}?mode=2'
@@ -494,94 +336,58 @@ def unbind_player_verification(platform: str, user_id: str, record: int | None):
     return text_response('解绑失败，请检查输入是否正确')
 
 
-def help_command(command_name=None):
-    if not command_name:
-        # 读取 config.help_doc_dict 中的所有键
-        command_list = list(config.help_doc_dict.keys())
-        command_list.sort()
-        print(command_list)
-        return text_response(f'当前支持的命令有：\n{", ".join(command_list)}\n 请使用"help 命令名"来查看命令的详细帮助')
+def submit_car_number_msg(message, user_id, platform=None):
+    # 检查car_config['car']中的关键字
+    for keyword in config.car_config["car"]:
+        if str(keyword) in message:
+            break
     else:
-        # 读取 config.help_doc_dict 中的指定键
-        help_text = config.help_doc_dict.get(command_name)
-        if help_text:
-            return text_response(help_text)
-        return None
+        return False
+    # 检查car_config['fake']中的关键字
+    for keyword in config.car_config["fake"]:
+        if str(keyword) in message:
+            return False
+    pattern = r"^\d{5}(\D|$)|^\d{6}(\D|$)"
+    if not re.match(pattern, message):
+        return False
 
+    # 获取用户数据
+    try:
+        if platform:
+            user_data = get_user_data(platform, user_id)
+            if not user_data['data']['car']:
+                return True
+    except Exception as e:
+        logger.error('unknown user')
+        # 默认不开启关闭车牌，继续提交
+        pass
 
-class Remote:
-    @staticmethod
-    def get_user_data(platform: str, user_id: str):
-        data = {
-            'platform': platform,
-            'user_id': user_id
-        }
-        result = requests_post_for_user(f"{config.user_data_backend}/user/getUserData", data)
-        return result
+    try:
+        car_id = message[:6]
+        if not car_id.isdigit() and car_id[:5].isdigit():
+            car_id = car_id[:5]
 
-    @staticmethod
-    def bind_player_request(platform: str, user_id: str, server: int, bind_type: bool):
-        data = {
-            'platform': platform,
-            'user_id': user_id,
-            'server': server,
-            'bindType': bind_type  # 布尔，表示绑定还是解绑
-        }
-        result = requests_post_for_user(f"{config.user_data_backend}/user/bindPlayerRequest", data)
-        return result
+        # 构建 URL
+        url = f"https://api.bandoristation.com/index.php?function=submit_room_number&number={car_id}&user_id={user_id}&raw_message={message}&source={config.token_name}&token={config.bandori_station_token}"
 
-    @staticmethod
-    def bind_player_verification(platform: str, user_id: str, server: int, player_id: str, bind_type: bool):
-        data = {
-            'platform': platform,
-            'user_id': user_id,
-            'server': server,
-            'playerId': player_id,
-            'bindType': bind_type  # 布尔，表示绑定还是解绑
-        }
-        result = requests_post_for_user(f"{config.user_data_backend}/user/bindPlayerVerification", data)
-        return result
+        if config.submit_car_number_use_proxy:
+            http = urllib3.ProxyManager(config.proxy_url, cert_reqs='CERT_NONE')
+        else:
+            http = urllib3.PoolManager(cert_reqs='CERT_NONE')
 
-    @staticmethod
-    def player_status(user_id, platform, server=None):
-        user_data = Remote.get_user_data(platform, user_id)
-        if user_data['status'] != 'success':
-            return text_response('获取用户数据失败')
-        if server is None:
-            server = user_data['data']['server_mode']
-        player_id = user_data['data']['server_list'][server]['playerId']
-        if player_id == 0:
-            return text_response(f'未绑定玩家，请使用 绑定玩家 进行绑定')
-        return v2api_from_backend('player', str(player_id), server=server)
+        # 发送请求
+        response = http.request('GET', url)
 
-    @staticmethod
-    def set_car_forward(platform, user_id, status):
-        data = {
-            'platform': platform,
-            'user_id': user_id,
-            'status': status
-        }
-        result = requests_post_for_user(f"{config.user_data_backend}/user/changeUserData/setCarForwarding", data)
-        return result
+        # 检查响应的状态码是否为 200
+        if response.status == 200:
+            return True
+        else:
+            logger.error(f"[Tsugu] 提交车牌失败，HTTP响应码: {response.status}")
+            return True  # 虽然提交失败，但是确定了是车牌消息
 
-    @staticmethod
-    def set_default_server(platform, user_id, text):
-        data = {
-            'platform': platform,
-            'user_id': user_id,
-            'text': text
-        }
-        result = requests_post_for_user(f"{config.user_data_backend}/user/changeUserData/setDefaultServer", data)
-        return result
+    except Exception as e:
+        logger.error(f"[Tsugu] 发生异常: {e}")
+        return True  # 虽然提交失败，但是确定了是车牌消息
 
-    @staticmethod
-    def set_server_mode(platform, user_id, text):
-        data = {
-            'platform': platform,
-            'user_id': user_id,
-            'text': text
-        }
-        result = requests_post_for_user(f"{config.user_data_backend}/user/changeUserData/setServerMode", data)
-        return result
 
 

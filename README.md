@@ -33,29 +33,19 @@
 - [x] 配置项 (基础配置、代理、命令别名 等)
 
 
-<h2 align="center"> 安装与更新 </h2>
+<h2 align="center"> 安装 </h2>
 
 ## 安装 tsugu 模块
 ```shell
 pip install tsugu
 ```
 
-## 更新
-```shell
-pip install tsugu --upgrade
-```
-
-## 使用官方源安装
-```shell
-pip install tsugu --index-url https://pypi.org/simple/
-```
 ## 后端需求
 
 - 出图：需要支持 `v2 API` (2024.2.28日以后的后端版本)
-- utils：需要支持 `v2 API` 
 - 用户数据：需要一个启用了**数据库**的后端，需要支持 `v2 API`
 
-> 三个后端设置可以不同，默认全部设置为**公共后端**。
+> 后端设置可以不同，默认全部设置为**公共后端**。
 
 ***
 
@@ -74,13 +64,9 @@ import io
 import tsugu
 
 # 四个参数，分别意味着 消息内容 用户id 平台 频道id
-for i in tsugu.handler('查卡 ars 1x', '1528593481', 'red', '666808414'):
-    # 字符串
-    print(i) if isinstance(i, str) else None
-    # 图片
-    print(f"[图像大小: {len(i) / 1024:.2f}KB]") if isinstance(i, bytes) else None
-    # from PIL import Image
-    # Image.open(io.BytesIO(i)).show() if isinstance(i, bytes) else None
+for i in tsugu.handler(message='查卡 ars 1x', user_id='1528593481', platform='red', channel_id='666808414'):
+    print('文本: ',i) if isinstance(i, str) else None
+    print(f"[图片]") if isinstance(i, bytes) else None
 ```
 
 > 在常用的qqbot中，群号就是 `channel_id`。   
@@ -88,55 +74,33 @@ for i in tsugu.handler('查卡 ars 1x', '1528593481', 'red', '666808414'):
 
 
 - 异步框架下，可以使用 `run_in_executor` 方法:
+> ~~未来会支持异步版本~~   
+> run_in_executor 一辈子吧
 
-> 以 lagrange-python 群聊为例，其他异步框架请自行查阅文档。
-```python
-loop = asyncio.get_running_loop()
-args = (event.msg, str(event.uin), 'red', str(event.grp_id))
-response = await loop.run_in_executor(None, tsugu.handler, *args)
-
-# 不发送消息
-if not response:
-    return
-
-msg_list = []
-for item in response:
-    # 处理文本类型的消息
-    msg_list.append(Text(item)) if isinstance(item, str) else None
-    msg_list.append(await client.upload_grp_image(BytesIO(item), event.grp_id)) if isinstance(item, bytes) else None
-
-await client.send_grp_msg(msg_list, event.grp_id)
-```
-
-## 调用 `tsugu.database`
+## 使用本地数据库
 
 ```py
 import tsugu
 
 tsugu.database(path="./data.db")
+```
 
 # 此操作会自动创建或使用本地数据库为 tsugu.bot 提供用户数据。
 # 远程数据库将不使用。
-# 更多功能可能在未来版本中添加。
-```
+
 > 注意，先进行此操作，后进行 `load_config_json` 操作，旧版本 `config.json` 会覆盖数据库路径，导致数据库无法使用。
 
 
-## 查看与更改 `tsugu.config` 配置
+## 使用配置文件
 
-- 输出配置到 `config.json` 文件:
-```py
-import tsugu
-
-tsugu.config.output_config_json('./config.json')
-```
-
-- 利用此文件，你可以更改配置项，然后重新加载配置:
 ```py
 import tsugu
 
 tsugu.config.load_config_json('./config.json')
 ```
+> 如果不存在，会创建默认配置文件。
+
+> 注意，不清楚的配置项请不要更改，更改配置项可能会导致不可预知的错误。
 
 
 - 你也可以直接更改配置，但不推荐:   
@@ -150,7 +114,6 @@ tsugu.config.backend = "http://127.0.0.0.1:3000"
 # 添加关闭抽卡模拟的群号。
 tsugu.config.ban_gacha_simulate_group_data = ["114514", "1919810"]
 ```
-> 注意，不清楚的配置项请不要更改，更改配置项可能会导致不可预知的错误。
 
 
 
@@ -192,10 +155,6 @@ tsugu.interior_local_method.submit_car_number_msg("123456 大分q1", "1234567890
 | --- | --- |
 | **lpt 登陆端部署** | [![release](https://img.shields.io/github/v/release/kumoSleeping/lgr-tsugu-py?style=flat-square)](https://github.com/kumoSleeping/lgr-tsugu-py) |
 
-基于 v2 api 的 `Go` + `Lagrange` 的登录端正由 [WindowsSov8](https://github.com/WindowsSov8forUs) 开发中，敬请期待。
-基于 v2 api 的 `C#` + `Lagrange` 的登录端正由 [棱镜](https://github.com/DreamPrism) 开发中，敬请期待。   
-基于本项目的 `NoneBot2` 插件也由 [zhaomaoniu](https://github.com/zhaomaoniu) 开发中，敬请期待。
-
  <details>
 <summary><b>客服ano酱指导(这里可以点击)</b></summary>
  
@@ -205,5 +164,22 @@ tsugu.interior_local_method.submit_car_number_msg("123456 大分q1", "1234567890
 温馨的聊天环境～   
 
 </details>
+
+# 关于安装
+
+## 更新
+```shell
+pip install tsugu --upgrade
+```
+
+## 使用官方源安装
+```shell
+pip install tsugu --index-url https://pypi.org/simple/
+```
+
+## 使用清华源安装(可能不能即使更新)
+```shell
+pip install tsugu --index-url https://pypi.tuna.tsinghua.edu.cn/simple
+```
 
 

@@ -1,5 +1,7 @@
 from typing import List, Union
-from .utils import *
+from .universal_utils import v2api_from_backend, help_command
+from . import local
+from . import remote
 
 
 class Router:
@@ -76,31 +78,31 @@ class InteriorLocal:
 
     @staticmethod
     def bind_player_request(platform: str, user_id: str):
-        return bind_player_request(platform, user_id)
+        return local.utils.bind_player_request(platform, user_id)
 
     @staticmethod
     def bind_player_verification(platform: str, user_id: str, server: int, player_id: str, status: bool):
-        return bind_player_verification(platform, user_id, server, player_id, status)
+        return local.utils.bind_player_verification(platform, user_id, server, player_id, status)
 
     @staticmethod
     def set_car_forward(platform: str, user_id: str, status: bool):
-        return set_car_forward(platform, user_id, status)
+        return local.utils.set_car_forward(platform, user_id, status)
 
     @staticmethod
     def set_default_server(platform: str, user_id: str, text: str):
-        return set_default_server(platform, user_id, text)
+        return local.utils.set_default_server(platform, user_id, text)
 
     @staticmethod
     def set_server_mode(platform: str, user_id: str, text: str):
-        return set_server_mode(platform, user_id, text)
+        return local.utils.set_server_mode(platform, user_id, text)
 
     @staticmethod
     def get_user_data(platform: str, user_id: str):
-        return get_user_data(platform, user_id)
+        return local.utils.get_user_data(platform, user_id)
 
     @staticmethod
     def submit_car_number_msg(message: str, user_id: str, platform: Union[str, None] = None):
-        return submit_car_number_msg(message, user_id, platform)
+        return local.utils.submit_car_number_msg(message, user_id, platform)
 
 
 interior_local_method = InteriorLocal()
@@ -112,31 +114,31 @@ class InteriorRemote:
 
     @staticmethod
     def bind_player_request(platform: str, user_id: str):
-        return Remote.bind_player_request(platform, user_id)
+        return remote.utils.bind_player_request(platform, user_id)
 
     @staticmethod
     def bind_player_verification(platform: str, user_id: str, server: int, player_id: str, status: bool):
-        return Remote.bind_player_verification(platform, user_id, server, player_id, status)
+        return remote.utils.bind_player_verification(platform, user_id, server, player_id, status)
 
     @staticmethod
     def set_car_forward(platform: str, user_id: str, status: bool):
-        return Remote.set_car_forward(platform, user_id, status)
+        return remote.utils.set_car_forward(platform, user_id, status)
 
     @staticmethod
     def set_default_server(platform: str, user_id: str, text: str):
-        return Remote.set_default_server(platform, user_id, text)
+        return remote.utils.set_default_server(platform, user_id, text)
 
     @staticmethod
     def set_server_mode(platform: str, user_id: str, text: str):
-        return Remote.set_server_mode(platform, user_id, text)
+        return remote.utils.set_server_mode(platform, user_id, text)
 
     @staticmethod
     def get_user_data(platform: str, user_id: str):
-        return Remote.get_user_data(platform, user_id)
+        return remote.utils.get_user_data(platform, user_id)
 
     @staticmethod
     def submit_car_number_msg(message: str, user_id: str, platform: Union[str, None] = None):
-        return submit_car_number_msg(message, user_id, platform)
+        return remote.utils.submit_car_number_msg(message, user_id, platform)
 
 
 interior_remote_method = InteriorRemote()
