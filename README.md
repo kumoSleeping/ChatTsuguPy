@@ -98,7 +98,7 @@ tsugu.database(path="./data.db")
 ```py
 import tsugu
 
-tsugu.config.load_config_json('./config.json')
+tsugu.config.reload_from_json('./config.json')
 ```
 > 如果不存在，会创建默认配置文件。
 
