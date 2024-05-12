@@ -98,8 +98,8 @@ def handler(message, user_id, platform, channel_id):
             for i in message[7:].strip().split(' '):
                 if server_exists(r_ := query_server_info(i)) is False:
                     return text_response(f'未找到服务器 {i}')
-            if r := utils.set_default_server(platform, user_id, message[6:].strip()).get('status') == 'success':
-                return text_response('默认服务器已设置为' + message[6:].strip())
+            if r := utils.set_default_server(platform, user_id, message[7:].strip()).get('status') == 'success':
+                return text_response('默认服务器已设置为' + message[7:].strip())
             return text_response(r.get('data')) if ' ' in message else None
 
     return None

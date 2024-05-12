@@ -35,6 +35,7 @@ def get_user_data(platform: str, user_id: str):
         'user_id': user_id
     }
     result = requests_post_for_user(f"{config.user_data_backend}/user/getUserData", data)
+    logger.debug(result)
     return result
 
 
