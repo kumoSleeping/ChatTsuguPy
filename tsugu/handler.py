@@ -1,11 +1,11 @@
 import base64
 from typing import List, Union, Dict
 
-from .universal_utils import *
-from .universal_utils import text_response
+from .utils import *
+from .utils import text_response
 from . import remote
 from . import local
-from .universal_utils import config
+from .utils import config
 
 
 def handler(message: str, user_id: str, platform: str, channel_id: str) -> List[Union[bytes, str]]:
@@ -19,7 +19,7 @@ def handler(message: str, user_id: str, platform: str, channel_id: str) -> List[
     :param channel_id: 频道ID / 群号
     :return: List[Union[bytes, str]]
     '''
-    data = handler_old(message, user_id, platform, channel_id)
+    data = handler_raw(message, user_id, platform, channel_id)
     response = []
     if not data:
         return response
@@ -32,9 +32,9 @@ def handler(message: str, user_id: str, platform: str, channel_id: str) -> List[
     return response
 
 
-def handler_old(message: str, user_id: str, platform: str, channel_id: str) -> List[Dict[str, str]]:
+def handler_raw(message: str, user_id: str, platform: str, channel_id: str) -> List[Dict[str, str]]:
     '''
-    old 除了返回的数据类型不同外，其他与 handler 函数一致
+    handler_raw 除了返回的数据类型不同外，其他与 handler 函数一致
     返回格式为 Tsugu 标准数据格式
     :param message: 用户消息
     :param user_id: 用户ID
@@ -60,7 +60,9 @@ def handler_old(message: str, user_id: str, platform: str, channel_id: str) -> L
                 return local.handler(message, user_id, platform, channel_id)
             # 否则使用远程服务器
             else:
+                logger.warning('未启用本地数据库，使用远程服务器')
                 return remote.handler(message, user_id, platform, channel_id)
+
         data = tsugu_handler(message, user_id, platform, channel_id)
         if not data:
             return []

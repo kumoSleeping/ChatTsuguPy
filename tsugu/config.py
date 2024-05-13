@@ -6,6 +6,8 @@ from loguru import logger
 
 class Config:
     def __init__(self):
+        self.prefix = ['/', '']
+        self.allow_gap_less = True
         self._user_database_path = None
         # 设置默认值
         self.backend = "http://tsugubot.com:8080"
@@ -23,38 +25,11 @@ class Config:
 
         self.ban_gacha_simulate_group_data = []
 
-        self._server_list = {0: "日服", 1: "国际服", 2: "台服", 3: "国服", 4: "韩服"}
-        self._server_name_to_index = {
-            "日服": "0",
-            "国际服": "1",
-            "台服": "2",
-            "国服": "3",
-            "韩服": "4",
-            "jp": "0",
-            "en": "1",
-            "tw": "2",
-            "cn": "3",
-            "kr": "4",
-        }
-
-        self._server_index_to_name = {
-            "0": "日服",
-            "1": "国际服",
-            "2": "台服",
-            "3": "国服",
-            "4": "韩服",
-        }
-
-        self._server_index_to_s_name = {
-            "0": "jp",
-            "1": "en",
-            "2": "tw",
-            "3": "cn",
-            "4": "kr",
-        }
+        self._i_s = {0: "jp", 1: "en", 2: "tw", 3: "cn", 4: "kr"}
+        self._s_i = {"jp": 0, "en": 1, "tw": 2, "cn": 3, "kr": 4}
 
         self.features = {
-                "car_number_forwarding": True,
+                # "car_number_forwarding": True,
                 "change_main_server": True,
                 "switch_car_forwarding": True,
                 "bind_player": True,
@@ -64,21 +39,33 @@ class Config:
             }
 
         self.commands = [
-            {"api": "cardIllustration", "command_name": ["查插画", "查卡面"]},
-            {"api": "player", "command_name": ["查玩家", "查询玩家"]},
-            {"api": "gachaSimulate", "command_name": ["抽卡模拟", "卡池模拟"]},
-            {"api": "gacha", "command_name": ["查卡池"]},
-            {"api": "event", "command_name": ["查活动"]},
-            {"api": "song", "command_name": ["查歌曲", "查曲"]},
-            {"api": "songMeta", "command_name": ["查询分数表", "查分数表"]},
-            {"api": "character", "command_name": ["查角色"]},
-            {"api": "chart", "command_name": ["查铺面", "查谱面"]},
-            {"api": "ycxAll", "command_name": ["ycxall", "ycx all"]},
+            {"api": "get_card_illustration", "command_name": ["查插画", "查卡面"]},
+            {"api": "search_player", "command_name": ["查玩家", "查询玩家"]},
+            {"api": "gacha_simulate", "command_name": ["抽卡模拟", "卡池模拟"]},
+            {"api": "search_gacha", "command_name": ["查卡池"]},
+            {"api": "search_event", "command_name": ["查活动"]},
+            {"api": "search_song", "command_name": ["查歌曲", "查曲"]},
+            {"api": "song_meta", "command_name": ["查询分数表", "查分数表"]},
+            {"api": "search_character", "command_name": ["查角色"]},
+            {"api": "song_chart", "command_name": ["查铺面", "查谱面"]},
+            {"api": "ycx_all", "command_name": ["ycxall", "ycx all"]},
             {"api": "ycx", "command_name": ["ycx", "预测线"]},
             {"api": "lsycx", "command_name": ["lsycx"]},
-            {"api": "ycm", "command_name": ["ycm", "车来"]},
-            {"api": "card", "command_name": ["查卡"]},
-            {"api": "eventStage", "command_name": ["查试炼"]},
+            {"api": "room_list", "command_name": ["ycm", "车来"]},
+            {"api": "search_card", "command_name": ["查卡"]},
+            {"api": "event_stage", "command_name": ["查试炼"]},
+        ]
+
+        self.user_commands = [
+            {"api": "player_status", "command_name": ["玩家状态"]},
+            {"api": "switch_car_forwarding_off", "command_name": ['关闭车牌转发', '关闭个人车牌转发']},
+            {"api": "switch_car_forwarding_on", "command_name": ['开启车牌转发', '开启个人车牌转发']},
+            {"api": "bind_player", "command_name": ["绑定玩家"]},
+            {"api": "unbind_player", "command_name": ["解除绑定"]},
+            {"api": "change_server_mode", "command_name": ["主服务器"]},
+            {"api": "change_default_server", "command_name": ["设置默认服务器"]},
+            {"api": "bind_player_verification_on", "command_name": ["验证", "验证绑定"]},
+            {"api": "bind_player_verification_off", "command_name": ["验证解绑"]},
         ]
 
         self.car_config = {
