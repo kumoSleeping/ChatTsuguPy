@@ -1,5 +1,5 @@
 
-<h1 align="center"> Tsugu Bot Py <img src="./logo.jpg" width="30" width="30" height="30" alt="tmrn"/> </h1>
+<h1 align="center"> Chat Tsugu <img src="./logo.jpg" width="30" width="30" height="30" alt="tmrn"/> </h1>
 
 
 <p align="center">
@@ -30,7 +30,7 @@ pip install tsugu
 
 ## handler
 
-- `handler` 是 `tsugu` 的一个同步函数，用于直接处理用户输入的自然语言并返回查询结果: 
+- `handler` 用于直接处理用户输入的自然语言并返回查询结果: 
 
 ```python
 import tsugu

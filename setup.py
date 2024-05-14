@@ -5,7 +5,7 @@ with open('README.md', 'r') as readme:
 
 setup(
     name='tsugu',
-    version='0.9.9-rc10',
+    version='0.9.9-rc11',
     author='kumoSleeping',
     author_email='zjr2992@outlook.com',
     license="MIT",
@@ -21,7 +21,7 @@ setup(
     ],
     install_requires=[
             "loguru",
-            "tsugu-api-python>=1.0.3"
+            "tsugu-api-python>=1.0.4"
         ],
     python_requires='>=3.8',
     include_package_data=False,
