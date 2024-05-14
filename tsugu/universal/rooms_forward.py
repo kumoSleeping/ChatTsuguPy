@@ -7,7 +7,8 @@ import re
 
 from ..utils import User, text_response
 from ..command_matcher import MC
-from ..universal import _get_user
+from ..storage import _get_user
+
 
 def submit_rooms(res: MC, user_id, platform=None):
     message = res.text

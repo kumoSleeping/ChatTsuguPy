@@ -21,7 +21,7 @@ def local_api_handler(user_id: str, message: str,  platform: str, channel_id: st
 
 def handler(message, user_id, platform, channel_id):
     # 进行 api 命令匹配
-    result = universal_api_handler(user_id, message, platform, channel_id, loacl=True)
+    result = universal_api_handler(user_id, message, platform, channel_id, local=True)
     if result:
         return result
 

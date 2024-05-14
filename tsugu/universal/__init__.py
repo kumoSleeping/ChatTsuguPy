@@ -3,17 +3,8 @@ from ..command_matcher import match_command
 from ..config import config
 from . import router
 from .help import help_command
-from ..storage import db
-from ..storage import remote_db
+from ..storage import _get_user
 from .rooms_forward import submit_rooms
-
-
-def _get_user(user_id: str, platform: str, local=False):
-    if local:
-        user = db.get_user(user_id, platform)
-    else:
-        user = remote_db.get_user(user_id, platform)
-    return user
 
 
 def universal_api_handler(user_id: str, message: str,  platform: str, channel_id: str, local=False):
