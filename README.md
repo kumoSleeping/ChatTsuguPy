@@ -182,7 +182,7 @@ from tsugu_async import config
 ***
 
  <details>
-<summary><b>客服ano酱指导(这里可以点击)</b></summary>
+<summary><b>客服🐱指导(这里可以点击)</b></summary>
  
 **注意，如果你不知道什么是BanGDream，请不要随意加群**    
 **本群还是欢迎加群的（**    
@@ -192,52 +192,4 @@ from tsugu_async import config
 </details>
 
 
-下方已无内容。
-
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-
-🐱: 喵
+---
