@@ -62,7 +62,6 @@ def get_user(user_id: str, platform: str) -> User:
             continue
     else:
         return text_response('网络链接异常')
-    # print(user_data_res.get('data'))
     # 获取用户数据失败
     if user_data_res.get('status') == 'failed':
         return text_response(user_data_res.get('data'))
@@ -82,7 +81,6 @@ def get_user(user_id: str, platform: str) -> User:
                 verify_code_all.append(i)
         # 有一说一，下面这行没有实际意义
         user_data['verify_code'] = '或'.join([str(user_data.get('server_list')[i].get('verifyCode')) for i in verify_code_all]) if len(verify_code_all) > 1 else verify_code_all[0] if verify_code_all else ''
-        print(f'user_data NEW: {user_data}')
 
     user = User(user_id=user_id,
                 platform=platform,
