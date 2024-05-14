@@ -1,5 +1,5 @@
 
-<h1 align="center"> Chat Tsugu <img src="./logo.jpg" width="30" width="30" height="30" alt="tmrn"/> </h1>
+<h1 align="center"> Chat Tsugu Py <img src="./logo.jpg" width="30" width="30" height="30" alt="tmrn"/> </h1>
 
 
 <p align="center">

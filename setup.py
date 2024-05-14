@@ -12,7 +12,7 @@ setup(
     description='Tsugu Python Frontend',
     long_description=long_description,
     long_description_content_type='text/markdown',
-    url='https://github.com/kumoSleeping/tsugu-bot-py',
+    url='https://github.com/kumoSleeping/ChatTsuguPy',
     packages=find_packages(),
     classifiers=[
         'Programming Language :: Python :: 3.8',
