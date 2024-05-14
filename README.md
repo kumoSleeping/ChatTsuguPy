@@ -16,35 +16,17 @@
   </a>
 </p>
 
-
-***
-
-
-- `tsugu`
-  - [x] 自然语言输入 -> 返回结果
-  - [x] 远程数据库 
-  - [x] 本地数据库 
-
-
-- `tsugu.async`
-  - [x] 自然语言输入 -> 返回结果
-  - [x] 远程数据库 
-  - [ ] 本地数据库
-
-
-
+---
 
 
 ```shell
 pip install tsugu
 ```
+
+
 > Powered by  <a href="https://github.com/WindowsSov8forUs/tsugu-api-python?tab=readme-ov-file">tsugu-api-python</a>
 
-
 ***
-
-
-<h2 align="center"> 测试与调用 </h2>
 
 ## handler
 
@@ -87,24 +69,12 @@ import tsugu
 for i in tsugu.handler_raw(message='查卡 ars 1x', user_id='1528593481', platform='red', channel_id='666808414'):
     print('文本: ',i) if i['type'] == 'text' else None
     print(f"[图片]") if i['type'] == 'base64' else None
-
-
+```
+```python
 import tsugu_async
 ...
 ```
 
-
-## 使用本地数据库(不支持`tsugu_async`)
-本地数据库由 `sqlite3` 提供，你可以使用 `tsugu.database` 来创建或使用本地数据库。
-
-```py
-import tsugu
-
-tsugu.database(path="./data.db")
-```
-
-> 此操作会自动创建或使用本地数据库为 tsugu.bot 提供用户数据。  
-> 远程数据库将不使用。
 
 ## 配置
 

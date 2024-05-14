@@ -1,14 +1,12 @@
 from ...config import config
+from ...utils import text_response, User
+from ...command_matcher import MC
 import tsugu_api
 from ...utils import server_exists, server_name_2_server_id, server_id_2_server_name
 from tsugu_api._typing import _ServerId, _Update
 
-from ...utils import text_response, UserLocal
-from ...command_matcher import MC
 
-
-
-def handler(user: UserLocal, res: MC, platform: str, channel_id: str):
+def handler(user: User, res: MC, platform: str, channel_id: str):
     # 无参数
     if not res.args:
         # 默认情况1: 优先当前服务器
@@ -25,10 +23,10 @@ def handler(user: UserLocal, res: MC, platform: str, channel_id: str):
                 player_id = str(user.game_ids[0].get("game_id"))
                 server = int(user.game_ids[0].get("server"))
                 text = f'已查找第一个记录 {player_id}'
-                msg = [text_response(text), tsugu_api.search_player(int(player_id), server)]
+                msg = tsugu_api.search_player(int(player_id), server) + text_response(text)
                 return msg
             else:
-                return text_response('未绑定任何记录')
+                return text_response('未绑定任何记录，可以使用 绑定玩家 进行绑定')
 
     # 查询指定服务器的玩家状态
     server: _ServerId = server_name_2_server_id(res.args[0])
@@ -54,6 +52,3 @@ def handler(user: UserLocal, res: MC, platform: str, channel_id: str):
         return msg
 
     return text_response('请确保输入是 服务器名(字母缩写) 或者 记录(数字)')
-
-
-

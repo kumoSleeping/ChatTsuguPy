@@ -23,10 +23,10 @@ class TestTsugu(unittest.IsolatedAsyncioTestCase):
         # tsugu_async.config.reload_from_json('./config.json')
         # from tsugu_api_async import settings
         # settings.backend_url = 'http://127.0.0.1:8010'
-        # from tsugu_async import config
-        # config.allow_gap_less = True
+        from tsugu_api_async import settings
+        settings.userdata_backend_url = 'http://127.0.0.1:14140'
 
-        msg1 = await tsugu_async.handler('查卡ksm', '1528593481', 'red', '666808414')
+        msg1 = await tsugu_async.handler('验证解绑 0', '1528593481', 'red', '666808414')
         await show_back_msg(msg1)
 
         # msg2 = await tsugu_async.handler('ycm', '1528593481', 'red', '666808414')
@@ -36,6 +36,7 @@ class TestTsugu(unittest.IsolatedAsyncioTestCase):
         # await show_back_msg(msg3)
 
         # print(tsugu_api.get_user_data('red', '1528593481'))
+
 
 
 if __name__ == '__main__':

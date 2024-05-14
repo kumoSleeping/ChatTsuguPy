@@ -1,13 +1,12 @@
 import tsugu_api
 
-from ..utils import config
+from ..utils import config, get_user
 from loguru import logger
 import httpx
 import re
 
 from ..utils import User, text_response
 from ..command_matcher import MC
-from ..storage import _get_user
 
 
 def submit_rooms(res: MC, user_id, platform=None):
@@ -28,7 +27,7 @@ def submit_rooms(res: MC, user_id, platform=None):
     if not re.match(pattern, message):
         return []
 
-    user = _get_user(user_id, platform)
+    user = get_user(user_id, platform)
 
     # 获取用户数据
     try:

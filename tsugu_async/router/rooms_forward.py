@@ -5,10 +5,7 @@ import re
 from ..utils import User, text_response
 from ..command_matcher import MC
 from loguru import logger
-
-
-from ..storage.remote_db import get_user
-
+from ..utils import get_user
 
 async def submit_rooms(res: MC, user_id, platform=None):
     message = res.text

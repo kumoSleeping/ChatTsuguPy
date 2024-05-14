@@ -2,13 +2,8 @@ import base64
 from typing import List, Union, Dict
 
 from .utils import *
-from .utils import text_response
-from . import remote
-from . import local
-from .utils import config
 from loguru import logger
-from tsugu_api import settings
-
+from . import router
 
 def handler(message: str, user_id: str, platform: str, channel_id: str) -> List[Union[bytes, str]]:
     '''
@@ -21,14 +16,17 @@ def handler(message: str, user_id: str, platform: str, channel_id: str) -> List[
     :param channel_id: 频道ID / 群号
     :return: List[Union[bytes, str]]
     '''
-    data = handler_raw(message, user_id, platform, channel_id)
-    response = []
-    if not data:
+    try:
+        data = handler_raw(message, user_id, platform, channel_id)
+        response = []
+        if not data:
+            return response
+        for item in data:
+            response.append(item['string']) if item['type'] == 'string' else None
+            response.append(base64.b64decode(item['string'].encode('utf-8')) if item['type'] == 'base64' else None)
         return response
-    for item in data:
-        response.append(item['string']) if item['type'] == 'string' else None
-        response.append(base64.b64decode(item['string'].encode('utf-8')) if item['type'] == 'base64' else None)
-    return response
+    except Exception as e:
+        raise e
 
 
 def handler_raw(message: str, user_id: str, platform: str, channel_id: str) -> List[Dict[str, str]]:
@@ -42,11 +40,7 @@ def handler_raw(message: str, user_id: str, platform: str, channel_id: str) -> L
     :return: List[Dict[str, str]]
     '''
     try:
-        # 如果启用了本地数库
-        if config._user_database_path:
-            return r if (r := local.handler(message, user_id, platform, channel_id)) else None
-        # 否则使用远程服务器
-        return r if (r := remote.handler(message, user_id, platform, channel_id)) else None
+        return r if (r := router.handler(message, user_id, platform, channel_id)) else None
     except Exception as e:
         logger.error(f'Error: {e}')
         raise e

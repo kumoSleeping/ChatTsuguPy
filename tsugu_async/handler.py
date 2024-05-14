@@ -2,10 +2,9 @@ import base64
 from typing import List, Union, Dict
 
 from .utils import *
-from . import remote
 from loguru import logger
 from tsugu_api import settings
-
+from . import router
 
 async def handler(message: str, user_id: str, platform: str, channel_id: str) -> List[Union[bytes, str]]:
     '''
@@ -18,14 +17,17 @@ async def handler(message: str, user_id: str, platform: str, channel_id: str) ->
     :param channel_id: 频道ID / 群号
     :return: List[Union[bytes, str]]
     '''
-    data = await handler_raw(message, user_id, platform, channel_id)
-    response = []
-    if not data:
+    try:
+        data = await handler_raw(message, user_id, platform, channel_id)
+        response = []
+        if not data:
+            return response
+        for item in data:
+            response.append(item['string']) if item['type'] == 'string' else None
+            response.append(base64.b64decode(item['string'].encode('utf-8')) if item['type'] == 'base64' else None)
         return response
-    for item in data:
-        response.append(item['string']) if item['type'] == 'string' else None
-        response.append(base64.b64decode(item['string'].encode('utf-8')) if item['type'] == 'base64' else None)
-    return response
+    except Exception as e:
+        raise e
 
 
 async def handler_raw(message: str, user_id: str, platform: str, channel_id: str) -> List[Dict[str, str]]:
@@ -40,7 +42,7 @@ async def handler_raw(message: str, user_id: str, platform: str, channel_id: str
     '''
     try:
         # 使用远程服务器
-        res = await remote.handler(message, user_id, platform, channel_id)
+        res = await router.handler(message, user_id, platform, channel_id)
         if not res:
             return []
         return res
