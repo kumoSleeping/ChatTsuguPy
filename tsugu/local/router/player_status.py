@@ -1,12 +1,12 @@
 from ...config import config
 import tsugu_api
-from ...utils import server_exists, n_2_i, i_2_n, ns_2_is, is_2_ns
+from ...utils import server_exists, server_name_2_server_id, server_id_2_server_name
 from tsugu_api._typing import _ServerId, _Update
 
 from ...utils import text_response, UserLocal
 from ...command_matcher import MC
 
-from ..db import db_manager, get_user_data
+from ...user_data.db import db_manager, get_user
 
 
 def handler(user: UserLocal, res: MC, platform: str, channel_id: str):
@@ -17,8 +17,8 @@ def handler(user: UserLocal, res: MC, platform: str, channel_id: str):
             if i.get("server") == user.server_mode:
                 player_id = str(i.get("game_id"))
                 server = int(i.get("server"))
-                text = f'已查找默认服务器 {config._server_index_to_name[str(server)]} 的记录'
-                msg = [text_response(text), tsugu_api.search_player(int(player_id), server)]
+                text = f'已查找默认服务器 {server_id_2_server_name(server)} 的记录'
+                msg = tsugu_api.search_player(int(player_id), server) + text_response(text)
                 return msg
         else:
             # 默认情况2: 优先第一个记录
@@ -32,17 +32,17 @@ def handler(user: UserLocal, res: MC, platform: str, channel_id: str):
                 return text_response('未绑定任何记录')
 
     # 查询指定服务器的玩家状态
-    server: _ServerId = n_2_i(res.args[0])
+    server: _ServerId = server_name_2_server_id(res.args[0])
     if server_exists(server):
         for i in user.game_ids:
             if i.get("server") == server:
                 player_id = str(i.get("game_id"))
-                text = f'已查找指定服务器 {i_2_n(server)} 的记录'
+                text = f'已查找指定服务器 {server_id_2_server_name(server)} 的记录'
                 msg = tsugu_api.search_player(int(player_id), server) + text_response(text)
                 return msg
         else:
             return text_response(
-                f'未在 {len(user.game_ids)} 条记录中找到 {i_2_n(server)} 的记录')
+                f'未在 {len(user.game_ids)} 条记录中找到 {server_id_2_server_name(server)} 的记录')
 
     # 查询指定记录顺序的玩家状态
     if res.args[0].isdigit():

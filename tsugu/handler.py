@@ -6,6 +6,7 @@ from .utils import text_response
 from . import remote
 from . import local
 from .utils import config
+from loguru import logger
 
 
 def handler(message: str, user_id: str, platform: str, channel_id: str) -> List[Union[bytes, str]]:
@@ -24,11 +25,8 @@ def handler(message: str, user_id: str, platform: str, channel_id: str) -> List[
     if not data:
         return response
     for item in data:
-        if item['type'] == 'string':
-            response.append(item['string'])
-        elif item['type'] == 'base64':
-            bytes_data = base64.b64decode(item['string'].encode('utf-8'))
-            response.append(bytes_data)
+        response.append(item['string']) if item['type'] == 'string' else None
+        response.append(base64.b64decode(item['string'].encode('utf-8')) if item['type'] == 'base64' else None)
     return response
 
 
@@ -43,30 +41,11 @@ def handler_raw(message: str, user_id: str, platform: str, channel_id: str) -> L
     :return: List[Dict[str, str]]
     '''
     try:
-        def tsugu_handler(message: str, user_id: str, platform: str, channel_id: str):
-            message = message.strip()
-            # help
-            if config.features.get('help', True):
-                if message.startswith('帮助'):
-                    return help_command()
-                if message.startswith('help'):
-                    arg_text = message[4:].strip()
-                    return help_command(arg_text)
-                if message.endswith('-h'):
-                    arg_text = message[:-2].strip()
-                    return help_command(arg_text)
-            # 如果启用了本地数据库
-            if config._user_database_path:
-                return local.handler(message, user_id, platform, channel_id)
-            # 否则使用远程服务器
-            else:
-                logger.warning('未启用本地数据库，使用远程服务器')
-                return remote.handler(message, user_id, platform, channel_id)
-
-        data = tsugu_handler(message, user_id, platform, channel_id)
-        if not data:
-            return []
-        return data
+        # 如果启用了本地数据库
+        if config._user_database_path:
+            return r if (r := local.handler(message, user_id, platform, channel_id)) else None
+        # 否则使用远程服务器
+        return r if (r := remote.handler(message, user_id, platform, channel_id)) else None
     except Exception as e:
         logger.error(f'Error: {e}')
         raise e

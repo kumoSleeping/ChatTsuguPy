@@ -2,12 +2,12 @@ from ...config import config
 from ...utils import text_response, User
 from ...command_matcher import MC
 import tsugu_api
-from ...utils import server_exists, ns_2_is
+from ...utils import server_exists, server_names_2_server_ids
 from tsugu_api._typing import _Update
 
 
 def handler(user: User, res: MC, platform: str, channel_id: str):
-    default_server = ns_2_is(res.args)
+    default_server = server_names_2_server_ids(res.args)
     if not default_server:
         return text_response('未找到服务器，请输入正确的服务器名')
     change_data: _Update = {'default_server': default_server}

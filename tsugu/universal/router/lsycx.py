@@ -1,6 +1,6 @@
 from ...config import config
 from ...utils import text_response, User
-from ...utils import server_exists , ns_2_is, n_2_i
+from ...utils import server_exists , server_name_2_server_id
 from ...command_matcher import MC
 import tsugu_api
 
@@ -28,7 +28,7 @@ def handler(user: User, res: MC, platform: str, channel_id: str):
             else:
                 return text_response('请输入正确的活动ID')
             return tsugu_api.lsycx(user.server_mode, tier, event_id)
-        elif server_exists(server_pre := n_2_i(res.args[1])):
+        elif server_exists(server_pre := server_name_2_server_id(res.args[1])):
             user.server_mode = server_pre
             return tsugu_api.lsycx(user.server_mode, tier)
         else:
@@ -41,7 +41,7 @@ def handler(user: User, res: MC, platform: str, channel_id: str):
                 event_id: int = int(res.args[1])
             else:
                 return text_response('第二个参数请输入正确的活动ID')
-            if server_exists(server_pre := n_2_i(res.args[2])):
+            if server_exists(server_pre := server_name_2_server_id(res.args[2])):
                 user.server_mode = server_pre
                 return tsugu_api.ycx(user.server_mode, tier, event_id)
             else:

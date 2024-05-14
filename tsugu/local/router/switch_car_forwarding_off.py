@@ -1,7 +1,7 @@
 from ...utils import text_response, User
 from ...command_matcher import MC
 
-from ..db import db_manager, get_user_data
+from ...user_data.db import db_manager
 
 
 def handler(user: User, res: MC, platform: str, channel_id: str):

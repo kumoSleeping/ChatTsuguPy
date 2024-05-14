@@ -3,13 +3,8 @@ import sys
 import sqlite3
 from loguru import logger
 import json
-import random
-import urllib3
-import re
-
 from ...utils import config
-from ...utils import text_response, server_exists, ns_2_is, n_2_i, i_2_n, is_2_ns
-import tsugu_api
+from ...utils import UserLocal
 
 
 class DatabaseManager:
@@ -70,14 +65,14 @@ def database(path: str = None):
     db_manager.init_db(path)
 
 
-def get_user_data(platform: str, user_id: str):
+def get_user(platform: str, user_id: str):
 
     cursor = db_manager.conn.cursor()
     cursor.execute("SELECT * FROM users WHERE user_id = ? AND platform = ?", (user_id, platform))
     row = cursor.fetchone()
 
     if row:
-        data = {
+        user_data = {
             "user_id": row[1],
             "platform": row[2],
             "server_mode": row[3],
@@ -87,7 +82,7 @@ def get_user_data(platform: str, user_id: str):
             "verify_code": row[7]
         }
     else:
-        data = {
+        user_data = {
             "user_id": user_id,
             "platform": platform,
             "server_mode": 3,
@@ -101,8 +96,10 @@ def get_user_data(platform: str, user_id: str):
         VALUES (?, ?, ?, ?, ?, ?)
         ''', (user_id, platform, 3, json.dumps([3, 0]), 1, json.dumps([])))
         db_manager.conn.commit()
-    result = {
-        "status": "success",
-        "data": data
-    }
-    return result
+
+        game_ids = json.loads(user_data['game_ids'])
+        user = UserLocal(user_id, platform, user_data['server_mode'], user_data['default_server'], user_data['car'], [],
+                         game_ids, user_data['verify_code'])
+
+        return user
+

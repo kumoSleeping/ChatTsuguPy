@@ -2,7 +2,7 @@ from ...config import config
 from ...utils import text_response, User
 from ...command_matcher import MC
 import tsugu_api
-from ...utils import server_exists, n_2_i
+from ...utils import server_exists, server_name_2_server_id
 
 
 def handler(user: User, res: MC, platform: str, channel_id: str):
@@ -12,7 +12,7 @@ def handler(user: User, res: MC, platform: str, channel_id: str):
         return text_response('请输入正确的玩家ID')
     player_id = int(res.args[0])
     if len(res.args) > 1:
-        server_pre = n_2_i(res.args[1])
+        server_pre = server_name_2_server_id(res.args[1])
         if not server_exists(server_pre):
             return text_response('未找到服务器，请输入正确的服务器名')
         user.server_mode = server_pre
