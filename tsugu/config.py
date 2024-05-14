@@ -3,25 +3,15 @@ import os
 
 from loguru import logger
 
-
 class Config:
     def __init__(self):
         self.prefix = ['/', '']
         self.allow_gap_less = True
-        self.backend = "http://tsugubot.com:8080"
-        self.user_data_backend = "http://tsugubot.com:8080"
-        self.car_room_backend = "http://tsugubot.com:8080"
         self.get_remote_user_data_max_retry = 3
-        self.backend_use_proxy = False
-        self.user_data_backend_use_proxy = False
-        self.submit_car_number_use_proxy = False
-        self.verify_player_bind_use_proxy = False
-        self.proxy_url = "http://localhost:7890"
         self.token_name = "Tsugu"
         self.bandori_station_token = "ZtV4EX2K9Onb"
-        self.use_easy_bg = True
-        self.compress = True
         self.ban_gacha_simulate_group_data = []
+
         self.commands = [
             {"api": "get_card_illustration", "command_name": ["查插画", "查卡面"]},
             {"api": "search_player", "command_name": ["查玩家", "查询玩家"]},
@@ -256,43 +246,7 @@ class Config:
         """
         }
 
-    def show_docs(self):
-        logger.warning('此方法已经废弃')
-        return None
-
-    def output_config_json(self, path="./config.json"):
-        """Outputs configuration data to a JSON file."""
-        # 循环输出self.__dict__的内容
-        config_pre_json = {}
-        for key, value in self.__dict__.items():
-            if key.startswith("_"):
-                continue
-            config_pre_json[key] = value
-
-        with open(path, "w", encoding="utf-8") as f:
-            json.dump(config_pre_json, f, ensure_ascii=False, indent=4)
-
-    def reload_from_json(self, path: str = "./config.json"):
-        '''
-        通过配置文件重载配置
-        配置文件不存在时自动生成默认配置文件
-        :param path:
-        :return:
-        '''
-        if not os.path.exists(path):
-            self.output_config_json(path=path)
-            logger.error("配置文件不存在，已经生成默认配置文件")
-
-        """Reloads configuration data from a JSON string or a JSON file path."""
-        with open(path, "r", encoding="utf-8") as file:
-            config_data = json.load(file)
-        # Iterate over all keys in the input JSON and update the config attributes
-        for key, value in config_data.items():
-            if hasattr(self, key):
-                setattr(self, key, value)
-            else:
-                logger.warning(f" {key} is not a recognized configuration attribute.")
-        logger.success("配置文件加载成功")
-
 
 config = Config()
+
+

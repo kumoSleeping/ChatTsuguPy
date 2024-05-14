@@ -4,6 +4,7 @@ from typing import List, Union, Dict
 from .utils import *
 from . import remote
 from loguru import logger
+from tsugu_api import settings
 
 
 async def handler(message: str, user_id: str, platform: str, channel_id: str) -> List[Union[bytes, str]]:
@@ -46,6 +47,8 @@ async def handler_raw(message: str, user_id: str, platform: str, channel_id: str
     except Exception as e:
         logger.error(f'Error: {e}')
         raise e
+
+
 
 
 

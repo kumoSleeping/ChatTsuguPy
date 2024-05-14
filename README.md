@@ -108,29 +108,113 @@ tsugu.database(path="./data.db")
 
 ## 配置
 
-```py
-import tsugu
 
-tsugu.config.reload_from_json('./config.json')
-```
-> 如果不存在，会创建默认配置文件。
+> 随意更改配置项可能会导致不可预知的错误。
 
-> 注意，不清楚的配置项请不要更改，更改配置项可能会导致不可预知的错误。
-
-
-- 你也可以直接更改配置，但不推荐:   
+### tsugu_api settings
 
 ```py
-import tsugu
+from tsugu_api import settings
 
-# 更改的后端地址。
-tsugu.config.backend = "http://127.0.0.0.1:3000"
+settings.timeout = 10
+'''
+请求超时时间
+'''
 
-# 添加关闭抽卡模拟的群号。
-tsugu.config.ban_gacha_simulate_group_data = ["114514", "1919810"]
+settings.proxy = ''
+'''
+代理地址
+'''
+
+settings.backend_url = 'http://tsugubot.com:8080'
+'''
+后端地址
+默认为 Tsugu 官方后端，若有自建后端服务器可进行修改。
+'''
+
+settings.backend_proxy = True
+'''
+是否使用后端代理
+当设置代理地址后可修改此项以决定是否使用代理。
+默认为 True，即使用后端代理。若使用代理时后端服务器无法访问，可将此项设置为 False。
+'''
+
+settings.userdata_backend_url = 'http://tsugubot.com:8080'
+'''
+用户数据后端地址
+默认为 Tsugu 官方后端，若有自建后端服务器可进行修改。
+'''
+
+settings.userdata_backend_proxy = True
+'''
+是否使用用户数据后端代理
+当设置代理地址后可修改此项以决定是否使用代理。
+默认为 True，即使用后端代理。若使用代理时后端服务器无法访问，可将此项设置为 False。
+'''
+
+settings.use_easy_bg = True
+'''
+是否使用简易背景，使用可在降低背景质量的前提下加快响应速度。
+默认为 True，即使用简易背景。若不使用简易背景，可将此项设置为 False。
+'''
+
+settings.compress = True
+'''
+是否压缩返回数据，压缩可减少返回数据大小。
+默认为 True，即压缩返回数据。若不压缩返回数据，可将此项设置为 False。
+'''
+
 ```
 
+```py
+from tsugu_api_async import settings
+...
+```
 
+### tsugu_async config
+
+```py
+from tsugu import config
+
+config.prefix = ['/', '']
+'''
+命令前缀
+最后一个参数如果不是空字符串，则只有在命令前缀符合时才会触发命令。
+'''
+
+config.allow_gap_less = True
+'''
+是否允许命令与参数之间没有空格
+'''
+
+config.get_remote_user_data_max_retry = 3
+'''
+获取远程用户数据最大重试次数
+'''
+
+config.token_name = "Tsugu"
+'''
+bandori station token
+'''
+config.bandori_station_token = "ZtV4EX2K9Onb"
+'''
+bandori station token
+'''
+
+config.ban_gacha_simulate_group_data = []
+'''
+需要关闭模拟抽卡的群
+'''
+
+config.commands = ...
+
+config.user_commands = ...
+```
+
+```py
+from tsugu_async import config
+...
+```
 
 
 

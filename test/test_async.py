@@ -21,8 +21,12 @@ class TestTsugu(unittest.IsolatedAsyncioTestCase):
 
         # tsugu.database('./user_data.db')
         # tsugu_async.config.reload_from_json('./config.json')
+        # from tsugu_api_async import settings
+        # settings.backend_url = 'http://127.0.0.1:8010'
+        # from tsugu_async import config
+        # config.allow_gap_less = True
 
-        msg1 = await tsugu_async.handler('wdf', '1528593481', 'red', '666808414')
+        msg1 = await tsugu_async.handler('查卡ksm', '1528593481', 'red', '666808414')
         await show_back_msg(msg1)
 
         # msg2 = await tsugu_async.handler('ycm', '1528593481', 'red', '666808414')

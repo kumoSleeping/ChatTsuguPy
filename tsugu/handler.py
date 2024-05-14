@@ -7,6 +7,7 @@ from . import remote
 from . import local
 from .utils import config
 from loguru import logger
+from tsugu_api import settings
 
 
 def handler(message: str, user_id: str, platform: str, channel_id: str) -> List[Union[bytes, str]]:
@@ -41,7 +42,7 @@ def handler_raw(message: str, user_id: str, platform: str, channel_id: str) -> L
     :return: List[Dict[str, str]]
     '''
     try:
-        # 如果启用了本地数据库
+        # 如果启用了本地数库
         if config._user_database_path:
             return r if (r := local.handler(message, user_id, platform, channel_id)) else None
         # 否则使用远程服务器
@@ -49,6 +50,8 @@ def handler_raw(message: str, user_id: str, platform: str, channel_id: str) -> L
     except Exception as e:
         logger.error(f'Error: {e}')
         raise e
+
+
 
 
 

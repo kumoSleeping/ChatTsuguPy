@@ -5,7 +5,7 @@ with open('README.md', 'r') as readme:
 
 setup(
     name='tsugu',
-    version='0.9.9-rc8',
+    version='0.9.9-rc9',
     author='kumoSleeping',
     author_email='zjr2992@outlook.com',
     license="MIT",
