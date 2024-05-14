@@ -2,10 +2,15 @@
 <h1 align="center"> Chat Tsugu Py <img src="./logo.jpg" width="30" width="30" height="30" alt="tmrn"/> </h1>
 
 
-<p align="center">
+<div align="center">
 
+_✨ Python 编写的 [TsuguBanGDreamBot](https://github.com/Yamamoto-2/tsugu-bangdream-bot?tab=readme-ov-file) 自然语言交互库  ✨_
+
+</div>
+
+<p align="center">
 <a href="https://github.com/Yamamoto-2/tsugu-bangdream-bot">
-    <img src="https://img.shields.io/badge/tsugubangdream bot - v2 api-yellow" alt="license">
+    <img src="https://img.shields.io/badge/tsugubangdream bot - api-yellow" alt="license">
   </a>
 
 <a href="https://github.com/kumoSleeping/tsugu-python-frontend?tab=MIT-1-ov-file">
@@ -52,7 +57,7 @@ import tsugu_async
 
 ## handler_raw
 如果你方便使用 base64，`handler_raw` 方法或许会更好  
-`tsugu` 后端本身返回此数据结构，这个方法会节省不必要的开销。
+`tsugu` 后端本身返回此数据结构，这个方法可以节省不必要的开销。
 
 ```python
 import tsugu

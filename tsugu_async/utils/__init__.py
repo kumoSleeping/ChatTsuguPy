@@ -62,7 +62,7 @@ async def get_user(user_id: str, platform: str) -> User:
             await asyncio.sleep(0.5)
             continue
     else:
-        return text_response('网络链接异常')
+        raise Exception('获取用户数据失败')
     # 获取用户数据失败
     if user_data_res.get('status') == 'failed':
         return text_response(user_data_res.get('data'))
