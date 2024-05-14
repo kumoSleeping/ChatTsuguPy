@@ -5,7 +5,7 @@ import tsugu_api
 from ...utils import server_exists, server_name_2_server_id, server_id_2_server_name
 from tsugu_api._typing import _ServerId, _Update
 import typing
-from ...user_data.db import db_manager
+from ...storage.db import db_manager
 import json
 
 

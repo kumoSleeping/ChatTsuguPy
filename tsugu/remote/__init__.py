@@ -5,7 +5,7 @@ from ..command_matcher import match_command
 from ..universal import universal_api_handler
 
 from . import router
-from ..user_data import remote_db
+from ..storage import remote_db
 
 
 def remote_api_handler(user_id: str, message: str,  platform: str, channel_id: str):
@@ -20,7 +20,7 @@ def remote_api_handler(user_id: str, message: str,  platform: str, channel_id: s
 
 def handler(message: str, user_id: str, platform: str, channel_id: str):
     # 进行 api 命令匹配
-    result = universal_api_handler(user_id, message, platform, channel_id, loacl=False)
+    result = universal_api_handler(user_id, message, platform, channel_id, local=False)
     if result:
         return result
 

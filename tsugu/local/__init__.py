@@ -4,7 +4,7 @@ from ..universal import universal_api_handler
 from ..utils import text_response, server_exists
 from ..command_matcher import match_command
 from . import router
-from ..user_data import db
+from ..storage import db
 from tsugu_api._typing import _ServerId
 import json
 

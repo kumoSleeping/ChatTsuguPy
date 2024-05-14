@@ -5,7 +5,7 @@ import tsugu_api
 from ...utils import server_exists, server_name_2_server_id
 from tsugu_api._typing import _ServerId
 
-from ...user_data.db import db_manager, get_user
+from ...storage.db import db_manager, get_user
 
 
 def handler(user: UserLocal, res: MC, platform: str, channel_id: str):

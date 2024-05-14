@@ -5,7 +5,7 @@ from ..command_matcher import match_command
 from ..universal import universal_api_handler
 
 from . import router
-from ..user_data import remote_db
+from ..storage import remote_db
 
 
 async def remote_api_handler(user_id: str, message: str,  platform: str, channel_id: str):

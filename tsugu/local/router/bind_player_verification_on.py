@@ -7,7 +7,7 @@ from ...command_matcher import MC
 from ...utils import server_exists, server_name_2_server_id, server_id_2_server_name
 import json
 import urllib3
-from ...user_data.db import db_manager, get_user
+from ...storage.db import db_manager, get_user
 from tsugu_api._typing import _ServerId
 
 

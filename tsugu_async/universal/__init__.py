@@ -3,7 +3,7 @@ from ..command_matcher import match_command
 from ..config import config
 from . import router
 from .help import help_command
-from ..user_data import remote_db
+from ..storage import remote_db
 from .rooms_forward import submit_rooms
 
 

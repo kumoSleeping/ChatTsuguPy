@@ -2,7 +2,7 @@ from ...config import config
 from ...utils import text_response, UserLocal
 from ...command_matcher import MC
 # import tsugu_api
-from ...user_data.db import db_manager
+from ...storage.db import db_manager
 import json
 import random
 

@@ -6,7 +6,6 @@ from tsugu_api._typing import _ServerId, _Update
 from ...utils import text_response, UserLocal
 from ...command_matcher import MC
 
-from ...user_data.db import db_manager, get_user
 
 
 def handler(user: UserLocal, res: MC, platform: str, channel_id: str):
