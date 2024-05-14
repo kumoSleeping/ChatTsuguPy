@@ -2,9 +2,7 @@ from ...utils import text_response, User
 from ...command_matcher import MC
 import tsugu_api_async
 from ...utils import server_exists, server_name_2_server_id
-from aiologger import Logger
-
-logger = Logger.with_default_handlers(name=__file__)
+from loguru import logger
 
 
 async def handler(user: User, res: MC, platform: str, channel_id: str):

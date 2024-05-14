@@ -280,7 +280,7 @@ class Config:
         :return:
         '''
         if not os.path.exists(path):
-            self.output_config_json(path="./config.json")
+            self.output_config_json(path=path)
             logger.error("配置文件不存在，已经生成默认配置文件")
 
         """Reloads configuration data from a JSON string or a JSON file path."""

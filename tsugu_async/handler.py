@@ -3,9 +3,7 @@ from typing import List, Union, Dict
 
 from .utils import *
 from . import remote
-from aiologger import Logger
-
-logger = Logger.with_default_handlers()
+from loguru import logger
 
 
 async def handler(message: str, user_id: str, platform: str, channel_id: str) -> List[Union[bytes, str]]:
@@ -46,7 +44,7 @@ async def handler_raw(message: str, user_id: str, platform: str, channel_id: str
             return []
         return res
     except Exception as e:
-        await logger.error(f'Error: {e}')
+        logger.error(f'Error: {e}')
         raise e
 
 

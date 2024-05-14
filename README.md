@@ -1,5 +1,5 @@
 
-<h1 align="center"> Tsugu Python Frontend <img src="./logo.jpg" width="30" width="30" height="30" alt="tmrn"/> </h1>
+<h1 align="center"> Tsugu Bot Py <img src="./logo.jpg" width="30" width="30" height="30" alt="tmrn"/> </h1>
 
 
 <p align="center">
@@ -17,47 +17,41 @@
 </p>
 
 
-<p align="center">
-<br>  Python 编写的 Tsugu 前端模块
-
-
 ***
 
-<h2 align="center"> 实现 </h2>
+
+- `tsugu`
+  - [x] 自然语言输入 -> 返回结果
+  - [x] 本地数据库 
+  - [x] 远程数据库 
+- `tsugu.async`
+  - [x] 自然语言输入 -> 返回结果
+  - [x] 远程数据库 
+  - [ ] 本地数据库
 
 
-- [x] 自然语言输入 -> 返回结果
-- [ ] 独立路由输入 -> 返回结果 `部分支持`
-- [x] 本地数据库 (sqlite3)
-- [x] 远程数据库 (客户端)
-- [x] 配置项 (基础配置、代理、命令别名 等)
 
 
-<h2 align="center"> 安装 </h2>
 
-## 安装 tsugu 模块
 ```shell
 pip install tsugu
 ```
+> Powered by  <a href="https://github.com/WindowsSov8forUs/tsugu-api-python?tab=readme-ov-file">tsugu-api-python</a>
 
-## 后端需求
-
-- 出图：需要支持 `v2 API` (2024.2.28日以后的后端版本)
-- 用户数据：需要一个启用了**数据库**的后端，需要支持 `v2 API`
-
-> 后端设置可以不同，默认全部设置为**公共后端**。
 
 ***
 
 
 <h2 align="center"> 测试与调用 </h2>
 
-## 调用 `tsugu.handler`
+## handler
 
 - `handler` 是 `tsugu` 的一个同步函数，用于直接处理用户输入的自然语言并返回查询结果: 
 
 ```python
 import tsugu
+
+# tsugu.database(path="./data.db")
 
 # 四个参数，分别意味着 消息内容 用户id 平台 频道id
 for i in tsugu.handler(message='查卡 ars 1x', user_id='1528593481', platform='red', channel_id='666808414'):
@@ -65,24 +59,41 @@ for i in tsugu.handler(message='查卡 ars 1x', user_id='1528593481', platform='
     print(f"[图片]") if isinstance(i, bytes) else None
 ```
 
+```python
+import tsugu_async
+
+# tsugu_async.config.reload_from_json('./config.json')
+
+async def main():
+    res = await tsugu_async.handler(message='查卡 ars 1x', user_id='1528593481', platform='red', channel_id='666808414')
+    for i in res:
+        print('文本: ',i) if isinstance(i, str) else None
+        print(f"[图片]") if isinstance(i, bytes) else None
+```
+
+
 > 在常用的qqbot中，群号就是 `channel_id`。   
 > 当你使用QQ号作为 `user_id` 时，`platform` 可以填写 `red`。   
 
+## handler_raw
+如果你方便使用 base64，`handler_raw` 方法或许会更好  
+`tsugu` 后端本身返回此数据结构，如果你的bot可以直接发送 `base64` 类图片，这个方法会节省不必要的开销。
 
-- 异步框架下，可以使用 `run_in_executor` 方法:
-> ~~未来会支持异步版本~~   
-> run_in_executor 一辈子吧
-
-如果你方便使用 base64，`handler_old` 方法或许会更好:
 ```python
 import tsugu
 
-for i in tsugu.handler_old(message='查卡 ars 1x', user_id='1528593481', platform='red', channel_id='666808414'):
+for i in tsugu.handler_raw(message='查卡 ars 1x', user_id='1528593481', platform='red', channel_id='666808414'):
     print('文本: ',i) if i['type'] == 'text' else None
     print(f"[图片]") if i['type'] == 'base64' else None
+
+
+import tsugu_async
+...
 ```
 
-## 使用本地数据库
+
+## 使用本地数据库(不支持`tsugu_async`)
+本地数据库由 `sqlite3` 提供，你可以使用 `tsugu.database` 来创建或使用本地数据库。
 
 ```py
 import tsugu
@@ -93,7 +104,7 @@ tsugu.database(path="./data.db")
 > 此操作会自动创建或使用本地数据库为 tsugu.bot 提供用户数据。  
 > 远程数据库将不使用。
 
-## 使用配置文件
+## 配置
 
 ```py
 import tsugu
@@ -120,42 +131,8 @@ tsugu.config.ban_gacha_simulate_group_data = ["114514", "1919810"]
 
 
 
-## 使用 `tsugu.router` 路由与内部方法
-
-- 如果想自己进行自然语言处理，你可以使用单独的路由:
-```py
-import tsugu
-
-# 获取用户数据
-reply = tsugu.router.get_user_data("red", "1234567890")
-
-# 查卡
-reply = tsugu.router.card("红 ksm", [0, 3], 5)
-
-# 设置玩家车牌转发
-reply = tsugu.router.set_car_forward("red", "1234567890", True)
-
-```
-
-- 此外还暴露了一些内部方法，需要可以使用:
-
-```py
-import tsugu
-
-tsugu.interior_local_method.bind_player_verification("red", "1234567890", True)
-tsugu.interior_remote_method.bind_player_verification("red", "1234567890", 0, '1000011232', True)
-
-tsugu.interior_local_method.submit_car_number_msg("123456 大分q1", "1234567890", "red")
-```
-
 
 ***
-
-<h2 align="center"> 相对应登录端 </h2>
-
-| 部署方式 | 传送门 |
-| --- | --- |
-| **lpt 登陆端部署** | [![release](https://img.shields.io/github/v/release/kumoSleeping/lgr-tsugu-py?style=flat-square)](https://github.com/kumoSleeping/lgr-tsugu-py) |
 
  <details>
 <summary><b>客服ano酱指导(这里可以点击)</b></summary>
@@ -167,21 +144,53 @@ tsugu.interior_local_method.submit_car_number_msg("123456 大分q1", "1234567890
 
 </details>
 
-***
 
-## 更新
-```shell
-pip install tsugu --upgrade
-```
+下方已无内容。
 
-## 使用官方源安装
-```shell
-pip install tsugu --index-url https://pypi.org/simple/
-```
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
 
-## 使用清华源安装(可能不能即使更新)
-```shell
-pip install tsugu --index-url https://pypi.tuna.tsinghua.edu.cn/simple
-```
-
-
+🐱: 喵

@@ -4,9 +4,7 @@ from ..utils import config
 import re
 from ..utils import User, text_response
 from ..command_matcher import MC
-from aiologger import Logger
-
-logger = Logger.with_default_handlers()
+from loguru import logger
 
 
 async def submit_rooms(res: MC, user: User, platform=None):
@@ -33,7 +31,7 @@ async def submit_rooms(res: MC, user: User, platform=None):
             if not user.car:
                 return []
     except Exception as e:
-        await logger.error('unknown user')
+        # logger.error('user.car不存在')
         # 默认不开启关闭车牌，继续提交
         pass
 
@@ -43,10 +41,10 @@ async def submit_rooms(res: MC, user: User, platform=None):
             car_id = car_id[:5]
 
         await tsugu_api_async.submit_room_number(int(car_id), user.user_id, message, config.token_name, config.bandori_station_token)
-        await logger.info(f"[Tsugu] 提交车牌成功: {car_id}")
+        # logger.info(f"[Tsugu] 提交车牌成功: {car_id}")
         return []
     except Exception as e:
-        await logger.error(f"[Tsugu] 发生异常: {e}")
+        logger.error(f"[Tsugu] 发生异常: {e}")
         return []  # 虽然提交失败，但是确定了是车牌消息
 
 

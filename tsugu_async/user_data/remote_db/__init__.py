@@ -4,9 +4,7 @@ import tsugu_api_async
 import time
 from ...utils import User
 from ...utils import config
-from aiologger import Logger
-
-logger = Logger.with_default_handlers()
+from loguru import logger
 
 
 async def get_user(user_id: str, platform: str) -> User:
