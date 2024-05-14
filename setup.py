@@ -5,14 +5,14 @@ with open('README.md', 'r') as readme:
 
 setup(
     name='tsugu',
-    version='0.6.1',
+    version='0.9.9-rc3',
     author='kumoSleeping',
     author_email='zjr2992@outlook.com',
     license="MIT",
     description='Tsugu Python Frontend',
     long_description=long_description,
     long_description_content_type='text/markdown',
-    url='https://github.com/kumoSleeping/tsugu-bangdream-bot-lite-py',
+    url='https://github.com/kumoSleeping/tsugu-bot-py',
     packages=find_packages(),
     classifiers=[
         'Programming Language :: Python :: 3.8',
@@ -20,8 +20,8 @@ setup(
         'Operating System :: OS Independent'
     ],
     install_requires=[
-            "urllib3",
             "loguru",
+            "tsugu-api-python"
         ],
     python_requires='>=3.8',
     include_package_data=False,
