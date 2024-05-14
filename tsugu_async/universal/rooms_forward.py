@@ -7,7 +7,10 @@ from ..command_matcher import MC
 from loguru import logger
 
 
-async def submit_rooms(res: MC, user: User, platform=None):
+from ..storage.remote_db import get_user
+
+
+async def submit_rooms(res: MC, user_id, platform=None):
     message = res.text
     # 检查car_config['car']中的关键字
     for keyword in config._car_config["car"]:
@@ -25,13 +28,14 @@ async def submit_rooms(res: MC, user: User, platform=None):
     if not re.match(pattern, message):
         return []
 
+    user = await get_user(user_id, platform)
+
     # 获取用户数据
     try:
         if platform:
             if not user.car:
                 return []
     except Exception as e:
-        # logger.error('user.car不存在')
         # 默认不开启关闭车牌，继续提交
         pass
 
@@ -41,7 +45,6 @@ async def submit_rooms(res: MC, user: User, platform=None):
             car_id = car_id[:5]
 
         await tsugu_api_async.submit_room_number(int(car_id), user.user_id, message, config.token_name, config.bandori_station_token)
-        # logger.info(f"[Tsugu] 提交车牌成功: {car_id}")
         return []
     except Exception as e:
         logger.error(f"[Tsugu] 发生异常: {e}")

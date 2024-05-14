@@ -27,8 +27,7 @@ def universal_api_handler(user_id: str, message: str,  platform: str, channel_id
         return help_command(res)
         # 开始上传车牌
     if res := match_command(message, commands=['上传车牌', '']):
-        user = _get_user(user_id, platform, local)
-        submit_rooms(res, user, platform)
+        submit_rooms(res, user_id, platform)
     return None
 
 

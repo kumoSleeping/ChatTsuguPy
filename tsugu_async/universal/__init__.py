@@ -25,8 +25,7 @@ async def universal_api_handler(user_id: str, message: str,  platform: str, chan
 
     # 开始上传车牌
     if res := match_command(message, commands=['上传车牌', '']):
-        user = await _get_user(user_id, platform)
-        await submit_rooms(res, user, platform)
+        await submit_rooms(res, user_id, platform)
     return None
 
 
