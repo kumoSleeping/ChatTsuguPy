@@ -52,7 +52,7 @@ import tsugu_async
 
 ## handler_raw
 如果你方便使用 base64，`handler_raw` 方法或许会更好  
-`tsugu` 后端本身返回此数据结构，如果你的bot可以直接发送 `base64` 类图片，这个方法会节省不必要的开销。
+`tsugu` 后端本身返回此数据结构，这个方法会节省不必要的开销。
 
 ```python
 import tsugu
