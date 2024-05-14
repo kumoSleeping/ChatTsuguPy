@@ -35,8 +35,6 @@ pip install tsugu
 ```python
 import tsugu
 
-# tsugu.database(path="./data.db")
-
 # 四个参数，分别意味着 消息内容 用户id 平台 频道id
 for i in tsugu.handler(message='查卡 ars 1x', user_id='1528593481', platform='red', channel_id='666808414'):
     print('文本: ',i) if isinstance(i, str) else None
@@ -45,14 +43,7 @@ for i in tsugu.handler(message='查卡 ars 1x', user_id='1528593481', platform='
 
 ```python
 import tsugu_async
-
-# tsugu_async.config.reload_from_json('./config.json')
-
-async def main():
-    res = await tsugu_async.handler(message='查卡 ars 1x', user_id='1528593481', platform='red', channel_id='666808414')
-    for i in res:
-        print('文本: ',i) if isinstance(i, str) else None
-        print(f"[图片]") if isinstance(i, bytes) else None
+...
 ```
 
 
