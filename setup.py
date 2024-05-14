@@ -21,7 +21,7 @@ setup(
     ],
     install_requires=[
             "loguru",
-            "tsugu-api-python"
+            "tsugu-api-python>=1.0.3"
         ],
     python_requires='>=3.8',
     include_package_data=False,
