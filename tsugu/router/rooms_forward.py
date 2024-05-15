@@ -17,12 +17,10 @@ def submit_rooms(res: MC, user_id, platform=None):
             break
     else:
         return []
-
     # 检查car_config['fake']中的关键字
     for keyword in config._car_config["fake"]:
         if str(keyword) in message:
             return []
-
     pattern = r"^\d{5}(\D|$)|^\d{6}(\D|$)"
     if not re.match(pattern, message):
         return []
@@ -43,7 +41,7 @@ def submit_rooms(res: MC, user_id, platform=None):
         if not car_id.isdigit() and car_id[:5].isdigit():
             car_id = car_id[:5]
 
-        tsugu_api.submit_room_number(int(car_id), user.user_id, message, config.token_name, config.bandori_station_token)
+        tsugu_api.submit_room_number(number=int(car_id), user_id=user.user_id, raw_message=message, source=config.token_name, token=config.bandori_station_token)
         return []
     except Exception as e:
         logger.error(f"[Tsugu] 发生异常: {e}")

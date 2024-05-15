@@ -7,6 +7,7 @@ from ..command_matcher import MC
 from loguru import logger
 from ..utils import get_user
 
+
 async def submit_rooms(res: MC, user_id, platform=None):
     message = res.text
     # 检查car_config['car']中的关键字
@@ -40,8 +41,11 @@ async def submit_rooms(res: MC, user_id, platform=None):
         car_id = message[:6]
         if not car_id.isdigit() and car_id[:5].isdigit():
             car_id = car_id[:5]
-
-        await tsugu_api_async.submit_room_number(int(car_id), user.user_id, message, config.token_name, config.bandori_station_token)
+        if user.user_id.isdigit():
+            car_user_id = '3889000770'
+        else:
+            car_user_id = user.user_id
+        await tsugu_api_async.submit_room_number(number=int(car_id), user_id=car_user_id, raw_message=message, source=config.token_name, token=config.bandori_station_token)
         return []
     except Exception as e:
         logger.error(f"[Tsugu] 发生异常: {e}")
