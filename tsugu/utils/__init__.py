@@ -1,5 +1,5 @@
 import typing
-from typing import List
+from typing import List, Union, Dict, Optional
 
 from ..config import config
 import tsugu_api
@@ -49,32 +49,30 @@ def server_exists(server):
     return False
 
 
-def get_user(user_id: str, platform: str) -> User:
+def get_user(user_id: str, platform: str) -> Optional[User]:
+
     for i in range(0, config.get_remote_user_data_max_retry):
         try:
             user_data_res = tsugu_api.get_user_data(platform, user_id)
             if user_data_res.get('status') == 'failed':
-                return text_response(user_data_res.get('data'))
+                return None
             break
         except Exception as e:
             logger.error(f'Error: {e}')
             time.sleep(0.5)
             continue
     else:
-        raise Exception('获取用户数据失败')
-    # 获取用户数据失败
-    if user_data_res.get('status') == 'failed':
-        return text_response(user_data_res.get('data'))
-    # 构建用户对象
-    user_data = user_data_res.get('data')
+        return None
 
+    # 旧数据兼容
+    user_data = user_data_res.get('data')
     if user_data.get('game_ids') is None:
 
         user_data['game_ids'] = []
         for i in range(0, 5):
-            if user_data.get('server_list')[i]['playerId'] != 0:
-                new_game_id = {"game_id": user_data.get('server_list')[i]['playerId'], "server": i}
-                user_data['game_ids'].append(new_game_id)
+            if user_data.get('server_list')[i]['playerId'] != 0:# type: ignore
+                new_game_id = {"game_id": user_data.get('server_list')[i]['playerId'], "server": i}# type: ignore
+                user_data['game_ids'].append(new_game_id)# type: ignore
         verify_code_all = []
         for i in range(0, 5):
             if user_data.get('server_list')[i].get('verifyCode') is not None:
@@ -82,14 +80,15 @@ def get_user(user_id: str, platform: str) -> User:
         # 有一说一，下面这行没有实际意义
         user_data['verify_code'] = '或'.join([str(user_data.get('server_list')[i].get('verifyCode')) for i in verify_code_all]) if len(verify_code_all) > 1 else verify_code_all[0] if verify_code_all else ''
 
+    # 构建用户对象
     user = User(user_id=user_id,
                 platform=platform,
-                server_mode=user_data.get('server_mode'),
-                default_server=user_data.get('default_server'),
-                car=user_data.get('car'),
-                server_list=user_data.get('server_list', None),
-                game_ids=user_data.get('game_ids', []),
-                verify_code=user_data.get('verify_code'))
+                server_mode=user_data.get('server_mode'),# type: ignore
+                default_server=user_data.get('default_server'),# type: ignore
+                car=user_data.get('car'),# type: ignore
+                server_list=user_data.get('server_list', None),# type: ignore
+                game_ids=user_data.get('game_ids', []),# type: ignore
+                verify_code=user_data.get('verify_code'))# type: ignore
     return user
 
 
