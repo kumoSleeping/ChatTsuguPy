@@ -6,6 +6,7 @@ from ...utils import User, text_response
 from ...command_matcher import MC
 from loguru import logger
 from ...utils import get_user
+from tsugu_api_async.exception import RoomSubmitFailure
 
 
 async def handler(user: User, res: MC, platform: str, channel_id: str):
@@ -47,6 +48,10 @@ async def handler(user: User, res: MC, platform: str, channel_id: str):
             car_user_id = '3889000770'
         await tsugu_api_async.submit_room_number(number=int(car_id), user_id=car_user_id, raw_message=message, source=config.token_name, token=config.bandori_station_token)
         return []
+
+    except RoomSubmitFailure as e:
+        return []
+
     except Exception as e:
         logger.error(f"[Tsugu] 发生异常: {e}")
         return []  # 虽然提交失败，但是确定了是车牌消息
