@@ -10,7 +10,6 @@ from . import song_chart
 from . import ycx_all
 from . import ycx
 from . import lsycx
-from . import room_list
 from . import search_card
 from . import event_stage
 

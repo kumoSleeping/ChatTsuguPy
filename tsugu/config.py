@@ -25,7 +25,6 @@ class Config:
             {"api": "ycx_all", "command_name": ["ycxall", "ycx all"]},
             {"api": "ycx", "command_name": ["ycx", "预测线"]},
             {"api": "lsycx", "command_name": ["lsycx"]},
-            {"api": "room_list", "command_name": ["ycm", "车来"]},
             {"api": "search_card", "command_name": ["查卡"]},
             {"api": "event_stage", "command_name": ["查试炼"]},
         ]
@@ -39,6 +38,10 @@ class Config:
             {"api": "change_default_server", "command_name": ["设置默认服务器"]},
             {"api": "bind_player_verification_off", "command_name": ["验证解绑"]},
             {"api": "bind_player_verification_on", "command_name": ["验证绑定"]},
+        ]
+        self.bandoristation_commands = [
+            {"api": "ycm", "command_name": ["ycm", "车来"]},
+            {"api": "rooms_forward", "command_name": ["上传车牌", ""]},  # 空字符串表示任何消息都会触发
         ]
 
         self._user_database_path = None

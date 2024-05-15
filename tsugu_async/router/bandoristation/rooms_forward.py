@@ -1,14 +1,14 @@
 import tsugu_api_async
 
-from ..utils import config
+from ...utils import config
 import re
-from ..utils import User, text_response
-from ..command_matcher import MC
+from ...utils import User, text_response
+from ...command_matcher import MC
 from loguru import logger
-from ..utils import get_user
+from ...utils import get_user
 
 
-async def submit_rooms(res: MC, user_id, platform=None):
+async def handler(user: User, res: MC, platform: str, channel_id: str):
     message = res.text
     # 检查car_config['car']中的关键字
     for keyword in config._car_config["car"]:
@@ -26,7 +26,7 @@ async def submit_rooms(res: MC, user_id, platform=None):
     if not re.match(pattern, message):
         return []
 
-    user = await get_user(user_id, platform)
+    user = await get_user(user.user_id, platform)
 
     # 获取用户数据
     try:
@@ -42,9 +42,9 @@ async def submit_rooms(res: MC, user_id, platform=None):
         if not car_id.isdigit() and car_id[:5].isdigit():
             car_id = car_id[:5]
         if user.user_id.isdigit():
-            car_user_id = '3889000770'
-        else:
             car_user_id = user.user_id
+        else:
+            car_user_id = '3889000770'
         await tsugu_api_async.submit_room_number(number=int(car_id), user_id=car_user_id, raw_message=message, source=config.token_name, token=config.bandori_station_token)
         return []
     except Exception as e:
