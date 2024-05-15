@@ -51,7 +51,7 @@ def universal_api_handler(user_id: str, message: str,  platform: str, channel_id
             api = i['api']
             user = get_user(user_id, platform)
             return universal.api_handler(user, res, api, platform, channel_id)
-        return None
+    return None
 
 
 def remote_api_handler(user_id: str, message: str,  platform: str, channel_id: str):
