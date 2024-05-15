@@ -26,7 +26,7 @@ def handler(message: str, user_id: str, platform: str, channel_id: str):
         return help_command(res)
 
 
-async def help_command(res: MC):
+def help_command(res: MC):
     if not res.args:
         command_list = list(config._help_doc_dict.keys())
         command_list.sort()
