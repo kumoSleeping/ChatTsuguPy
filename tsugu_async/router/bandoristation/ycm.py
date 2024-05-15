@@ -2,10 +2,16 @@ from ...config import config
 from ...utils import text_response, User
 from ...command_matcher import MC
 import tsugu_api_async
+from tsugu_api_async.exception import RoomSubmitFailure
 
 
 async def handler(user: User, res: MC, platform: str, channel_id: str):
-    data = await tsugu_api_async.query_room_number()
+    try:
+        data = await tsugu_api_async.query_room_number()
+    except RoomSubmitFailure as e:
+        return text_response('获取房间信息失败，请稍后再试')
+    except Exception as e:
+        return text_response('获取房间信息失败，请稍后再试')
     if not data:
         return text_response('myc')
     new_data = []

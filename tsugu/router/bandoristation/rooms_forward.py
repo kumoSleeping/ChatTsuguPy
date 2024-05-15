@@ -4,7 +4,6 @@ from ...utils import config
 import re
 from ...utils import User, text_response
 from ...command_matcher import MC
-from loguru import logger
 from ...utils import get_user
 from tsugu_api.exception import RoomSubmitFailure
 
