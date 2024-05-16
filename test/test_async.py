@@ -25,10 +25,10 @@ class TestTsugu(unittest.IsolatedAsyncioTestCase):
         # settings.backend_url = 'http://127.0.0.1:8010'
         from tsugu_api_async import settings
 
-        # settings.backend_url = 'http://124.221.153.148:3000'
+        settings.backend_url = 'http://124.221.153.148:3000'
         # settings.userdata_backend_url = 'http://127.0.0.1:3001'
 
-        msg1 = await tsugu_async.handler('玩家状态', '1528593481', 'red', '666808414')
+        msg1 = await tsugu_async.handler('查玩家', '1528593481', 'red', '666808414')
         await show_back_msg(msg1)
 
         # msg2 = await tsugu_async.handler('ycm', '1528593481', 'red', '666808414')

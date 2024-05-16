@@ -31,7 +31,7 @@ async def help_command(res: MC):
         command_list = list(config._help_doc_dict.keys())
         command_list.sort()
         return text_response(f'当前支持的命令有：\n{" ".join(command_list)}\n请使用"help 命令名"来查看命令的详细帮助')
-    if help_text := config.help_doc_dict.get(res.args[0], None):
+    if help_text := config._help_doc_dict.get(res.args[0], None):
         return text_response(help_text)
     return None
 
