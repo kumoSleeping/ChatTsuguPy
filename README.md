@@ -28,10 +28,9 @@ _✨ Python 编写的 [TsuguBanGDreamBot](https://github.com/Yamamoto-2/tsugu-ba
 pip install tsugu
 ```
 
+> API powered by  <a href="https://github.com/WindowsSov8forUs/tsugu-api-python?tab=readme-ov-file">tsugu-api-python</a>
 
-> API Powered by  <a href="https://github.com/WindowsSov8forUs/tsugu-api-python?tab=readme-ov-file">tsugu-api-python</a>
-
-> Command matching by <a href="https://github.com/ArcletProject/Alconna">Alconna</a>
+> Command matching provided by <a href="https://github.com/ArcletProject/Alconna">Alconna</a>
 ***
 
 ## handler
