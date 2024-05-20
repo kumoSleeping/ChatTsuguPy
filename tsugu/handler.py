@@ -5,6 +5,7 @@ from .utils import *
 from loguru import logger
 from . import router
 
+
 def handler(message: str, user_id: str, platform: str, channel_id: str) -> List[Union[bytes, str]]:
     '''
     Tsugu Handler

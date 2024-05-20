@@ -1,19 +1,35 @@
-from ...config import config
 from ...utils import text_response, User
-from ...command_matcher import MC
 import tsugu_api_async
-from tsugu_api_async.exception import RoomSubmitFailure
+from ...config import config
+from arclet.alconna import Alconna, Option, Subcommand, Args, CommandMeta, Empty, Namespace, namespace, command_manager
 
 
-async def handler(user: User, res: MC, platform: str, channel_id: str):
+alc = Alconna(
+        ["ycm", "车来", "有车吗"],
+        meta=CommandMeta(
+            compact=config.compact, description="获取车牌",
+        )
+    )
+
+
+async def handler(message: str, user: User, platform: str, channel_id: str):
+    res = alc.parse(message)
+
+    if res.matched:
+        return await car_search()
+    elif res.head_matched:
+        return text_response(res.error_info)
+    return None
+
+
+async def car_search():
     try:
         data = await tsugu_api_async.query_room_number()
-    except RoomSubmitFailure as e:
-        return text_response('获取房间信息失败，请稍后再试')
     except Exception as e:
         return text_response('获取房间信息失败，请稍后再试')
     if not data:
         return text_response('myc')
+
     new_data = []
     for i in data:
         if isinstance(i['number'], str):
@@ -27,5 +43,6 @@ async def handler(user: User, res: MC, platform: str, channel_id: str):
         new_data.append(i)
     # 过滤掉 number 相同的
     new_data = list({v['number']: v for v in new_data}.values())
+
     return await tsugu_api_async.room_list(new_data)
 

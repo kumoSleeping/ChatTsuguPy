@@ -6,6 +6,7 @@ from loguru import logger
 from tsugu_api import settings
 from . import router
 
+
 async def handler(message: str, user_id: str, platform: str, channel_id: str) -> List[Union[bytes, str]]:
     '''
     Tsugu Handler

@@ -1,15 +1,26 @@
-from ...config import config
-from ...utils import text_response, User
-from ...command_matcher import MC
+from ...utils import text_response, User, server_id_2_server_name, server_name_2_server_id, server_exists
 import tsugu_api
-from tsugu_api._typing import _Update
+from ...config import config
+from arclet.alconna import Alconna, Option, Subcommand, Args, CommandMeta, Empty, Namespace, namespace, command_manager
 
 
-def handler(user: User, res: MC, platform: str, channel_id: str):
-    update: _Update = {'car': False, }
-    r = tsugu_api.change_user_data(platform, user.user_id, update)
-    return text_response('已关闭车牌转发') if r.get('status') == 'success' else None
+alc = Alconna(
+        ["关闭车牌转发", "关闭个人车牌转发"],
+        meta=CommandMeta(
+            compact=config.compact, description="关闭车牌转发",)
+    )
 
-    # 切换服务器模式
 
+def handler(message: str, user: User, platform: str, channel_id: str):
+    res = alc.parse(message)
+
+    if res.matched:
+        update = {'car': False, }
+        r = tsugu_api.change_user_data(platform, user.user_id, update)
+        if r.get('status') != 'success':
+            return text_response(r.get('data'))
+        return text_response('关闭车牌转发成功！')
+    elif res.head_matched:
+        return text_response(res.error_info)
+    return None
 

@@ -5,7 +5,7 @@ with open('README.md', 'r') as readme:
 
 setup(
     name='tsugu',
-    version='1.0.5',
+    version='1.1.0-rc1',
     author='kumoSleeping',
     author_email='zjr2992@outlook.com',
     license="MIT",
@@ -13,7 +13,7 @@ setup(
     long_description=long_description,
     long_description_content_type='text/markdown',
     url='https://github.com/kumoSleeping/ChatTsuguPy',
-    packages=find_packages(),
+    packages=find_packages(exclude=('test','test*')),
     classifiers=[
         'Programming Language :: Python :: 3.8',
         'License :: OSI Approved :: MIT License',
@@ -21,7 +21,8 @@ setup(
     ],
     install_requires=[
             "loguru",
-            "tsugu-api-python>=1.1.2"
+            "tsugu-api-python==1.2.0",
+            "arclet-alconna",
         ],
     python_requires='>=3.8',
     include_package_data=False,

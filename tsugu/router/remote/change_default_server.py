@@ -1,17 +1,30 @@
-from ...config import config
-from ...utils import text_response, User
-from ...command_matcher import MC
+from ...utils import text_response, User, server_names_2_server_ids
 import tsugu_api
-from ...utils import server_exists, server_names_2_server_ids
-from tsugu_api._typing import _Update
+from ...config import config
+from arclet.alconna import Alconna, Option, Subcommand, Args, CommandMeta, Empty, Namespace, namespace, command_manager, MultiVar
+from tsugu_api_core._typing import _ServerName
+
+alc = Alconna(
+        ["设置默认服务器", "默认服务器"],
+    Args["serverList#使用空格分隔服务器列表。", MultiVar(_ServerName)],
+        meta=CommandMeta(
+            compact=config.compact, description="设定信息显示中的默认服务器排序",
+            example="""设置默认服务器 cn jp : 将国服设置为第一服务器，日服设置为第二服务器。"""
+
+        )
+    )
 
 
-def handler(user: User, res: MC, platform: str, channel_id: str):
-    default_server = server_names_2_server_ids(res.args)
-    if not default_server:
-        return text_response('未找到服务器，请输入正确的服务器名')
-    change_data: _Update = {'default_server': default_server}
-    r = tsugu_api.change_user_data(platform, user.user_id, change_data)
-    if r.get('status') == 'success':
-        return text_response(f'默认服务器已设置为 {", ".join(res.args)}')
-    return text_response(r.get('data'))
+def handler(message: str, user: User, platform: str, channel_id: str):
+    res = alc.parse(message)
+
+    if res.matched:
+        print(res.serverList)
+        print(server_names_2_server_ids(res.serverList))
+        r = tsugu_api.change_user_data(platform, user.user_id, {'default_server': server_names_2_server_ids(res.serverList)})
+        if r.get('status') != 'success':
+            return text_response(r.get('data'))
+        return text_response('默认服务器已设置为 ' + ' '.join(res.serverList))
+    elif res.head_matched:
+        return text_response(res.error_info)
+    return None

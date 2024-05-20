@@ -1,28 +1,33 @@
-from ...config import config
-from ...utils import text_response, User, server_exists, server_name_2_server_id
-from ...command_matcher import MC
+from ...utils import text_response, User
+from tsugu_api_core._typing import _ServerName
 import tsugu_api_async
+from ...config import config
+from arclet.alconna import Alconna, Option, Subcommand, Args, CommandMeta, Empty, Namespace, namespace, command_manager
 
 
-async def handler(user: User, res: MC, platform: str, channel_id: str):
-    if not res.args:
-        return text_response('请输入玩家ID')
+alc = Alconna(
+    ["查玩家", "查寻玩家"],
+    Args["playerId#你的游戏账号(数字)", int]["serverName;?#省略服务器名时，默认从你当前的主服务器查询。", _ServerName.__args__],
+    meta=CommandMeta(
+        compact=config.compact, description="查询玩家信息",
+        usage='查询指定ID玩家的信息。查询指定ID玩家的信息。',
+        example='查玩家 40474621 jp : 查询日服玩家ID为40474621的玩家信息。\n查玩家 10000000 : 查询你当前默认服务器中，玩家ID为10000000的玩家信息。',
+    )
+)
 
-    if len(res.args) == 1:
-        if not res.args[0].isdigit():
-            return text_response('请输入正确的玩家ID(数字)')
-        player_id = int(res.args[0])
 
-        return await tsugu_api_async.search_player(player_id, user.server_mode)
+async def handler(message: str, user: User, platform: str, channel_id: str):
+    res = alc.parse(message)
 
-    if len(res.args) == 2:
-        if not res.args[0].isdigit():
-            return text_response('请输入正确的玩家ID(数字)')
-        player_id = int(res.args[0])
-        if not server_exists(server_name_2_server_id(res.args[1])):
-            return text_response('请输入正确的服务器ID(数字)')
-        server_id = server_name_2_server_id(res.args[1])
+    if res.matched:
+        if res.serverName:
+            server = res.serverName
+        else:
+            server = user.server_mode
+        return await tsugu_api_async.search_player(res.playerId, server)
+    elif res.head_matched:
+        return text_response(res.error_info)
+    return None
 
-        return await tsugu_api_async.search_player(player_id, server_id)
-    return text_response('参数过多')
+
 

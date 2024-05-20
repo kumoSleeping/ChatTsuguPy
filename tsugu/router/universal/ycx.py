@@ -1,49 +1,30 @@
-from ...config import config
-from ...utils import text_response, User, server_exists, server_name_2_server_id
-from ...command_matcher import MC
+from ...utils import text_response, User, server_name_2_server_id
 import tsugu_api
+from ...config import config
+from arclet.alconna import Alconna, Option, Subcommand, Args, CommandMeta, Empty, Namespace, namespace, command_manager
+from tsugu_api_core._typing import _ServerName
 
 
-def handler(user: User, res: MC, platform: str, channel_id: str):
-    # 无参数
-    if not res.args:
-        return text_response('请输入档位线')
+alc = Alconna(
+        ["ycx", "预测线"],
+        Args['tier', int]['eventId;?#活动ID，省略时查询当前活动。', int]
+            ['serverName#省略服务器名时，默认从你当前的主服务器查询。活动ID不存在时，也可以作为第二个参数。', _ServerName.__args__, None],
+        meta=CommandMeta(
+            compact=config.compact, description="查询指定档位的预测线",
+            usage='查询指定档位的预测线。',
+            example='''ycx 1000 :返回默认服务器当前活动1000档位的档线与预测线。
+ycx 1000 177 jp:返回日服177号活动1000档位的档线与预测线。'''
+        )
+    )
 
-    # 一个参数
-    if res.args[0].isdigit():
-        tier: int = int(res.args[0])
-    else:
-        return text_response('请输入正确的档位线')
 
-    if len(res.args) == 1:
-        return tsugu_api.ycx(user.server_mode, tier)
+def handler(message: str, user: User, platform: str, channel_id: str):
+    res = alc.parse(message)
 
-    # 两个参数
-    if len(res.args) == 2:
-        # 两个参数都是数字
-        if res.args[1].isdigit():
-            if res.args[1].isdigit():
-                event_id: int = int(res.args[1])
-            else:
-                return text_response('请输入正确的活动ID')
-            return tsugu_api.ycx(user.server_mode, tier, event_id)
-        elif server_exists(server_pre := server_name_2_server_id(res.args[1])):
-            user.server_mode = server_pre
-            return tsugu_api.ycx(user.server_mode, tier)
-        else:
-            return text_response('请输入正确的活动ID或服务器名称字母简写')
+    if res.matched:
+        server = server_name_2_server_id(res.serverName) if res.serverName else user.server_mode
+        return tsugu_api.ycx(server, res.tier, res.eventId)
+    elif res.head_matched:
+        return text_response(res.error_info)
+    return None
 
-    if len(res.args) == 3:
-        # 三个参数是 tier event_id server_mode
-        if res.args[1].isdigit():
-            if res.args[1].isdigit():
-                event_id: int = int(res.args[1])
-            else:
-                return text_response('第二个参数请输入正确的活动ID')
-            if server_exists(server_pre := server_name_2_server_id(res.args[2])):
-                user.server_mode = server_pre
-                return tsugu_api.ycx(user.server_mode, tier, event_id)
-            else:
-                return text_response('第三个参数请输入正确的服务器名称字母简写')
-
-    return text_response('参数过多(<=3)')

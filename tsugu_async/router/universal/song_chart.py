@@ -1,23 +1,31 @@
-from ...config import config
 from ...utils import text_response, User
-from ...command_matcher import MC
 import tsugu_api_async
+from ...config import config
+from arclet.alconna import Alconna, Option, Subcommand, Args, CommandMeta, Empty, Namespace, namespace, command_manager
 
-from tsugu_api._typing import _DifficultyText
+
+difficulty_text_tuple = ('easy', 'ez', 'normal', 'nm', 'hard', 'hd', 'expert', 'ex', 'special', 'sp')
+
+alc = Alconna(
+        ["查谱面", "查铺面"],
+        Args["songId", int]['difficultyText', difficulty_text_tuple, 'ex'],
+        meta=CommandMeta(
+            compact=config.compact, description="查谱面",
+            usage='根据曲目ID与难度查询铺面信息。',
+            example='''查谱面 1 :返回1号曲的ex难度谱面
+查谱面 128 special :返回128号曲的special难度谱面'''
+        )
+    )
 
 
-async def handler(user: User, res: MC, platform: str, channel_id: str):
-    if not res.args:
-        return text_response('请输入查询参数: 歌曲ID')
-    if not res.args[0].isdigit():
-        return text_response('请输入正确的歌曲ID(数字)')
-    if len(res.args) > 1:
-        # 难度符合 _DifficultyText
-        if not res.args[1] in ['easy', 'normal', 'hard', 'expert', 'special']:
-            return text_response(f'请输入正确的难度(easy, normal, hard, expert, special)')
-        return await tsugu_api_async.song_chart(user.default_server, int(res.args[0]), res.args[1])
-    elif len(res.args) == 1:
-        difficulty: _DifficultyText = 'expert'
-        return await tsugu_api_async.song_chart(user.default_server, int(res.args[0]), difficulty)
-    return text_response('参数错误')
+async def handler(message: str, user: User, platform: str, channel_id: str):
+    res = alc.parse(message)
+
+    if res.matched:
+        return await tsugu_api_async.song_chart(user.default_server, res.songId, res.difficultyText)
+    elif res.head_matched:
+        return text_response(res.error_info)
+    return None
+
+
 

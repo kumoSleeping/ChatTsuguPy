@@ -29,8 +29,9 @@ pip install tsugu
 ```
 
 
-> Powered by  <a href="https://github.com/WindowsSov8forUs/tsugu-api-python?tab=readme-ov-file">tsugu-api-python</a>
+> API Powered by  <a href="https://github.com/WindowsSov8forUs/tsugu-api-python?tab=readme-ov-file">tsugu-api-python</a>
 
+> Command matching by <a href="https://github.com/ArcletProject/Alconna">Alconna</a>
 ***
 
 ## handler
@@ -77,10 +78,10 @@ import tsugu_async
 
 > 随意更改配置项可能会导致不可预知的错误。
 
-### tsugu_api settings
+### tsugu_api_core settings
 
 ```py
-from tsugu_api import settings
+from tsugu_api_core import settings
 
 settings.timeout = 10
 '''
@@ -132,33 +133,23 @@ settings.compress = True
 
 ```
 
-```py
-from tsugu_api_async import settings
-...
-```
-
 ### tsugu_async config
 
 ```py
 from tsugu import config
 
-config.prefix = ['/', '']
-'''
-命令前缀
-最后一个参数如果不是空字符串，则只有在命令前缀符合时才会触发命令。
-'''
 
-config.allow_gap_less = True
+config.compact = True
 '''
 是否允许命令与参数之间没有空格
 '''
 
-config.get_remote_user_data_max_retry = 3
+config.remote_data_max_retry = 3
 '''
 获取远程用户数据最大重试次数
 '''
 
-config.token_name = "Tsugu"
+config.bandori_station_token_name = "Tsugu"
 '''
 bandori station token
 '''
@@ -167,19 +158,16 @@ config.bandori_station_token = "ZtV4EX2K9Onb"
 bandori station token
 '''
 
-config.ban_gacha_simulate_group_data = []
+config.disable_gacha_simulate_group_ids = []
 '''
 需要关闭模拟抽卡的群
 '''
-
-config.commands = ...
-
-config.user_commands = ...
 ```
 
 ```py
 from tsugu_async import config
 ...
+# 与上面相同
 ```
 
 

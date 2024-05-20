@@ -1,23 +1,31 @@
-from ...config import config
 from ...utils import text_response, User
-from ...command_matcher import MC
 import tsugu_api_async
+from ...config import config
+from arclet.alconna import Alconna, Option, Subcommand, Args, CommandMeta, Empty, Namespace, namespace, command_manager
 
 
-async def handler(user: User, res: MC, platform: str, channel_id: str):
-    if res.args:
-        if len(res.args) == 1:
-            if res.args[0].isdigit():
-                times = int(res.args[0])
-                return await tsugu_api_async.gacha_simulate(user.server_mode, times=times)
-            else:
-                return text_response('请输入正确的次数')
-        elif len(res.args) == 2:
-            if res.args[0].isdigit() and res.args[1].isdigit():
-                times = int(res.args[0])
-                gacha_id = int(res.args[1])
-                return await tsugu_api_async.gacha_simulate(user.server_mode, times=times, gacha_id=gacha_id)
-            else:
-                return text_response('请输入正确的次数和卡池ID')
-    return await tsugu_api_async.gacha_simulate(user.server_mode)
+alc = Alconna(
+        ["抽卡模拟", "卡池模拟"],
+        Args["times", int, 10]['gacha_id;?#如果没有卡池ID的话，卡池为当前活动的卡池。', int],
+        meta=CommandMeta(
+            compact=config.compact, description="抽卡模拟",
+            usage='根据卡片ID查询卡片插画',
+            example='抽卡模拟 300 922 :模拟抽卡300次，卡池为922号卡池。'
+        )
+    )
 
+
+async def handler(message: str, user: User, platform: str, channel_id: str):
+    res = alc.parse(message)
+
+    if res.matched:
+        if channel_id in config.disable_gacha_simulate_group_ids:
+            return None
+        if res.gacha_id:
+            gacha_id = res.gacha_id
+        else:
+            gacha_id = None
+        return await tsugu_api_async.gacha_simulate(user.server_mode, res.times, gacha_id)
+    elif res.head_matched:
+        return text_response(res.error_info)
+    return None

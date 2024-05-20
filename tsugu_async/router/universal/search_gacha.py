@@ -1,15 +1,24 @@
-from ...config import config
 from ...utils import text_response, User
-from ...command_matcher import MC
 import tsugu_api_async
+from ...config import config
+from arclet.alconna import Alconna, Option, Subcommand, Args, CommandMeta, Empty, Namespace, namespace, command_manager
 
 
-async def handler(user: User, res: MC, platform: str, channel_id: str):
-    if not res.args:
-        return text_response('请输入卡池ID(数字)')
-    if not res.args[0].isdigit():
-        return text_response('请输入正确的卡池ID(数字)')
-    gacha_id: int = int(res.args[0])
+alc = Alconna(
+        ["查卡池"],
+        Args["gachaId#可以通过查活动、查卡等获取", str],
+        meta=CommandMeta(
+            compact=config.compact, description="查卡池",
+            usage='根据卡池ID查询卡池信息',
+        )
+    )
 
-    return await tsugu_api_async.search_gacha(user.default_server, gacha_id)
 
+async def handler(message: str, user: User, platform: str, channel_id: str):
+    res = alc.parse(message)
+
+    if res.matched:
+        return await tsugu_api_async.search_gacha(user.default_server, res.gachaId)
+    elif res.head_matched:
+        return text_response(res.error_info)
+    return None

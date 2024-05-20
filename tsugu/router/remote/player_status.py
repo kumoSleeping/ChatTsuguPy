@@ -1,54 +1,77 @@
-from ...config import config
-from ...utils import text_response, User
-from ...command_matcher import MC
+from ...utils import text_response, User, server_id_2_server_name, server_name_2_server_id, server_exists
 import tsugu_api
-from ...utils import server_exists, server_name_2_server_id, server_id_2_server_name
-from tsugu_api._typing import _ServerId, _Update
+from ...config import config
+from arclet.alconna import Alconna, Option, Subcommand, Args, CommandMeta, Empty, Namespace, namespace, command_manager
+from tsugu_api_core._typing import _ServerName
 
 
-def handler(user: User, res: MC, platform: str, channel_id: str):
-    # 无参数
-    if not res.args:
-        # 默认情况1: 优先当前服务器
-        for i in user.game_ids:
-            if i.get("server") == user.server_mode:
-                player_id = str(i.get("game_id"))
-                server = int(i.get("server"))
-                text = f'已查找默认服务器 {server_id_2_server_name(server)} 的记录'
-                msg = tsugu_api.search_player(int(player_id), server) + text_response(text)
-                return msg
+alc = Alconna(
+        ["玩家状态"],
+        Args["serverName", _ServerName.__args__, None]["serverIndex", int, None],
+        meta=CommandMeta(
+            compact=config.compact, description="查询自己的玩家状态",
+            usage='根据关键词或活动ID查询活动信息',
+            example='''玩家状态 :返回玩家状态(优先当前服务器下第一条记录)
+玩家状态 1 :返回绑定的第一条记录的状态
+玩家状态 jp :返回绑定的cn服务器的记录的状态'''
+        )
+    )
+
+
+def handler(message: str, user: User, platform: str, channel_id: str):
+    res = alc.parse(message)
+
+    if res.matched:
+        if res.serverName:
+            return _case_server(user, res.serverName)
+        elif res.serverIndex:
+            return _case_index(user, res.serverIndex)
         else:
-            # 默认情况2: 优先第一个记录
-            if len(user.game_ids) > 0:
-                player_id = str(user.game_ids[0].get("game_id"))
-                server = int(user.game_ids[0].get("server"))
-                text = f'已查找第一个记录 {player_id}'
-                msg = tsugu_api.search_player(int(player_id), server) + text_response(text)
-                return msg
-            else:
-                return text_response('未绑定任何记录，可以使用 绑定玩家 进行绑定')
+            return _case_default(user)
+    elif res.head_matched:
+        return text_response(res.error_info)
+    return None
 
-    # 查询指定服务器的玩家状态
-    server: _ServerId = server_name_2_server_id(res.args[0])
-    if server_exists(server):
-        for i in user.game_ids:
-            if i.get("server") == server:
-                player_id = str(i.get("game_id"))
-                text = f'已查找指定服务器 {server_id_2_server_name(server)} 的记录'
-                msg = tsugu_api.search_player(int(player_id), server) + text_response(text)
-                return msg
-        else:
-            return text_response(
-                f'未在 {len(user.game_ids)} 条记录中找到 {server_id_2_server_name(server)} 的记录')
 
-    # 查询指定记录顺序的玩家状态
-    if res.args[0].isdigit():
-        if int(res.args[0]) > len(user.game_ids) or int(res.args[0]) < 1:
-            return text_response(f'未找到记录 {res.args[0]}')
-        player_id = str(user.game_ids[int(res.args[0]) - 1].get("game_id"))
-        server = int(user.game_ids[int(res.args[0]) - 1].get("server"))
-        text = f'已查找第 {res.args[0]} 条记录'
-        msg = tsugu_api.search_player(int(player_id), server) + text_response(text)
-        return msg
 
-    return text_response('请确保输入是 服务器名(字母缩写) 或者 记录(数字)')
+def _utils_search_player_by_game_id(game_id, additional_text=""):
+    player_id = str(game_id.get("game_id"))
+    server = int(game_id.get("server"))
+    response = tsugu_api.search_player(int(player_id), server)
+    return response + text_response(additional_text)
+
+
+def _case_default(user: User):
+    # 优先当前服务器
+    for game_id in user.game_ids:
+        if game_id.get("server") == user.server_mode:
+            text = f'已查找默认服务器 {server_id_2_server_name(user.server_mode)} 的记录。'
+            return _utils_search_player_by_game_id(game_id, text)
+    # 兜底逻辑：使用第一个记录
+    if user.game_ids:
+        game_id = user.game_ids[0]
+        text = f'已查找第一个记录。'
+        return _utils_search_player_by_game_id(game_id, text)
+    return text_response('未绑定任何记录，可以使用 绑定玩家 进行绑定')
+
+
+def _case_server(user: User, server_name: str):
+    server_id = server_name_2_server_id(server_name)
+    # 服务器不存在
+    if not server_exists(server_id):
+        return text_response(f'服务器 {server_name} 不存在。')
+    # 查找记录
+    for game_id in user.game_ids:
+        if game_id.get("server") == server_id:
+            # 找到记录
+            return _utils_search_player_by_game_id(game_id)
+    # 未找到记录
+    return text_response(f'未在记录中找到服务器 {server_name} 的记录。')
+
+
+def _case_index(user: User, index: int):
+    if index > len(user.game_ids) or index < 1:
+        return text_response(f'未找到记录 {index}。')
+    return _utils_search_player_by_game_id(user.game_ids[index - 1])
+
+
