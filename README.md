@@ -133,7 +133,7 @@ settings.compress = True
 
 ```
 
-### tsugu_async config
+### tsugu config
 
 ```py
 from tsugu import config
@@ -164,10 +164,12 @@ config.disable_gacha_simulate_group_ids = []
 '''
 ```
 
+### tsugu_async config
+
 ```py
 from tsugu_async import config
 ...
-# 与上面相同
+# 与 tsugu config 相同
 ```
 
 
