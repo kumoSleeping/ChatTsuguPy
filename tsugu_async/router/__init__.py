@@ -80,7 +80,7 @@ async def handler(message, user_id, platform, channel_id):
     if res:
         return res
 
-    if Alconna(["help", "帮助"], meta=CommandMeta(description='Chat Tsugu Py 帮助')).parse(message).matched:
-        return text_response(command_manager.all_command_help()+"\n# 例如: 查卡 -h")
+    if message in ["help", "帮助"]:
+        return text_response(command_manager.all_command_help(show_index=True))
 
     return None

@@ -20,9 +20,9 @@ setup(
         'Operating System :: OS Independent'
     ],
     install_requires=[
-            "loguru",
+            "loguru==0.7.2",
             "tsugu-api-python==1.2.0",
-            "arclet-alconna",
+            "arclet-alconna==1.8.12",
         ],
     python_requires='>=3.8',
     include_package_data=False,
