@@ -87,75 +87,20 @@ from tsugu_async import config
 
 
 config.compact = True
-'''
-是否允许命令与参数之间没有空格
-'''
+'''是否允许命令与参数之间没有空格'''
 
 config.disable_gacha_simulate_group_ids = []
-'''
-需要关闭模拟抽卡的群
-'''
+'''需要关闭模拟抽卡的群'''
 ```
 
 ***
 
 
-## 友情文档：tsugu_api 文档
+### 更多配置项
 
+> 安装 `tsugu` 后可以直接导入 `tsugu_api_core` 的 `settings` 修改配置项。
 
-### tsugu_api_core settings
+[tsugu_api settings 详细内容](https://github.com/WindowsSov8forUs/tsugu-api-python/blob/main/tsugu_api_core/settings.py)
 
-```py
-from tsugu_api_core import settings
-
-settings.timeout = 10
-'''
-请求超时时间
-'''
-
-settings.proxy = ''
-'''
-代理地址
-'''
-
-settings.backend_url = 'http://tsugubot.com:8080'
-'''
-后端地址
-默认为 Tsugu 官方后端，若有自建后端服务器可进行修改。
-'''
-
-settings.backend_proxy = True
-'''
-是否使用后端代理
-当设置代理地址后可修改此项以决定是否使用代理。
-默认为 True，即使用后端代理。若使用代理时后端服务器无法访问，可将此项设置为 False。
-'''
-
-settings.userdata_backend_url = 'http://tsugubot.com:8080'
-'''
-用户数据后端地址
-默认为 Tsugu 官方后端，若有自建后端服务器可进行修改。
-'''
-
-settings.userdata_backend_proxy = True
-'''
-是否使用用户数据后端代理
-当设置代理地址后可修改此项以决定是否使用代理。
-默认为 True，即使用后端代理。若使用代理时后端服务器无法访问，可将此项设置为 False。
-'''
-
-settings.use_easy_bg = True
-'''
-是否使用简易背景，使用可在降低背景质量的前提下加快响应速度。
-默认为 True，即使用简易背景。若不使用简易背景，可将此项设置为 False。
-'''
-
-settings.compress = True
-'''
-是否压缩返回数据，压缩可减少返回数据大小。
-默认为 True，即压缩返回数据。若不压缩返回数据，可将此项设置为 False。
-'''
-
-```
 
 ---
