@@ -30,3 +30,25 @@ def handler(message: str, user_id: str, platform: str, channel_id: str):
             return None
 
     return None
+
+
+async def handler_async(message: str, user_id: str, platform: str, channel_id: str):
+    res = alc.parse(message)
+
+    if res.matched:
+        if not res.cmd:
+            return text_response(command_manager.all_command_help())
+
+        try:
+            cmd = command_manager.command_help(res.cmd)
+            return text_response(cmd)
+
+        except KeyError:
+            # return text_response('未找到该命令')
+            return None
+
+        except Exception as e:
+            # return text_response('未知错误')
+            return None
+
+    return None

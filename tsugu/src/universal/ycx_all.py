@@ -2,6 +2,8 @@ from ...utils import get_user, text_response, User, server_id_2_server_name, ser
 import tsugu_api
 from arclet.alconna import Alconna, Option, Subcommand, Args, CommandMeta, Empty, Namespace, namespace, command_manager
 from tsugu_api_core._typing import _ServerName
+import tsugu_api_async
+
 
 alc = Alconna(
         ["ycxall", "ycx all"],
@@ -14,6 +16,8 @@ alc = Alconna(
 ycx 1000 177 jp:返回日服177号活动1000档位的档线与预测线。'''
         )
     )
+
+
 def handler(message: str, user_id: str, platform: str, channel_id: str):
     res = alc.parse(message)
 
@@ -23,3 +27,15 @@ def handler(message: str, user_id: str, platform: str, channel_id: str):
         return tsugu_api.ycx_all(server, res.eventId)
 
     return res
+
+
+async def handler_async(message: str, user_id: str, platform: str, channel_id: str):
+    res = alc.parse(message)
+
+    if res.matched:
+        user = get_user(user_id, platform)
+        server = server_name_2_server_id(res.serverName) if res.serverName else user.server_mode
+        return await tsugu_api_async.ycx_all(server, res.eventId)
+
+    return res
+

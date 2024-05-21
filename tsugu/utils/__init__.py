@@ -1,6 +1,7 @@
 import typing
 from typing import List
 import tsugu_api
+import tsugu_api_async
 from loguru import logger
 import time
 
@@ -64,6 +65,58 @@ def get_user(user_id: str, platform: str) -> User:
     for i in range(0, 3):
         try:
             user_data_res = tsugu_api.get_user_data(platform, user_id)
+            if user_data_res.get('status') == 'failed':
+                return text_response(user_data_res.get('data'))
+            break
+        except Exception as e:
+            logger.error(f'Error: {e}')
+            time.sleep(0.8)
+            continue
+    else:
+        raise Exception('获取用户数据失败')
+
+    # 获取用户数据失败
+    if user_data_res.get('status') == 'failed':
+        return text_response(user_data_res.get('data'))
+    # 构建用户对象
+    user_data = user_data_res.get('data')
+
+    if user_data.get('game_ids') is None:
+
+        user_data['game_ids'] = []
+        for i in range(0, 5):
+            if user_data.get('server_list')[i]['playerId'] != 0:
+                new_game_id = {"game_id": user_data.get('server_list')[i]['playerId'], "server": i}
+                user_data['game_ids'].append(new_game_id)
+        verify_code_all = []
+        for i in range(0, 5):
+            if user_data.get('server_list')[i].get('verifyCode') is not None:
+                verify_code_all.append(i)
+
+    user = User(user_id=user_id,
+                platform=platform,
+                server_mode=user_data.get('server_mode'),
+                default_server=user_data.get('default_server'),
+                car=user_data.get('car'),
+                server_list=user_data.get('server_list', None),
+                game_ids=user_data.get('game_ids', []),
+                verify_code=user_data.get('verify_code'))
+    return user
+
+
+async def get_user_async(user_id: str, platform: str) -> User:
+    '''
+    获取用户数据
+    多次尝试获取用户数据
+    兼容旧版用户数据
+W
+    :param user_id:
+    :param platform:
+    :return:
+    '''
+    for i in range(0, 3):
+        try:
+            user_data_res = await tsugu_api_async.get_user_data(platform, user_id)
             if user_data_res.get('status') == 'failed':
                 return text_response(user_data_res.get('data'))
             break

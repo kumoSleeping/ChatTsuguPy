@@ -1,10 +1,12 @@
 from ...utils import get_user, text_response, User, server_id_2_server_name, server_name_2_server_id
 import tsugu_api
-from arclet.alconna import Alconna, Option, Subcommand, Args, CommandMeta, Empty, Namespace, namespace, MultiVar
+from arclet.alconna import Alconna, Option, Subcommand, Args, CommandMeta, Empty, Namespace, namespace, AllParam
+import tsugu_api_async
+
 
 alc = Alconna(
         ["查曲"],
-        Args["word#歌曲信息，名称，乐队，难度等。", MultiVar(str)],
+        Args["word#歌曲信息，名称，乐队，难度等。", AllParam],
         meta=CommandMeta(
             compact=True, description="查曲",
             usage='根据关键词或曲目ID查询曲目信息。',
@@ -22,6 +24,16 @@ def handler(message: str, user_id: str, platform: str, channel_id: str):
     if res.matched:
         user = get_user(user_id, platform)
         return tsugu_api.search_song(user.default_server, " ".join(res.word))
+
+    return res
+
+
+async def handler_async(message: str, user_id: str, platform: str, channel_id: str):
+    res = alc.parse(message)
+
+    if res.matched:
+        user = get_user(user_id, platform)
+        return await tsugu_api_async.search_song(user.default_server, " ".join(res.word))
 
     return res
 

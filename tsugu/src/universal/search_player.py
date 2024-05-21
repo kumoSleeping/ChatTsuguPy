@@ -2,6 +2,7 @@ from ...utils import get_user, text_response, User, server_id_2_server_name, ser
 from tsugu_api_core._typing import _ServerName
 import tsugu_api
 from arclet.alconna import Alconna, Option, Subcommand, Args, CommandMeta, Empty, Namespace, namespace, command_manager
+import tsugu_api_async
 
 
 alc = Alconna(
@@ -25,6 +26,20 @@ def handler(message: str, user_id: str, platform: str, channel_id: str):
         else:
             server = user.server_mode
         return tsugu_api.search_player(res.playerId, server)
+
+    return res
+
+
+async def handler_async(message: str, user_id: str, platform: str, channel_id: str):
+    res = alc.parse(message)
+
+    if res.matched:
+        user = get_user(user_id, platform)
+        if res.serverName:
+            server = res.serverName
+        else:
+            server = user.server_mode
+        return await tsugu_api_async.search_player(res.playerId, server)
 
     return res
 

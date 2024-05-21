@@ -1,6 +1,7 @@
 from ...utils import get_user, text_response, User, server_id_2_server_name, server_name_2_server_id
 import tsugu_api
 from arclet.alconna import Alconna, Option, Subcommand, Args, CommandMeta, Empty, Namespace, namespace, command_manager
+import tsugu_api_async
 
 
 difficulty_text_tuple = ('easy', 'ez', 'normal', 'nm', 'hard', 'hd', 'expert', 'ex', 'special', 'sp')
@@ -23,6 +24,18 @@ def handler(message: str, user_id: str, platform: str, channel_id: str):
         return tsugu_api.song_chart(user.default_server, res.songId, res.difficultyText)
 
     return res
+
+
+async def handler_async(message: str, user_id: str, platform: str, channel_id: str):
+    res = alc.parse(message)
+
+    if res.matched:
+        user = get_user(user_id, platform)
+        return await tsugu_api_async.song_chart(user.default_server, res.songId, res.difficultyText)
+
+    return res
+
+
 
 
 

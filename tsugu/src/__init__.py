@@ -84,4 +84,26 @@ def handler(message, user_id, platform, channel_id):
     return None
 
 
+async def handler_async(message, user_id, platform, channel_id):
+    union_list = universal_list + remote_commands + bandoristation_commands + help_command
 
+    for i in union_list:
+        result = await getattr(globals()[i], 'handler_async')(message, user_id, platform, channel_id)
+
+        # 未生成结果
+        if isinstance(result, Arparma):
+            # 匹配了命令头
+            if result.head_matched:
+
+                # 帮助信息
+                if result.error_data == ['-h']:
+                    return await getattr(globals()['help'], 'handler_async')('help ' + result.header_result, user_id, platform, channel_id)
+                # 错误信息
+                else:
+                    return text_response(result.error_info)
+
+        # 已生成结果
+        if isinstance(result, list):
+            return result
+
+    return None

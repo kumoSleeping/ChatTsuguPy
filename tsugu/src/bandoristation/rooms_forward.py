@@ -1,8 +1,8 @@
-from ...utils import text_response, User, get_user
-import tsugu_api
+from ...utils import text_response, User, get_user, get_user_async
 from arclet.alconna import Alconna, Option, Subcommand, Args, CommandMeta, Empty, Namespace, namespace, command_manager
 import re
-
+import tsugu_api
+import tsugu_api_async
 
 # 虚空注册
 alc = Alconna(["上传车牌"],meta=CommandMeta(description="上传车牌",))
@@ -48,6 +48,52 @@ def handler(message: str, user_id: str, platform: str, channel_id: str):
         else:
             car_user_id = '3889000770'
         tsugu_api.submit_room_number(number=int(car_id), user_id=car_user_id, raw_message=message, source="Tsugu", token="ZtV4EX2K9Onb")
+        return None
+
+    except Exception as e:
+        return None
+
+
+async def handler_async(message: str, user_id: str, platform: str, channel_id: str):
+    if message.startswith("上传车牌"):
+        message = message[4:].strip()
+
+    # 检查car_config['car']中的关键字
+    for keyword in _car_config["car"]:
+        if str(keyword) in message:
+            break
+    else:
+        return None
+
+    # 检查car_config['fake']中的关键字
+    for keyword in _car_config["fake"]:
+        if str(keyword) in message:
+            return None
+
+    pattern = r"^\d{5}(\D|$)|^\d{6}(\D|$)"
+    if not re.match(pattern, message):
+        return None
+
+    user = await get_user_async(user_id, platform)
+
+    # 获取用户数据
+    try:
+        if platform:
+            if not user.car:
+                return None
+    except Exception as e:
+        # 默认不开启关闭车牌，继续提交
+        pass
+
+    try:
+        car_id = message[:6]
+        if not car_id.isdigit() and car_id[:5].isdigit():
+            car_id = car_id[:5]
+        if user.user_id.isdigit():
+            car_user_id = user.user_id
+        else:
+            car_user_id = '3889000770'
+        await tsugu_api_async.submit_room_number(number=int(car_id), user_id=car_user_id, raw_message=message, source="Tsugu", token="ZtV4EX2K9Onb")
         return None
 
     except Exception as e:
