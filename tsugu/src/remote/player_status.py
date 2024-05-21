@@ -29,12 +29,12 @@ def handler(message: str, user_id: str, platform: str, channel_id: str):
         # 优先当前服务器
         for game_id in user.game_ids:
             if game_id.get("server") == user.server_mode:
-                text = f'已查找默认服务器 {server_id_2_server_name(user.server_mode)} 的记录。'
+                text = f' 已查找默认服务器 {server_id_2_server_name(user.server_mode)} 的记录。'
                 return _utils_search_player_by_game_id(game_id, text)
         # 兜底逻辑：使用第一个记录
         if user.game_ids:
             game_id = user.game_ids[0]
-            text = f'已查找第一个记录。'
+            text = f' 已查找第一个记录。'
             return _utils_search_player_by_game_id(game_id, text)
         return text_response('未绑定任何记录，可以使用 绑定玩家 进行绑定')
 
@@ -80,12 +80,12 @@ async def handler_async(message: str, user_id: str, platform: str, channel_id: s
         # 优先当前服务器
         for game_id in user.game_ids:
             if game_id.get("server") == user.server_mode:
-                text = f'已查找默认服务器 {server_id_2_server_name(user.server_mode)} 的记录。'
+                text = f' 已查找默认服务器 {server_id_2_server_name(user.server_mode)} 的记录。'
                 return await _utils_search_player_by_game_id(game_id, text)
         # 兜底逻辑：使用第一个记录
         if user.game_ids:
             game_id = user.game_ids[0]
-            text = f'已查找第一个记录。'
+            text = f' 已查找第一个记录。'
             return await _utils_search_player_by_game_id(game_id, text)
         return text_response('未绑定任何记录，可以使用 绑定玩家 进行绑定')
 
