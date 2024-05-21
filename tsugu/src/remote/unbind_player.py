@@ -6,7 +6,7 @@ import tsugu_api_async
 
 alc = Alconna(
         ["解除绑定"],
-        Args["index#要解绑的绑定编号", int, None],
+        Args["index;?#要解绑的绑定编号", int],
         meta=CommandMeta(
             compact=True,
             description="解除绑定",

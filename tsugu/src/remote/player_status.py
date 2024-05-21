@@ -7,7 +7,7 @@ import tsugu_api_async
 
 alc = Alconna(
         ["玩家状态"],
-        Args["serverName", _ServerName.__args__, None]["serverIndex", int, None],
+        Args["serverName;?", _ServerName.__args__]["serverIndex;?", int],
         meta=CommandMeta(
             compact=True,
             description="查询自己的玩家状态",

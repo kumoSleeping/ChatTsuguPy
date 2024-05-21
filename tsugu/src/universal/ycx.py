@@ -8,7 +8,7 @@ import tsugu_api_async
 alc = Alconna(
         ["ycx", "预测线"],
         Args['tier', int]['eventId;?#活动ID，省略时查询当前活动。', int]
-            ['serverName#省略服务器名时，默认从你当前的主服务器查询。', _ServerName.__args__, None],
+            ['serverName;?#省略服务器名时，默认从你当前的主服务器查询。', _ServerName.__args__],
         meta=CommandMeta(
             compact=True,
             description="查询指定档位的预测线",

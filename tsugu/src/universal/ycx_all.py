@@ -8,7 +8,7 @@ import tsugu_api_async
 alc = Alconna(
         ["ycxall", "ycx all"],
         Args['eventId;?#活动ID，省略时查询当前活动。', int]
-            ['serverName#省略服务器名时，默认从你当前的主服务器查询。活动ID不存在时，也可以作为第二个参数。', _ServerName.__args__, None],
+            ['serverName;?#省略服务器名时，默认从你当前的主服务器查询。活动ID不存在时，也可以作为第二个参数。', _ServerName.__args__],
         meta=CommandMeta(
             compact=True, description="查询指定档位的预测线",
             usage='根据关键词或角色ID查询角色信息',
