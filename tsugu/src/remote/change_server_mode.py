@@ -6,9 +6,10 @@ from tsugu_api_core._typing import _ServerName
 
 alc = Alconna(
         ["主服务器", "设置主服务器"],
-    Args["serverName#服务器名", _ServerName],
+        Args["serverName#服务器名", _ServerName],
         meta=CommandMeta(
-            compact=True, description="主服务器",
+            compact=True,
+            description="主服务器",
             usage="将指定的服务器设置为你的主服务器。",
             example="""主服务器 cn : 将国服设置为主服务器。"""
 

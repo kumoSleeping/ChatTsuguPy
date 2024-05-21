@@ -10,7 +10,8 @@ alc = Alconna(
         ["查谱面", "查铺面"],
         Args["songId", int]['difficultyText', difficulty_text_tuple, 'ex'],
         meta=CommandMeta(
-            compact=True, description="查谱面",
+            compact=True,
+            description="查谱面",
             usage='根据曲目ID与难度查询铺面信息。',
             example='''查谱面 1 :返回1号曲的ex难度谱面
 查谱面 128 special :返回128号曲的special难度谱面'''

@@ -8,8 +8,9 @@ alc = Alconna(
         ["抽卡模拟", "卡池模拟"],
         Args["times", int, 10]['gacha_id;?#如果没有卡池ID的话，卡池为当前活动的卡池。', int],
         meta=CommandMeta(
-            compact=True, description="抽卡模拟",
-            usage='根据卡片ID查询卡片插画',
+            compact=True,
+            description="抽卡模拟",
+            usage='模拟抽卡',
             example='抽卡模拟 300 922 :模拟抽卡300次，卡池为922号卡池。'
         )
     )

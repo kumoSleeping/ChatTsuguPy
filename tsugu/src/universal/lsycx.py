@@ -8,12 +8,13 @@ import tsugu_api_async
 alc = Alconna(
         ["lsycx", "历史预测线"], ['/', ''],
         Args['tier', int]['eventId;?#活动ID，省略时查询当前活动。', int]
-            ['serverName#省略服务器名时，默认从你当前的主服务器查询。活动ID不存在时，也可以作为第二个参数。', _ServerName.__args__, None],
+            ['serverName#省略服务器名时，默认从你当前的主服务器查询。', _ServerName.__args__, None],
         meta=CommandMeta(
-            compact=True, description="查询指定档位的历史预测线。",
+            compact=True,
+            description="查询指定档位的历史预测线。",
             usage='查询指定档位的预测线与最近的4期活动类型相同的活动的档线数据。',
-            example='''lsycx 1000 :返回默认服务器当前活动的档线与预测线，与最近的4期活动类型相同的活动的档线数据。
-lsycx 1000 177 jp:返回日服177号活动1000档位档线与最近的4期活动类型相同的活动的档线数据。'''
+            example='''lsycx 1000 
+lsycx 1000 177 jp'''
         )
     )
 

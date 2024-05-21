@@ -7,7 +7,8 @@ import tsugu_api_async
 alc = Alconna(
         ["开启车牌转发", "开启个人车牌转发"],
         meta=CommandMeta(
-            compact=True, description="开启车牌转发",)
+            compact=True,
+            description="开启车牌转发",)
     )
 
 

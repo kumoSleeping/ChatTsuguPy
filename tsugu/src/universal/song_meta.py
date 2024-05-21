@@ -9,7 +9,8 @@ alc = Alconna(
         ["查询分数表", '查分数表', '查询分数榜', '查分数榜'],
         Args["serverName;?#省略服务器名时，默认从你当前的主服务器查询。", _ServerName.__args__],
         meta=CommandMeta(
-            compact=True, description="查询分数表",
+            compact=True,
+            description="查询分数表",
             usage='查询指定服务器的歌曲分数表。',
             example='''查询分数表 cn :返回国服的歌曲分数表'''
         )

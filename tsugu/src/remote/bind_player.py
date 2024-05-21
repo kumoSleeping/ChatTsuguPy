@@ -8,7 +8,8 @@ alc = Alconna(
         ["绑定玩家"],
         Args["args;?", AllParam],
         meta=CommandMeta(
-            compact=True, description="绑定玩家",
+            compact=True,
+            description="绑定玩家",
             usage="只需发送‘绑定玩家’。",
         ),
     )

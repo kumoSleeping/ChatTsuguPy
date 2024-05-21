@@ -8,7 +8,8 @@ alc = Alconna(
         ["查卡", "查卡牌"],
         Args["word#请输入卡面ID，角色等查询参数，使用空格隔开", AllParam],
         meta=CommandMeta(
-            compact=True, description="查询卡片信息。",
+            compact=True,
+            description="查询卡片信息。",
             usage='根据关键词或卡牌ID查询卡片信息。',
             example='''查卡 1399 :返回1399号卡牌的信息。
     查卡面 1399 :返回1399号卡牌的插画。

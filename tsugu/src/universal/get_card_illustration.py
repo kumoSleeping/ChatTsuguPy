@@ -8,7 +8,8 @@ alc = Alconna(
         ["查卡面", "查插画"],
         Args["cardId", int],
         meta=CommandMeta(
-            compact=True, description="查卡面",
+            compact=True,
+            description="查卡面",
             usage='根据卡片ID查询卡片插画',
             example='查卡面 1399 :返回1399号卡牌的插画'
         )

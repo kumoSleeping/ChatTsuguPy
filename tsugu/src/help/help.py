@@ -6,7 +6,8 @@ alc = Alconna(
         ["help"],
         Args["cmd;?#命令", str],
         meta=CommandMeta(
-            compact=True, description="Chat Tsugu Py 帮助",)
+            compact=True,
+            description="Chat Tsugu Py 帮助",)
     )
 
 

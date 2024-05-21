@@ -12,8 +12,8 @@ alc = Alconna(
         meta=CommandMeta(
             compact=True, description="查询指定档位的预测线",
             usage='根据关键词或角色ID查询角色信息',
-            example='''ycx 1000 :返回默认服务器当前活动1000档位的档线与预测线。
-ycx 1000 177 jp:返回日服177号活动1000档位的档线与预测线。'''
+            example='''ycx 1000 
+ycx 1000 177 jp'''
         )
     )
 

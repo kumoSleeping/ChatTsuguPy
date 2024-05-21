@@ -8,7 +8,8 @@ alc = Alconna(
         ["查卡池"],
         Args["gachaId#可以通过查活动、查卡等获取", str],
         meta=CommandMeta(
-            compact=True, description="查卡池",
+            compact=True,
+            description="查卡池",
             usage='根据卡池ID查询卡池信息',
         )
     )

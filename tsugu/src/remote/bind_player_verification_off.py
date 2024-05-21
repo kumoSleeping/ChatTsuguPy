@@ -8,7 +8,8 @@ alc = Alconna(
         ["验证解绑"],
         Args["index#要解绑的绑定编号", int],
         meta=CommandMeta(
-            compact=True, description="验证解绑",
+            compact=True,
+            description="验证解绑",
             usage="验证解绑 记录编号(数字)",
             example="验证解绑 1 : 解绑第一个记录"
         ),

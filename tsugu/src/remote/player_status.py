@@ -9,7 +9,8 @@ alc = Alconna(
         ["玩家状态"],
         Args["serverName", _ServerName.__args__, None]["serverIndex", int, None],
         meta=CommandMeta(
-            compact=True, description="查询自己的玩家状态",
+            compact=True,
+            description="查询自己的玩家状态",
             usage='根据关键词或活动ID查询活动信息',
             example='''玩家状态 :返回玩家状态(优先当前服务器下第一条记录)
 玩家状态 1 :返回绑定的第一条记录的状态

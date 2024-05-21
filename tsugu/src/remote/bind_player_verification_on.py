@@ -9,7 +9,8 @@ alc = Alconna(
         ["验证绑定"],
         Args["playerID#你的玩家ID(数字)", int]["serverName#服务器名(字母缩写)", _ServerName],
         meta=CommandMeta(
-            compact=True, description="验证绑定",)
+            compact=True,
+            description="验证绑定",)
     )
 
 

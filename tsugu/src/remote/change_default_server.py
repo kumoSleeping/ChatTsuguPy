@@ -9,7 +9,8 @@ alc = Alconna(
         ["设置默认服务器", "默认服务器"],
         Args["serverList#使用空格分隔服务器列表。", MultiVar(_ServerName)],
         meta=CommandMeta(
-            compact=True, description="设定信息显示中的默认服务器排序",
+            compact=True,
+            description="设定信息显示中的默认服务器排序",
             example="""设置默认服务器 cn jp : 将国服设置为第一服务器，日服设置为第二服务器。"""
 
         )

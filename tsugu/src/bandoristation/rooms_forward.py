@@ -4,8 +4,14 @@ import re
 import tsugu_api
 import tsugu_api_async
 
+
 # 虚空注册
-alc = Alconna(["上传车牌"],meta=CommandMeta(description="上传车牌",))
+alc = Alconna(
+    ["上传车牌"],
+    meta=CommandMeta(
+        description="上传车牌",
+       ),
+    )
 
 
 def handler(message: str, user_id: str, platform: str, channel_id: str):

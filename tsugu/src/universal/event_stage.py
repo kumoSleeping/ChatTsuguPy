@@ -9,7 +9,8 @@ alc = Alconna(
         Args["eventId;?#省略活动ID时查询当前活动。", [int]]["meta;?#歌曲meta。", ['-m']],
 
         meta=CommandMeta(
-            compact=True, description="查试炼",
+            compact=True,
+            description="查试炼",
             usage='查询当前服务器当前活动试炼信息。',
             example='''查试炼 157 -m :返回157号活动的试炼信息，包含歌曲meta。
 查试炼 -m :返回当前活动的试炼信息，包含歌曲meta。

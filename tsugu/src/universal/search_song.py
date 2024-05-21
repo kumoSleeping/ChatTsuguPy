@@ -8,7 +8,8 @@ alc = Alconna(
         ["查曲"],
         Args["word#歌曲信息，名称，乐队，难度等。", AllParam],
         meta=CommandMeta(
-            compact=True, description="查曲",
+            compact=True,
+            description="查曲",
             usage='根据关键词或曲目ID查询曲目信息。',
             example='''查曲 1 :返回1号曲的信息
 查曲 ag lv27 :返回所有难度为27的ag曲列表

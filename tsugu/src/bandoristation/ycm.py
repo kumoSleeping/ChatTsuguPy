@@ -7,7 +7,8 @@ from arclet.alconna import Alconna, Option, Subcommand, Args, CommandMeta, Empty
 alc = Alconna(
         ["ycm", "车来", "有车吗"],
         meta=CommandMeta(
-            compact=True, description="获取车牌",
+            compact=True,
+            description="获取车牌",
         )
     )
 
