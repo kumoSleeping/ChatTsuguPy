@@ -23,6 +23,13 @@ _✨ Python 编写的 [TsuguBanGDreamBot](https://github.com/Yamamoto-2/tsugu-ba
 
 ---
 
+- [x] tsugu
+- [x] tsugu_async
+- [x] tsugu_thread
+
+
+- `tsugu_thread` 中避免了在多线程环境中使用 `Alconna`，但同时不再支持 'compact' 配置项，`tsugu_thread` 不一定会一直维护。
+
 
 ```shell
 pip install tsugu
@@ -31,6 +38,7 @@ pip install tsugu
 > API powered by  <a href="https://github.com/WindowsSov8forUs/tsugu-api-python?tab=readme-ov-file">tsugu-api-python</a>
 
 > Command matching provided by <a href="https://github.com/ArcletProject/Alconna">Alconna</a>
+
 ***
 
 ## handler

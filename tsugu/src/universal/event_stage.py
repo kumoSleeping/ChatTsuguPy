@@ -22,7 +22,7 @@ def handler(message: str, user: User, platform: str, channel_id: str):
             meta = True
         else:
             meta = False
-        print(meta)
+
         return tsugu_api.event_stage(user.server_mode, res.eventId, meta)
 
     return res

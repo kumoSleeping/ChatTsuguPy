@@ -1,0 +1,24 @@
+from ...utils import get_user, text_response, User, server_id_2_server_name, server_name_2_server_id
+import tsugu_api
+from arclet.alconna import Alconna, Option, Subcommand, Args, CommandMeta, Empty, Namespace, namespace, command_manager
+
+
+alc = Alconna(
+        ["开启车牌转发", "开启个人车牌转发"],
+        meta=CommandMeta(
+            compact=True, description="开启车牌转发",)
+    )
+
+
+def handler(message: str, user_id: str, platform: str, channel_id: str):
+    res = alc.parse(message)
+
+    if res.matched:
+        user = get_user(user_id, platform)
+        update = {'car': True, }
+        r = tsugu_api.change_user_data(platform, user.user_id, update)
+        if r.get('status') != 'success':
+            return text_response(r.get('data'))
+        return text_response('开启车牌转发成功！')
+    return res
+
