@@ -1,6 +1,7 @@
 import importlib
 from arclet.alconna import Alconna, Option, Subcommand, Args, CommandMeta, Empty, Namespace, namespace, output_manager, command_manager
 from ..utils import text_response, get_user
+import threading
 
 
 def require(module_path, cmd):
@@ -48,13 +49,26 @@ bandoristation_commands = [
 [require(f'.bandoristation.{cmd}', cmd) for cmd in bandoristation_commands]
 
 
+class ThisValue:
+    def __init__(self):
+        self.local_data = threading.local()
+
+    def set_h(self, value):
+        self.local_data.h = value
+
+    def get_h(self):
+        return getattr(self.local_data, 'h', None)
+
+
+this_value = ThisValue()
+
+
 def handler(message, user_id, platform, channel_id):
     user = get_user(user_id, platform)
-    alc_output = None
 
     def set_output_str(arg):
-        nonlocal alc_output
-        alc_output = arg
+        # 为每个线程设置独立的 h 值
+        this_value.set_h(arg)
 
     output_manager.set_action(set_output_str)
 
@@ -64,7 +78,7 @@ def handler(message, user_id, platform, channel_id):
             if not result:
                 continue
             if result[0].get('type') == 'string' and result[0].get('string') == 'help':
-                return text_response(alc_output)
+                return text_response(this_value.get_h())
             return result
         return None
 

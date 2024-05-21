@@ -1,6 +1,8 @@
 import importlib
 from arclet.alconna import Alconna, Option, Subcommand, Args, CommandMeta, Empty, Namespace, namespace, output_manager, command_manager
 from ..utils import text_response, get_user
+from contextvars import ContextVar
+from typing import Optional
 
 
 def require(module_path, cmd):
@@ -48,13 +50,14 @@ bandoristation_commands = [
 [require(f'.bandoristation.{cmd}', cmd) for cmd in bandoristation_commands]
 
 
+this_value_h: ContextVar[Optional[str]] = ContextVar('this_value_h', default=None)
+
+
 async def handler(message, user_id, platform, channel_id):
     user = await get_user(user_id, platform)
-    alc_output = None
 
     def set_output_str(arg):
-        nonlocal alc_output
-        alc_output = arg
+        this_value_h.set(arg)
 
     output_manager.set_action(set_output_str)
 
@@ -64,7 +67,7 @@ async def handler(message, user_id, platform, channel_id):
             if not result:
                 continue
             if result[0].get('type') == 'string' and result[0].get('string') == 'help':
-                return text_response(alc_output)
+                return text_response(this_value_h.get())
             return result
         return None
 
@@ -81,6 +84,6 @@ async def handler(message, user_id, platform, channel_id):
         return res
 
     if message in ["help", "帮助"]:
-        return text_response(command_manager.all_command_help(show_index=True))
+        return text_response(command_manager.all_command_help(show_index=True) + "例如: 查卡 -h")
 
     return None
