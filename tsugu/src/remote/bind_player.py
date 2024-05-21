@@ -20,7 +20,8 @@ def handler(message: str, user_id: str, platform: str, channel_id: str):
 
     if res.matched:
         user = get_user(user_id, platform)
-        r = tsugu_api.bind_player_request(platform, user.user_id, user.server_mode, False)
+        r = tsugu_api.bind_player_request(platform, user_id, user.server_mode, True)
+        print(r)
         if r.get('status') != 'success':
             return text_response(r.get('data'))
         return text_response(
