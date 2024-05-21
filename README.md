@@ -23,14 +23,6 @@ _✨ Python 编写的 [TsuguBanGDreamBot](https://github.com/Yamamoto-2/tsugu-ba
 
 ---
 
-- [x] tsugu
-- [x] tsugu_async
-- [x] tsugu_thread
-
-
-- `tsugu_thread` 中避免了在多线程环境中使用 `Alconna`，但同时不再支持 'compact' 配置项，`tsugu_thread` 不一定会一直维护。
-
-
 ```shell
 pip install tsugu
 ```
@@ -82,8 +74,34 @@ import tsugu_async
 
 ## 配置
 
+### tsugu config
 
-> 随意更改配置项可能会导致不可预知的错误。
+
+- `tsugu` 在被导入时初始化 `Alconna` 命令匹配，避免了在多线程环境中使用，但同时无法支持配置项的修改。
+
+
+### tsugu_async config
+
+```py
+from tsugu_async import config
+
+
+config.compact = True
+'''
+是否允许命令与参数之间没有空格
+'''
+
+config.disable_gacha_simulate_group_ids = []
+'''
+需要关闭模拟抽卡的群
+'''
+```
+
+***
+
+
+## 友情文档：tsugu_api 文档
+
 
 ### tsugu_api_core settings
 
@@ -139,59 +157,5 @@ settings.compress = True
 '''
 
 ```
-
-### tsugu config
-
-```py
-from tsugu import config
-
-
-config.compact = True
-'''
-是否允许命令与参数之间没有空格
-'''
-
-config.remote_data_max_retry = 3
-'''
-获取远程用户数据最大重试次数
-'''
-
-config.bandori_station_token_name = "Tsugu"
-'''
-bandori station token
-'''
-config.bandori_station_token = "ZtV4EX2K9Onb"
-'''
-bandori station token
-'''
-
-config.disable_gacha_simulate_group_ids = []
-'''
-需要关闭模拟抽卡的群
-'''
-```
-
-### tsugu_async config
-
-```py
-from tsugu_async import config
-...
-# 与 tsugu config 相同
-```
-
-
-
-***
-
- <details>
-<summary><b>客服🐱指导(这里可以点击)</b></summary>
- 
-**注意，如果你不知道什么是BanGDream，请不要随意加群**    
-**本群还是欢迎加群的（**    
-[BanGDreamBot开发聊天群](https://qm.qq.com/q/zjUPQkrdpm)   
-温馨的聊天环境～   
-
-</details>
-
 
 ---

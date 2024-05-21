@@ -1,14 +1,17 @@
-from ...utils import config, text_response, User, server_id_2_server_name, server_name_2_server_id, server_exists
+from ...utils import get_user, text_response, User, server_id_2_server_name, server_name_2_server_id
 from arclet.alconna import Alconna, Option, Subcommand, Args, CommandMeta, Empty, Namespace, namespace, command_manager, MultiVar, AllParam
 
 
-def handler(message: str, user: User, platform: str, channel_id: str):
-    res = Alconna(
+alc = Alconna(
         ["help"],
         Args["cmd;?#命令", str],
         meta=CommandMeta(
-            compact=config.compact, description="Chat Tsugu Py 帮助",)
-    ).parse(message)
+            compact=True, description="Chat Tsugu Py 帮助",)
+    )
+
+
+def handler(message: str, user_id: str, platform: str, channel_id: str):
+    res = alc.parse(message)
 
     if res.matched:
         if not res.cmd:

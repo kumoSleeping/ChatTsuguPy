@@ -1,20 +1,24 @@
-from ...utils import text_response, User, server_id_2_server_name, server_name_2_server_id, server_exists, config
+from ...utils import get_user, text_response, User, server_id_2_server_name, server_name_2_server_id
 import tsugu_api
 from arclet.alconna import Alconna, Option, Subcommand, Args, CommandMeta, Empty, Namespace, namespace, command_manager
 
 
-def handler(message: str, user: User, platform: str, channel_id: str):
-    res = Alconna(
+alc = Alconna(
         ["验证解绑"],
         Args["index#要解绑的绑定编号", int],
         meta=CommandMeta(
-            compact=config.compact, description="验证解绑",
+            compact=True, description="验证解绑",
             usage="验证解绑 记录编号(数字)",
             example="验证解绑 1 : 解绑第一个记录"
         ),
-    ).parse(message)
+    )
+
+
+def handler(message: str, user_id: str, platform: str, channel_id: str):
+    res = alc.parse(message)
 
     if res.matched:
+        user = get_user(user_id, platform)
         if len(user.game_ids) < int(res.index):
             return text_response('未找到记录')
         player_id = user.game_ids[int(res.index) - 1].get("game_id")

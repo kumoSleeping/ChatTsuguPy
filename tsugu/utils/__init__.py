@@ -3,7 +3,6 @@ from typing import List
 import tsugu_api
 from loguru import logger
 import time
-from ..config import config
 
 from tsugu_api_core._typing import _ServerId
 
@@ -62,7 +61,7 @@ def get_user(user_id: str, platform: str) -> User:
     :param platform:
     :return:
     '''
-    for i in range(0, config.remote_data_max_retry):
+    for i in range(0, 3):
         try:
             user_data_res = tsugu_api.get_user_data(platform, user_id)
             if user_data_res.get('status') == 'failed':

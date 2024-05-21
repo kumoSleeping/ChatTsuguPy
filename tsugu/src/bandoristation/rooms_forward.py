@@ -8,7 +8,7 @@ import re
 alc = Alconna(["上传车牌"],meta=CommandMeta(description="上传车牌",))
 
 
-def handler(message: str, user: User, platform: str, channel_id: str):
+def handler(message: str, user_id: str, platform: str, channel_id: str):
     if message.startswith("上传车牌"):
         message = message[4:].strip()
 
@@ -28,7 +28,7 @@ def handler(message: str, user: User, platform: str, channel_id: str):
     if not re.match(pattern, message):
         return None
 
-    user = get_user(user.user_id, platform)
+    user = get_user(user_id, platform)
 
     # 获取用户数据
     try:
@@ -47,7 +47,7 @@ def handler(message: str, user: User, platform: str, channel_id: str):
             car_user_id = user.user_id
         else:
             car_user_id = '3889000770'
-        tsugu_api.submit_room_number(number=int(car_id), user_id=car_user_id, raw_message=message, source=config.bandori_station_token_name, token=config.bandori_station_token)
+        tsugu_api.submit_room_number(number=int(car_id), user_id=car_user_id, raw_message=message, source="Tsugu", token="ZtV4EX2K9Onb")
         return None
 
     except Exception as e:

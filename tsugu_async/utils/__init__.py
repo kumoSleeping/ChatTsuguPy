@@ -58,12 +58,12 @@ async def get_user(user_id: str, platform: str) -> User:
     获取用户数据
     多次尝试获取用户数据
     兼容旧版用户数据
-
+W
     :param user_id:
     :param platform:
     :return:
     '''
-    for i in range(0, config.remote_data_max_retry):
+    for i in range(0, 3):
         try:
             user_data_res = await tsugu_api_async.get_user_data(platform, user_id)
             if user_data_res.get('status') == 'failed':

@@ -47,7 +47,8 @@ async def handler(message: str, user: User, platform: str, channel_id: str):
             car_user_id = user.user_id
         else:
             car_user_id = '3889000770'
-        await tsugu_api_async.submit_room_number(number=int(car_id), user_id=car_user_id, raw_message=message, source=config.bandori_station_token_name, token=config.bandori_station_token)
+
+        await tsugu_api_async.submit_room_number(number=int(car_id), user_id=car_user_id, raw_message=message, source='Tsugu', token='ZtV4EX2K9Onb')
         return None
 
     except Exception as e:

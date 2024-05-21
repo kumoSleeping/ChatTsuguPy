@@ -1,6 +1,6 @@
 import importlib
 from arclet.alconna import Arparma, output_manager, command_manager
-from ..utils import text_response, get_user
+from ..utils import text_response
 
 
 # 主要功能
@@ -56,14 +56,14 @@ def require(module_path, cmd):
 [require(f'.bandoristation.{cmd}', cmd) for cmd in bandoristation_commands]
 [require(f'.help.{cmd}', cmd) for cmd in help_command]
 
+output_manager.set_action(lambda *_: None)
+
 
 def handler(message, user_id, platform, channel_id):
-    user = get_user(user_id, platform)
-    output_manager.set_action(lambda *_: None)
     union_list = universal_list + remote_commands + bandoristation_commands + help_command
 
     for i in union_list:
-        result = getattr(globals()[i], 'handler')(message, user, platform, channel_id)
+        result = getattr(globals()[i], 'handler')(message, user_id, platform, channel_id)
 
         # 未生成结果
         if isinstance(result, Arparma):
@@ -72,7 +72,7 @@ def handler(message, user_id, platform, channel_id):
 
                 # 帮助信息
                 if result.error_data == ['-h']:
-                    return getattr(globals()['help'], 'handler')('help ' + result.header_result, user, platform, channel_id)
+                    return getattr(globals()['help'], 'handler')('help ' + result.header_result, user_id, platform, channel_id)
                 # 错误信息
                 else:
                     return text_response(result.error_info)
