@@ -3,7 +3,7 @@ from typing import List, Union, Dict
 
 from .utils import *
 from loguru import logger
-from . import router
+from . import src
 
 
 def handler(message: str, user_id: str, platform: str, channel_id: str) -> List[Union[bytes, str]]:
@@ -41,7 +41,7 @@ def handler_raw(message: str, user_id: str, platform: str, channel_id: str) -> L
     :return: List[Dict[str, str]]
     '''
     try:
-        return r if (r := router.handler(message, user_id, platform, channel_id)) else None
+        return r if (r := src.handler(message, user_id, platform, channel_id)) else None
     except Exception as e:
         logger.error(f'Error: {e}')
         raise e

@@ -1,10 +1,9 @@
 import typing
 from typing import List
-
-from ..config import config
 import tsugu_api
 from loguru import logger
 import time
+from ..config import config
 
 from tsugu_api_core._typing import _ServerId
 

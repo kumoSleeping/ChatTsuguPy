@@ -4,7 +4,7 @@ from typing import List, Union, Dict
 from .utils import *
 from loguru import logger
 from tsugu_api import settings
-from . import router
+from . import src
 
 
 async def handler(message: str, user_id: str, platform: str, channel_id: str) -> List[Union[bytes, str]]:
@@ -43,7 +43,7 @@ async def handler_raw(message: str, user_id: str, platform: str, channel_id: str
     '''
     try:
         # 使用远程服务器
-        res = await router.handler(message, user_id, platform, channel_id)
+        res = await src.handler(message, user_id, platform, channel_id)
         if not res:
             return []
         return res
