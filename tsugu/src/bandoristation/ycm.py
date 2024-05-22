@@ -1,4 +1,4 @@
-from ...utils import get_user, text_response, User, server_id_2_server_name, server_name_2_server_id
+from ...utils import text_response, User, server_id_2_server_name, server_name_2_server_id
 import tsugu_api
 import tsugu_api_async
 from arclet.alconna import Alconna, Option, Subcommand, Args, CommandMeta, Empty, Namespace, namespace, command_manager

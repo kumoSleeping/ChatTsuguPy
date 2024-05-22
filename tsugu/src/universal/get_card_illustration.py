@@ -20,7 +20,6 @@ def handler(message: str, user_id: str, platform: str, channel_id: str):
     res = alc.parse(message)
 
     if res.matched:
-        user = get_user(user_id, platform)
         return tsugu_api.get_card_illustration(res.cardId)
 
     return res
