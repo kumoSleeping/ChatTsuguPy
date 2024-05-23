@@ -23,7 +23,7 @@ def handler(message: str, user_id: str, platform: str, channel_id: str):
         r = tsugu_api.bind_player_verification(platform, user.user_id, server, res.playerID, True)
         if r.get('status') != 'success':
             return text_response(r.get('data'))
-        return text_response('绑定成功！现在可以使用 玩家状态 {len(user.game_ids) + 1} 查看绑定的玩家状态')
+        return text_response(f'绑定成功！现在可以使用 玩家状态 {len(user.game_ids) + 1} 查看绑定的玩家状态')
     return res
 
 
@@ -36,7 +36,7 @@ async def handler_async(message: str, user_id: str, platform: str, channel_id: s
         r = await tsugu_api_async.bind_player_verification(platform, user.user_id, server, res.playerID, True)
         if r.get('status') != 'success':
             return text_response(r.get('data'))
-        return text_response('绑定成功！现在可以使用 玩家状态 {len(user.game_ids) + 1} 查看绑定的玩家状态')
+        return text_response(f'绑定成功！现在可以使用 玩家状态 {len(user.game_ids) + 1} 查看绑定的玩家状态')
     return res
 
 
