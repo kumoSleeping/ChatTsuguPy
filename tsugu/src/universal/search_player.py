@@ -23,9 +23,10 @@ def handler(message: str, user_id: str, platform: str, channel_id: str):
     if res.matched:
         user = get_user(user_id, platform)
         if res.serverName:
-            server = res.serverName
+            server = server_name_2_server_id(res.serverName)
         else:
             server = user.server_mode
+        print(res.playerId, server)
         return tsugu_api.search_player(res.playerId, server)
 
     return res
@@ -37,7 +38,7 @@ async def handler_async(message: str, user_id: str, platform: str, channel_id: s
     if res.matched:
         user = get_user(user_id, platform)
         if res.serverName:
-            server = res.serverName
+            server = server_name_2_server_id(res.serverName)
         else:
             server = user.server_mode
         return await tsugu_api_async.search_player(res.playerId, server)
