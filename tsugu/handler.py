@@ -1,5 +1,6 @@
 import base64
 from typing import List, Union, Dict
+import tarina
 
 from .utils import *
 from loguru import logger
