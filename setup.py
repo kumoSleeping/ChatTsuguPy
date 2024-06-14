@@ -21,7 +21,6 @@ setup(
     ],
     install_requires=[
             "loguru",
-            "tarina",
             "tsugu-api-python==1.2.0",
             "arclet-alconna",
         ],
