@@ -6,7 +6,7 @@ import tsugu_api_async
 
 
 alc = Alconna(
-        ["查玩家", "查寻玩家"],
+        ["查玩家", "查询玩家"],
         Args["playerId#你的游戏账号(数字)", int]["serverName;?#省略服务器名时，默认从你当前的主服务器查询。", _ServerName.__args__],
         meta=CommandMeta(
             compact=True,
