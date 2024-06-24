@@ -29,7 +29,6 @@ async def handler_async(message: str, user_id: str, platform: str, channel_id: s
     res = alc.parse(message)
 
     if res.matched:
-        user = get_user(user_id, platform)
         return await tsugu_api_async.get_card_illustration(res.cardId)
 
     return res

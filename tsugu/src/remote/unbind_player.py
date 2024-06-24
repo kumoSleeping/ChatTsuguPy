@@ -1,7 +1,8 @@
-from ...utils import get_user, text_response, User, server_id_2_server_name, server_name_2_server_id
+from ...utils import get_user, text_response, User, server_id_2_server_name, server_name_2_server_id, get_user_async
 import tsugu_api
-from arclet.alconna import Alconna, Option, Subcommand, Args, CommandMeta, Empty, Namespace, namespace, command_manager
 import tsugu_api_async
+
+from arclet.alconna import Alconna, Option, Subcommand, Args, CommandMeta, Empty, Namespace, namespace, command_manager
 
 
 alc = Alconna(
@@ -61,7 +62,7 @@ async def handler_async(message: str, user_id: str, platform: str, channel_id: s
     res = alc.parse(message)
 
     if res.matched:
-        user = get_user(user_id, platform)
+        user = await get_user_async(user_id, platform)
         if not res.index:
             bind_record = '\n'.join([f'{i + 1}. {mask_data(x.get("game_id"))} {server_id_2_server_name(x.get("server"))}' for i, x in enumerate(user.game_ids)])
             return text_response('请输入正确的记录(数字)\n例如: 解除绑定 1\n当前的绑定记录如下:\n' + bind_record)

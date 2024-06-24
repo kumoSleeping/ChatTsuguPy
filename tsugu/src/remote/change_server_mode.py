@@ -1,5 +1,6 @@
-from ...utils import get_user, text_response, User, server_id_2_server_name, server_name_2_server_id
+from ...utils import get_user, text_response, User, server_id_2_server_name, server_name_2_server_id, get_user_async
 import tsugu_api
+import tsugu_api_async
 from arclet.alconna import Alconna, Option, Subcommand, Args, CommandMeta, Empty, Namespace, namespace, command_manager, MultiVar
 from tsugu_api_core._typing import _ServerName
 
@@ -33,8 +34,8 @@ async def handler_async(message: str, user_id: str, platform: str, channel_id: s
     res = alc.parse(message)
 
     if res.matched:
-        user = get_user(user_id, platform)
-        r = await tsugu_api.change_user_data(platform, user.user_id, {'server_mode': server_name_2_server_id(res.serverName)})
+        user = await get_user_async(user_id, platform)
+        r = await tsugu_api_async.change_user_data(platform, user.user_id, {'server_mode': server_name_2_server_id(res.serverName)})
         if r.get('status') != 'success':
             return text_response(r.get('data'))
         return text_response('主服务器已设置为 ' + res.serverName)

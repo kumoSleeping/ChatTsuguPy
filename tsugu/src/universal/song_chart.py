@@ -1,4 +1,4 @@
-from ...utils import get_user, text_response, User, server_id_2_server_name, server_name_2_server_id
+from ...utils import get_user, text_response, User, server_id_2_server_name, server_name_2_server_id, get_user_async
 import tsugu_api
 from arclet.alconna import Alconna, Option, Subcommand, Args, CommandMeta, Empty, Namespace, namespace, command_manager
 import tsugu_api_async
@@ -31,7 +31,7 @@ async def handler_async(message: str, user_id: str, platform: str, channel_id: s
     res = alc.parse(message)
 
     if res.matched:
-        user = get_user(user_id, platform)
+        user = await get_user_async(user_id, platform)
         return await tsugu_api_async.song_chart(user.default_server, res.songId, res.difficultyText)
 
     return res
