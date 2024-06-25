@@ -27,6 +27,8 @@ def handler(message: str, user_id: str, platform: str, channel_id: str):
         else:
             server = user.server_mode
         print(res.playerId, server)
+        if str(res.playerId).startswith('4') and server == 3:
+            return text_response('Bestdori 暂不支持渠道服相关功能。')
         return tsugu_api.search_player(res.playerId, server)
 
     return res
@@ -41,6 +43,8 @@ async def handler_async(message: str, user_id: str, platform: str, channel_id: s
             server = server_name_2_server_id(res.serverName)
         else:
             server = user.server_mode
+        if str(res.playerId).startswith('4') and server == 3:
+            return text_response('Bestdori 暂不支持渠道服相关功能。')
         return await tsugu_api_async.search_player(res.playerId, server)
 
     return res
