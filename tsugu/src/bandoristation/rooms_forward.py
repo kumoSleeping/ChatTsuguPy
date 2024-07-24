@@ -5,7 +5,7 @@ import tsugu_api
 import tsugu_api_async
 
 
-# 虚空注册
+# 虚空注册 ##################### 虚空注册 只为了help
 alc = Alconna(
     ["上传车牌"],
     meta=CommandMeta(
@@ -39,7 +39,7 @@ def handler(message: str, user_id: str, platform: str):
     # 获取用户数据
     try:
         if platform:
-            if not user.car:
+            if not user.share_room_number:
                 return None
     except Exception as e:
         # 默认不开启关闭车牌，继续提交
@@ -85,7 +85,7 @@ async def handler_async(message: str, user_id: str, platform: str):
     # 获取用户数据
     try:
         if platform:
-            if not user.car:
+            if not user.share_room_number:
                 return None
     except Exception as e:
         # 默认不开启关闭车牌，继续提交

@@ -2,7 +2,7 @@ from ...utils import text_response, User, server_id_2_server_name, server_name_2
 import tsugu_api
 import tsugu_api_async
 from arclet.alconna import Alconna, Option, Subcommand, Args, CommandMeta, Empty, Namespace, namespace, command_manager
-
+from tsugu.utils import get_user, get_user_async
 
 alc = Alconna(
         ["ycm", "车来", "有车吗"],
@@ -24,21 +24,23 @@ def handler(message: str, user_id: str, platform: str):
         if not data:
             return text_response('myc')
 
-        new_data = []
+        new_data = {}
+        user = get_user(user_id, platform)
         for i in data:
-            if isinstance(i['number'], str):
-                i['number'] = int(i['number'])
-            i['source'] = i['source_info']['name']
-            i['userId'] = i['user_info']['user_id']
-            i['time'] = i['time']
-            i['avanter'] = i['user_info']['avatar']
-            i['userName'] = i['user_info']['username']
-            i['rawMessage'] = i['raw_message']
-            new_data.append(i)
+            new_data.update({'player': {'playerId': user.user_player_list[user.user_player_index]['playerId'],
+                              'server': user.user_player_list[user.user_player_index]['server']}})
+            new_data.update({'number': int(i['number'])})
+            new_data.update({'source': i['source_info']['name']})
+            new_data.update({'userId': i['user_info']['user_id']})
+            new_data.update({'time': i['time']})
+            new_data.update({'avatarUrl': 'https://asset.bandoristation.com/images/user-avatar/' + i['user_info']['avatar']})
+            new_data.update({'userName': i['user_info']['username']})
+            new_data.update({'rawMessage': i['raw_message']})
         # 过滤掉 number 相同的
-        new_data = list({v['number']: v for v in new_data}.values())
-
-        return tsugu_api.room_list(new_data)
+        try:
+            return tsugu_api.room_list([new_data])
+        except Exception as e:
+            return text_response(e)
 
     return res
 
@@ -54,22 +56,22 @@ async def handler_async(message: str, user_id: str, platform: str):
         if not data:
             return text_response('myc')
 
-        new_data = []
+        new_data = {}
+        user = await get_user_async(user_id, platform)
         for i in data:
-            if isinstance(i['number'], str):
-                i['number'] = int(i['number'])
-            i['source'] = i['source_info']['name']
-            i['userId'] = i['user_info']['user_id']
-            i['time'] = i['time']
-            i['avanter'] = i['user_info']['avatar']
-            i['userName'] = i['user_info']['username']
-            i['rawMessage'] = i['raw_message']
-            new_data.append(i)
+            new_data.update({'player': {'playerId': user.user_player_list[user.user_player_index]['playerId'],
+                              'server': user.user_player_list[user.user_player_index]['server']}})
+            new_data.update({'number': int(i['number'])})
+            new_data.update({'source': i['source_info']['name']})
+            new_data.update({'userId': i['user_info']['user_id']})
+            new_data.update({'time': i['time']})
+            new_data.update({'avatarUrl': 'https://asset.bandoristation.com/images/user-avatar/' + i['user_info']['avatar']})
+            new_data.update({'userName': i['user_info']['username']})
+            new_data.update({'rawMessage': i['raw_message']})
         # 过滤掉 number 相同的
-        new_data = list({v['number']: v for v in new_data}.values())
-
-        return await tsugu_api_async.room_list(new_data)
+        try:
+            return await tsugu_api_async.room_list([new_data])
+        except Exception as e:
+            return text_response(e)
 
     return res
-
-
