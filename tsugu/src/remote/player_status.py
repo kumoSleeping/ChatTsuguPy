@@ -6,120 +6,88 @@ from arclet.alconna import Alconna, Option, Subcommand, Args, CommandMeta, Empty
 from tsugu_api_core._typing import _ServerName
 
 
-
 alc = Alconna(
         ["玩家状态"],
-        Args["serverName;?", _ServerName.__args__]["serverIndex;?", int],
+        Args["accountIndex;?", int],
         meta=CommandMeta(
             compact=True,
             description="查询自己的玩家状态",
             usage='根据关键词或活动ID查询活动信息',
-            example='''玩家状态 :返回玩家状态(优先当前服务器下第一条记录)
-玩家状态 1 :返回绑定的第一条记录的状态
-玩家状态 jp :返回绑定的cn服务器的记录的状态'''
+            example='''玩家状态 :返回指定默认账号的玩家状态
+玩家状态 1 :返回账号1的玩家状态
+
+可以使用 交换绑定顺序 来交换绑定的玩家顺序
+例如：交换绑定顺序 1 2 交换账号1和2的绑定顺序
+
+可以使用 主账号 来设置默认查询账号
+例如：主账号 2 设置账号2为默认查询账号
+
+已取消自动跟随服务器显示不同服务器账号“玩家状态”的功能，请使用 “玩家状态 数字” 来查询。
+例如：玩家状态 2
+'''
         )
     )
 
 
-def handler(message: str, user_id: str, platform: str, channel_id: str):
-    def _utils_search_player_by_game_id(game_id, additional_text=""):
-        player_id = str(game_id.get("game_id"))
-        server = int(game_id.get("server"))
-        response = tsugu_api.search_player(int(player_id), server)
-        return response + text_response(additional_text)
+def handler(message: str, user_id: str, platform: str):
 
-    def _case_default(user: User):
-        # 优先当前服务器
-        for game_id in user.game_ids:
-            if game_id.get("server") == user.server_mode:
-                text = f' 已查找默认服务器 {server_id_2_server_name(user.server_mode)} 的记录。'
-                return _utils_search_player_by_game_id(game_id, text)
-        # 兜底逻辑：使用第一个记录
-        if user.game_ids:
-            game_id = user.game_ids[0]
-            text = f' 已查找第一个记录。'
-            return _utils_search_player_by_game_id(game_id, text)
-        return text_response('未绑定任何记录，可以使用 绑定玩家 进行绑定')
+    def _case_default():
+        user_player_index = user.user_player_index
+        try:
+            game_id_msg = user.user_player_list[user_player_index]
+            return tsugu_api.search_player(int(game_id_msg.get("playerId")), game_id_msg.get("server")) + text_response(f'已查找默认玩家状态（{user_player_index + 1}），“help 玩家状态” 了解更多。')
+        except Exception as e:
+            return text_response(e)
 
-    def _case_server(user: User, server_name: str):
-        server_id = server_name_2_server_id(server_name)
-        # 服务器不存在
-        if not server_exists(server_id):
-            return text_response(f'服务器 {server_name} 不存在。')
-        # 查找记录
-        for game_id in user.game_ids:
-            if game_id.get("server") == server_id:
-                # 找到记录
-                return _utils_search_player_by_game_id(game_id)
-        # 未找到记录
-        return text_response(f'未在记录中找到服务器 {server_name} 的记录。')
-
-    def _case_index(user: User, index: int):
-        if index > len(user.game_ids) or index < 1:
-            return text_response(f'未找到记录 {index}。')
-        return _utils_search_player_by_game_id(user.game_ids[index - 1])
+    def _case_index():
+        if res.accountIndex > len(user.user_player_list) or res.accountIndex < 1:
+            return text_response(f'未找到记录 {res.accountIndex}。')
+        try:
+            game_id_msg = user.user_player_list[res.accountIndex - 1]
+            return tsugu_api.search_player(int(game_id_msg.get("playerId")), game_id_msg.get("server")) + text_response(f'已查找账号 {res.accountIndex} 玩家状态，“help 玩家状态” 了解更多。')
+        except Exception as e:
+            return text_response(e)
 
     res = alc.parse(message)
 
     if res.matched:
         user = get_user(user_id, platform)
-        if res.serverName:
-            return _case_server(user, res.serverName)
-        elif res.serverIndex:
-            return _case_index(user, res.serverIndex)
+        if res.accountIndex:
+            return _case_index()
         else:
-            return _case_default(user)
+            return _case_default()
+
     return res
 
 
-async def handler_async(message: str, user_id: str, platform: str, channel_id: str):
-    async def _utils_search_player_by_game_id(game_id, additional_text=""):
-        player_id = str(game_id.get("game_id"))
-        server = int(game_id.get("server"))
-        response = await tsugu_api_async.search_player(int(player_id), server)
-        return response + text_response(additional_text)
+async def handler_async(message: str, user_id: str, platform: str):
 
-    async def _case_default(user: User):
-        # 优先当前服务器
-        for game_id in user.game_ids:
-            if game_id.get("server") == user.server_mode:
-                text = f' 已查找默认服务器 {server_id_2_server_name(user.server_mode)} 的记录。'
-                return await _utils_search_player_by_game_id(game_id, text)
-        # 兜底逻辑：使用第一个记录
-        if user.game_ids:
-            game_id = user.game_ids[0]
-            text = f' 已查找第一个记录。'
-            return await _utils_search_player_by_game_id(game_id, text)
-        return text_response('未绑定任何记录，可以使用 绑定玩家 进行绑定')
+        async def _case_default():
+            user_player_index = user.user_player_index
+            try:
+                game_id_msg = user.user_player_list[user_player_index]
+                return await tsugu_api_async.search_player(int(game_id_msg.get("playerId")), game_id_msg.get("server")) + text_response(f'已查找默认玩家状态（{user_player_index + 1}），“help 玩家状态” 了解更多。')
+            except Exception as e:
+                return text_response(e)
 
-    async def _case_server(user: User, server_name: str):
-        server_id = server_name_2_server_id(server_name)
-        # 服务器不存在
-        if not server_exists(server_id):
-            return text_response(f'服务器 {server_name} 不存在。')
-        # 查找记录
-        for game_id in user.game_ids:
-            if game_id.get("server") == server_id:
-                # 找到记录
-                return await _utils_search_player_by_game_id(game_id)
-        # 未找到记录
-        return text_response(f'未在记录中找到服务器 {server_name} 的记录。')
+        async def _case_index():
+            if res.accountIndex > len(user.user_player_list) or res.accountIndex < 1:
+                return text_response(f'未找到记录 {res.accountIndex}。')
+            try:
+                game_id_msg = user.user_player_list[res.accountIndex - 1]
+                return await tsugu_api_async.search_player(int(game_id_msg.get("playerId")), game_id_msg.get("server")) + text_response(f'已查找账号 {res.accountIndex} 玩家状态，“help 玩家状态” 了解更多。')
+            except Exception as e:
+                return text_response(e)
 
-    async def _case_index(user: User, index: int):
-        if index > len(user.game_ids) or index < 1:
-            return text_response(f'未找到记录 {index}。')
-        return await _utils_search_player_by_game_id(user.game_ids[index - 1])
+        res = alc.parse(message)
 
-    res = alc.parse(message)
+        if res.matched:
+            user = await get_user_async(user_id, platform)
+            if res.accountIndex:
+                return _case_index()
+            else:
+                return _case_default()
 
-    if res.matched:
-        user = await get_user_async(user_id, platform)
-        if res.serverName:
-            return await _case_server(user, res.serverName)
-        elif res.serverIndex:
-            return await _case_index(user, res.serverIndex)
-        else:
-            return await _case_default(user)
-    return res
+        return res
 
 

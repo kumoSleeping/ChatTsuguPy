@@ -21,7 +21,7 @@ setup(
     ],
     install_requires=[
             "loguru",
-            "tsugu-api-python==1.2.0",
+            "tsugu-api-python",
             "arclet-alconna",
         ],
     python_requires='>=3.8',

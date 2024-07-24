@@ -15,7 +15,7 @@ alc = Alconna(
     )
 
 
-def handler(message: str, user_id: str, platform: str, channel_id: str):
+def handler(message: str, user_id: str, platform: str):
     res = alc.parse(message)
 
     if res.matched:
@@ -23,14 +23,16 @@ def handler(message: str, user_id: str, platform: str, channel_id: str):
         server = server_name_2_server_id(res.serverName)
         if str(res.playerId).startswith('4') and server == 3:
             return text_response('Bestdori 暂不支持渠道服相关功能。')
-        r = tsugu_api.bind_player_verification(platform, user.user_id, server, res.playerId, True)
-        if r.get('status') != 'success':
-            return text_response(r.get('data'))
-        return text_response(f'绑定成功！现在可以使用 玩家状态 {len(user.game_ids) + 1} 查看绑定的玩家状态')
+        try:
+            r = tsugu_api.bind_player_verification(platform, user.user_id, server, res.playerId, 'bind')
+            return text_response(f'绑定成功！现在可以使用 玩家状态 {len(user.user_player_list) + 1} 查看绑定的玩家状态')
+        except Exception as e:
+            return text_response(str(e))
+
     return res
 
 
-async def handler_async(message: str, user_id: str, platform: str, channel_id: str):
+async def handler_async(message: str, user_id: str, platform: str):
     res = alc.parse(message)
 
     if res.matched:
@@ -38,10 +40,12 @@ async def handler_async(message: str, user_id: str, platform: str, channel_id: s
         server = server_name_2_server_id(res.serverName)
         if str(res.playerId).startswith('4') and len(str(res.playerId)) == 10 and server == 3:
             return text_response('Bestdori 暂不支持渠道服相关功能。')
-        r = await tsugu_api_async.bind_player_verification(platform, user.user_id, server, res.playerId, True)
-        if r.get('status') != 'success':
-            return text_response(r.get('data'))
-        return text_response(f'绑定成功！现在可以使用 玩家状态 {len(user.game_ids) + 1} 查看绑定的玩家状态')
+        try:
+            r = await tsugu_api_async.bind_player_verification(platform, user.user_id, server, res.playerId, 'bind')
+            return text_response(f'绑定成功！现在可以使用 玩家状态 {len(user.user_player_list) + 1} 查看绑定的玩家状态')
+        except Exception as e:
+            return text_response(str(e))
+
     return res
 
 

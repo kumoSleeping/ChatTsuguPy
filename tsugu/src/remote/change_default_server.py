@@ -3,7 +3,7 @@ import tsugu_api
 import tsugu_api_async
 
 from arclet.alconna import Alconna, Option, Subcommand, Args, CommandMeta, Empty, Namespace, namespace, command_manager, MultiVar
-from tsugu_api_core._typing import _ServerName
+from tsugu_api_core._typing import _ServerName, _PartialTsuguUser, _ChangeUserDataResponse
 
 
 alc = Alconna(
@@ -18,27 +18,31 @@ alc = Alconna(
     )
 
 
-def handler(message: str, user_id: str, platform: str, channel_id: str):
+def handler(message: str, user_id: str, platform: str):
     res = alc.parse(message)
 
     if res.matched:
         user = get_user(user_id, platform)
-        r = tsugu_api.change_user_data(platform, user.user_id, {'default_server': server_names_2_server_ids(res.serverList)})
-        if r.get('status') != 'success':
-            return text_response(r.get('data'))
+        try:
+            tsugu_api.change_user_data(platform, user.user_id, {'displayedServerList': server_names_2_server_ids(res.serverList)})  # serverList是res的用户输入
+        except Exception as e:
+            return text_response(str(e))
+
         return text_response('默认服务器已设置为 ' + ' '.join(res.serverList))
     
     return res
 
 
-async def handler_async(message: str, user_id: str, platform: str, channel_id: str):
+async def handler_async(message: str, user_id: str, platform: str):
     res = alc.parse(message)
 
     if res.matched:
         user = await get_user_async(user_id, platform)
-        r = await tsugu_api_async.change_user_data(platform, user.user_id, {'default_server': server_names_2_server_ids(res.serverList)})
-        if r.get('status') != 'success':
-            return text_response(r.get('data'))
+        try:
+            await tsugu_api_async.change_user_data(platform, user.user_id, {'displayedServerList': server_names_2_server_ids(res.serverList)})
+        except Exception as e:
+            return text_response(str(e))
+
         return text_response('默认服务器已设置为 ' + ' '.join(res.serverList))
 
     return res

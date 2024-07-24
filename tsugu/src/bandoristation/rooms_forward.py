@@ -14,7 +14,7 @@ alc = Alconna(
     )
 
 
-def handler(message: str, user_id: str, platform: str, channel_id: str):
+def handler(message: str, user_id: str, platform: str):
     if message.startswith("上传车牌"):
         message = message[4:].strip()
 
@@ -60,7 +60,7 @@ def handler(message: str, user_id: str, platform: str, channel_id: str):
         return None
 
 
-async def handler_async(message: str, user_id: str, platform: str, channel_id: str):
+async def handler_async(message: str, user_id: str, platform: str):
     if message.startswith("上传车牌"):
         message = message[4:].strip()
 

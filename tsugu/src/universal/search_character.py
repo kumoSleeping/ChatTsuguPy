@@ -16,22 +16,28 @@ alc = Alconna(
     )
 
 
-def handler(message: str, user_id: str, platform: str, channel_id: str):
+def handler(message: str, user_id: str, platform: str):
     res = alc.parse(message)
 
     if res.matched:
         user = get_user(user_id, platform)
-        return tsugu_api.search_character(user.default_server, " ".join(res.word))
+        try:
+            return tsugu_api.search_character(user.displayed_server_list, text=" ".join(res.word))
+        except Exception as e:
+            return text_response(e)
 
     return res
 
 
-async def handler_async(message: str, user_id: str, platform: str, channel_id: str):
+async def handler_async(message: str, user_id: str, platform: str):
     res = alc.parse(message)
 
     if res.matched:
         user = await get_user_async(user_id, platform)
-        return await tsugu_api_async.search_character(user.default_server, " ".join(res.word))
+        try:
+            return await tsugu_api_async.search_character(user.displayed_server_list, text=" ".join(res.word))
+        except Exception as e:
+            return text_response(e)
 
     return res
 

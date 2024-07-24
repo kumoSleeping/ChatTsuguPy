@@ -17,7 +17,7 @@ alc = Alconna(
     )
 
 
-def handler(message: str, user_id: str, platform: str, channel_id: str):
+def handler(message: str, user_id: str, platform: str):
     res = alc.parse(message)
 
     if res.matched:
@@ -25,16 +25,19 @@ def handler(message: str, user_id: str, platform: str, channel_id: str):
         if res.serverName:
             server = server_name_2_server_id(res.serverName)
         else:
-            server = user.server_mode
+            server = user.main_server
         print(res.playerId, server)
         if str(res.playerId).startswith('4') and server == 3:
             return text_response('Bestdori 暂不支持渠道服相关功能。')
-        return tsugu_api.search_player(res.playerId, server)
+        try:
+            return tsugu_api.search_player(res.playerId, server)
+        except Exception as e:
+            return text_response(e)
 
     return res
 
 
-async def handler_async(message: str, user_id: str, platform: str, channel_id: str):
+async def handler_async(message: str, user_id: str, platform: str):
     res = alc.parse(message)
 
     if res.matched:
@@ -42,10 +45,13 @@ async def handler_async(message: str, user_id: str, platform: str, channel_id: s
         if res.serverName:
             server = server_name_2_server_id(res.serverName)
         else:
-            server = user.server_mode
+            server = user.main_server
         if str(res.playerId).startswith('4') and server == 3:
             return text_response('Bestdori 暂不支持渠道服相关功能。')
-        return await tsugu_api_async.search_player(res.playerId, server)
+        try:
+            return await tsugu_api_async.search_player(res.playerId, server)
+        except Exception as e:
+            return text_response(e)
 
     return res
 

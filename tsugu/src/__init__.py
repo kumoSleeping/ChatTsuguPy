@@ -32,6 +32,8 @@ remote_commands = [
     "change_default_server",
     "bind_player_verification_off",
     "bind_player_verification_on",
+    "change_user_player_index",
+    "change_user_player_list_sequence",
 ]
 
 # BandoriStation 相关功能
@@ -59,11 +61,11 @@ def require(module_path, cmd):
 output_manager.set_action(lambda *_: None)
 
 
-def handler(message, user_id, platform, channel_id):
+def handler(message, user_id, platform):
     union_list = universal_list + remote_commands + bandoristation_commands + help_command
 
     for i in union_list:
-        result = getattr(globals()[i], 'handler')(message, user_id, platform, channel_id)
+        result = getattr(globals()[i], 'handler')(message, user_id, platform)
 
         # 未生成结果
         if isinstance(result, Arparma):
@@ -72,7 +74,7 @@ def handler(message, user_id, platform, channel_id):
 
                 # 帮助信息
                 if result.error_data == ['-h']:
-                    return getattr(globals()['help'], 'handler')('help ' + result.header_result, user_id, platform, channel_id)
+                    return getattr(globals()['help'], 'handler')('help ' + result.header_result, user_id, platform)
                 # 错误信息
                 else:
                     return text_response(result.error_info)
@@ -84,11 +86,11 @@ def handler(message, user_id, platform, channel_id):
     return None
 
 
-async def handler_async(message, user_id, platform, channel_id):
+async def handler_async(message, user_id, platform):
     union_list = universal_list + remote_commands + bandoristation_commands + help_command
 
     for i in union_list:
-        result = await getattr(globals()[i], 'handler_async')(message, user_id, platform, channel_id)
+        result = await getattr(globals()[i], 'handler_async')(message, user_id, platform)
 
         # 未生成结果
         if isinstance(result, Arparma):
@@ -97,7 +99,7 @@ async def handler_async(message, user_id, platform, channel_id):
 
                 # 帮助信息
                 if result.error_data == ['-h']:
-                    return await getattr(globals()['help'], 'handler_async')('help ' + result.header_result, user_id, platform, channel_id)
+                    return await getattr(globals()['help'], 'handler_async')('help ' + result.header_result, user_id, platform)
                 # 错误信息
                 else:
                     return text_response(result.error_info)

@@ -17,7 +17,7 @@ alc = Alconna(
     )
 
 
-def handler(message: str, user_id: str, platform: str, channel_id: str):
+def handler(message: str, user_id: str, platform: str):
     res = alc.parse(message)
 
     if res.matched:
@@ -25,13 +25,16 @@ def handler(message: str, user_id: str, platform: str, channel_id: str):
         if res.serverName:
             server = server_name_2_server_id(res.serverName)
         else:
-            server = user.server_mode
-        return tsugu_api.song_meta(user.default_server, server)
+            server = user.main_server
+        try:
+            return tsugu_api.song_meta(user.displayed_server_list, server)
+        except Exception as e:
+            return text_response(e)
 
     return res
 
 
-async def handler_async(message: str, user_id: str, platform: str, channel_id: str):
+async def handler_async(message: str, user_id: str, platform: str):
     res = alc.parse(message)
 
     if res.matched:
@@ -39,8 +42,11 @@ async def handler_async(message: str, user_id: str, platform: str, channel_id: s
         if res.serverName:
             server = server_name_2_server_id(res.serverName)
         else:
-            server = user.server_mode
-        return await tsugu_api_async.song_meta(user.default_server, server)
+            server = user.main_server
+        try:
+            return await tsugu_api_async.song_meta(user.displayed_server_list, server)
+        except Exception as e:
+            return text_response(e)
 
     return res
 

@@ -17,22 +17,28 @@ alc = Alconna(
 查谱面 128 special :返回128号曲的special难度谱面'''
         )
     )
-def handler(message: str, user_id: str, platform: str, channel_id: str):
+def handler(message: str, user_id: str, platform: str):
     res = alc.parse(message)
 
     if res.matched:
         user = get_user(user_id, platform)
-        return tsugu_api.song_chart(user.default_server, res.songId, res.difficultyText)
+        try:
+            return tsugu_api.song_chart(user.displayed_server_list, res.songId, res.difficultyText)
+        except Exception as e:
+            return text_response(e)
 
     return res
 
 
-async def handler_async(message: str, user_id: str, platform: str, channel_id: str):
+async def handler_async(message: str, user_id: str, platform: str):
     res = alc.parse(message)
 
     if res.matched:
         user = await get_user_async(user_id, platform)
-        return await tsugu_api_async.song_chart(user.default_server, res.songId, res.difficultyText)
+        try:
+            return await tsugu_api_async.song_chart(user.displayed_server_list, res.songId, res.difficultyText)
+        except Exception as e:
+            return text_response(e)
 
     return res
 

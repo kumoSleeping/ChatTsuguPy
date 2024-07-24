@@ -16,20 +16,26 @@ alc = Alconna(
     )
 
 
-def handler(message: str, user_id: str, platform: str, channel_id: str):
+def handler(message: str, user_id: str, platform: str):
     res = alc.parse(message)
 
     if res.matched:
-        return tsugu_api.get_card_illustration(res.cardId)
+        try:
+            return tsugu_api.get_card_illustration(res.cardId)
+        except Exception as e:
+            return text_response(e)
 
     return res
 
 
-async def handler_async(message: str, user_id: str, platform: str, channel_id: str):
+async def handler_async(message: str, user_id: str, platform: str):
     res = alc.parse(message)
 
     if res.matched:
-        return await tsugu_api_async.get_card_illustration(res.cardId)
+        try:
+            return await tsugu_api_async.get_card_illustration(res.cardId)
+        except Exception as e:
+            return text_response(e)
 
     return res
 

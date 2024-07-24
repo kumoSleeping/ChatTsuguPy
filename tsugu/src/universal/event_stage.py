@@ -21,7 +21,7 @@ alc = Alconna(
     )
 
 
-def handler(message: str, user_id: str, platform: str, channel_id: str):
+def handler(message: str, user_id: str, platform: str):
     res = alc.parse(message)
 
     if res.matched:
@@ -30,12 +30,14 @@ def handler(message: str, user_id: str, platform: str, channel_id: str):
             meta = True
         else:
             meta = False
-        return tsugu_api.event_stage(user.server_mode, res.eventId, meta)
+        try:
+            return tsugu_api.event_stage(user.main_server, res.eventId, meta)
+        except Exception as e:
+            return text_response(e)
 
     return res
 
-
-async def handler_async(message: str, user_id: str, platform: str, channel_id: str):
+async def handler_async(message: str, user_id: str, platform: str):
     res = alc.parse(message)
 
     if res.matched:
@@ -44,7 +46,10 @@ async def handler_async(message: str, user_id: str, platform: str, channel_id: s
             meta = True
         else:
             meta = False
-        return await tsugu_api_async.event_stage(user.server_mode, res.eventId, meta)
+        try:
+            return await tsugu_api_async.event_stage(user.main_server, res.eventId, meta)
+        except Exception as e:
+            return text_response(e)
 
     return res
 

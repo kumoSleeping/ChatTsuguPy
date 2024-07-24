@@ -18,27 +18,30 @@ alc = Alconna(
     )
 
 
-def handler(message: str, user_id: str, platform: str, channel_id: str):
+def handler(message: str, user_id: str, platform: str):
     res = alc.parse(message)
 
     if res.matched:
         user = get_user(user_id, platform)
-        r = tsugu_api.change_user_data(platform, user.user_id, {'server_mode': server_name_2_server_id(res.serverName)})
-        if r.get('status') != 'success':
-            return text_response(r.get('data'))
+        try:
+            r = tsugu_api.change_user_data(platform, user.user_id, {'mainServer': server_name_2_server_id(res.serverName)})
+        except Exception as e:
+            return text_response(e)
         return text_response('主服务器已设置为 ' + res.serverName)
+
     return res
 
 
-async def handler_async(message: str, user_id: str, platform: str, channel_id: str):
+async def handler_async(message: str, user_id: str, platform: str):
     res = alc.parse(message)
 
     if res.matched:
         user = await get_user_async(user_id, platform)
-        r = await tsugu_api_async.change_user_data(platform, user.user_id, {'server_mode': server_name_2_server_id(res.serverName)})
-        if r.get('status') != 'success':
-            return text_response(r.get('data'))
+        try:
+            r = await tsugu_api_async.change_user_data(platform, user.user_id, {'mainServer': server_name_2_server_id(res.serverName)})
+        except Exception as e:
+            return text_response(e)
         return text_response('主服务器已设置为 ' + res.serverName)
-    return res
 
+    return res
 

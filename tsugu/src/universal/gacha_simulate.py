@@ -17,7 +17,7 @@ alc = Alconna(
     )
 
 
-def handler(message: str, user_id: str, platform: str, channel_id: str):
+def handler(message: str, user_id: str, platform: str):
     res = alc.parse(message)
 
     if res.matched:
@@ -26,12 +26,14 @@ def handler(message: str, user_id: str, platform: str, channel_id: str):
             gacha_id = res.gacha_id
         else:
             gacha_id = None
-        return tsugu_api.gacha_simulate(user.server_mode, res.times, gacha_id)
+        try:
+            return tsugu_api.gacha_simulate(user.main_server, res.times, gacha_id)
+        except Exception as e:
+            return text_response(e)
 
     return res
 
-
-async def handler_async(message: str, user_id: str, platform: str, channel_id: str):
+async def handler_async(message: str, user_id: str, platform: str):
     res = alc.parse(message)
 
     if res.matched:
@@ -40,8 +42,10 @@ async def handler_async(message: str, user_id: str, platform: str, channel_id: s
             gacha_id = res.gacha_id
         else:
             gacha_id = None
-        return await tsugu_api_async.gacha_simulate(user.server_mode, res.times, gacha_id)
+        try:
+            return await tsugu_api_async.gacha_simulate(user.main_server, res.times, gacha_id)
+        except Exception as e:
+            return text_response(e)
 
     return res
-
 

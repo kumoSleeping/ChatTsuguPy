@@ -18,24 +18,30 @@ ycx 1000 177 jp'''
     )
 
 
-def handler(message: str, user_id: str, platform: str, channel_id: str):
+def handler(message: str, user_id: str, platform: str):
     res = alc.parse(message)
 
     if res.matched:
         user = get_user(user_id, platform)
-        server = server_name_2_server_id(res.serverName) if res.serverName else user.server_mode
-        return tsugu_api.ycx_all(server, res.eventId)
+        server = server_name_2_server_id(res.serverName) if res.serverName else user.main_server
+        try:
+            return tsugu_api.cutoff_all(server, res.eventId)
+        except Exception as e:
+            return text_response(e)
 
     return res
 
 
-async def handler_async(message: str, user_id: str, platform: str, channel_id: str):
+async def handler_async(message: str, user_id: str, platform: str):
     res = alc.parse(message)
 
     if res.matched:
         user = await get_user_async(user_id, platform)
-        server = server_name_2_server_id(res.serverName) if res.serverName else user.server_mode
-        return await tsugu_api_async.ycx_all(server, res.eventId)
+        server = server_name_2_server_id(res.serverName) if res.serverName else user.main_server
+        try:
+            return await tsugu_api_async.cutoff_all(server, res.eventId)
+        except Exception as e:
+            return text_response(e)
 
     return res
 

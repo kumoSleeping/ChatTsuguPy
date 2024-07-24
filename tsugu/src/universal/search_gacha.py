@@ -15,22 +15,28 @@ alc = Alconna(
     )
 
 
-def handler(message: str, user_id: str, platform: str, channel_id: str):
+def handler(message: str, user_id: str, platform: str):
     res = alc.parse(message)
 
     if res.matched:
         user = get_user(user_id, platform)
-        return tsugu_api.search_gacha(user.default_server, res.gachaId)
+        try:
+            return tsugu_api.search_gacha(user.displayed_server_list, res.gachaId)
+        except Exception as e:
+            return text_response(e)
 
     return res
 
 
-async def handler_async(message: str, user_id: str, platform: str, channel_id: str):
+async def handler_async(message: str, user_id: str, platform: str):
     res = alc.parse(message)
 
     if res.matched:
         user = await get_user_async(user_id, platform)
-        return await tsugu_api_async.search_gacha(user.default_server, res.gachaId)
+        try:
+            return await tsugu_api_async.search_gacha(user.displayed_server_list, res.gachaId)
+        except Exception as e:
+            return text_response(e)
 
     return res
 

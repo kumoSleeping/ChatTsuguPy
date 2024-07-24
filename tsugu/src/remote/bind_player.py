@@ -15,30 +15,30 @@ alc = Alconna(
     )
 
 
-def handler(message: str, user_id: str, platform: str, channel_id: str):
+def handler(message: str, user_id: str, platform: str):
     res = alc.parse(message)
 
     if res.matched:
-        user = get_user(user_id, platform)
-        r = tsugu_api.bind_player_request(platform, user_id, user.server_mode, True)
-        if r.get('status') != 'success':
-            return text_response(r.get('data'))
-        return text_response(
+        try:
+            r = tsugu_api.bind_player_request(platform, user_id)
+            return text_response(
             f'''正在绑定账号，请将 评论(个性签名) 或者 当前使用的 乐队编队名称改为\n{r.get('data')['verifyCode']}\n稍等片刻等待同步后，发送\n验证绑定 你的玩家ID(数字) 服务器名(字母缩写)\n例如：验证绑定 114****514 cn''')
+        except Exception as e:
+            return text_response(str(e))
 
     return res
 
 
-async def handler_async(message: str, user_id: str, platform: str, channel_id: str):
+async def handler_async(message: str, user_id: str, platform: str):
     res = alc.parse(message)
 
     if res.matched:
-        user = await get_user_async(user_id, platform)
-        r = await tsugu_api_async.bind_player_request(platform, user.user_id, user.server_mode, False)
-        if r.get('status') != 'success':
-            return text_response(r.get('data'))
-        return text_response(
-            f'''正在绑定账号，请将 评论(个性签名) 或者 当前使用的 乐队编队名称改为\n{r.get('data')['verifyCode']}\n稍等片刻等待同步后，发送\n验证绑定 你的玩家ID(数字) 服务器名(字毝缩写)\n例如：验证绑定 114****514 cn''')
+        try:
+            r = await tsugu_api_async.bind_player_request(platform, user_id)
+            return text_response(
+            f'''正在绑定账号，请将 评论(个性签名) 或者 当前使用的 乐队编队名称改为\n{r.get('data')['verifyCode']}\n稍等片刻等待同步后，发送\n验证绑定 你的玩家ID(数字) 服务器名(字母缩写)\n例如：验证绑定 114****514 cn''')
+        except Exception as e:
+            return text_response(str(e))
 
     return res
 
