@@ -58,7 +58,16 @@ def handler(message: str, user_id: str, platform: str):
             # 逆序
             new_data_list.reverse()
             # 过滤掉 new_data_list 中 number 相同的元素中较早的元素
-            new_data_list = [new_data_list[0]] + [new_data_list[i] for i in range(1, len(new_data_list)) if new_data_list[i]['number'] != new_data_list[i - 1]['number']]
+            new_data_list_processed = []
+            seen_numbers = set()
+
+            for data in new_data_list:
+                if data['number'] not in seen_numbers:
+                    new_data_list_processed.append(data)
+                    seen_numbers.add(data['number'])
+
+            new_data_list = new_data_list_processed
+
             return tsugu_api.room_list(new_data_list)  # type: ignore
         except Exception as e:
             return text_response(e)
@@ -107,8 +116,18 @@ async def handler_async(message: str, user_id: str, platform: str):
         try:
             # 逆序
             new_data_list.reverse()
+
             # 过滤掉 new_data_list 中 number 相同的元素中较早的元素
-            new_data_list = [new_data_list[0]] + [new_data_list[i] for i in range(1, len(new_data_list)) if new_data_list[i]['number'] != new_data_list[i - 1]['number']]
+            new_data_list_processed = []
+            seen_numbers = set()
+
+            for data in new_data_list:
+                if data['number'] not in seen_numbers:
+                    new_data_list_processed.append(data)
+                    seen_numbers.add(data['number'])
+
+            new_data_list = new_data_list_processed
+
             return await tsugu_api_async.room_list(new_data_list)  # type: ignore
         except Exception as e:
             return text_response(e)
