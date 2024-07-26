@@ -27,8 +27,9 @@ def handler(message: str, user_id: str, platform: str):
         new_data = {}
         user = get_user(user_id, platform)
         for i in data:
-            new_data.update({'player': {'playerId': user.user_player_list[user.user_player_index]['playerId'],
-                              'server': user.user_player_list[user.user_player_index]['server']}})
+            if len(user.user_player_list) >= user.user_player_index + 1:  # 只添加有玩家数据的信息
+                new_data.update({'player': {'playerId': user.user_player_list[user.user_player_index]['playerId'],
+                                            'server': user.user_player_list[user.user_player_index]['server']}})
             new_data.update({'number': int(i['number'])})
             new_data.update({'source': i['source_info']['name']})
             new_data.update({'userId': i['user_info']['user_id']})
