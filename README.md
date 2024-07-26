@@ -46,18 +46,18 @@ pip install tsugu --upgrade
 import tsugu
 
 # 四个参数，分别意味着 消息内容 用户id 平台 频道id
-for i in tsugu.handler(message='查卡 ars 1x', user_id='1528593481', platform='red', channel_id='666808414'):
+for i in tsugu.handler('查卡 ars 1x', '1528593481'):
     print('文本: ',i) if isinstance(i, str) else None
     print(f"[图片]") if isinstance(i, bytes) else None
 
-for i in tsugu.handler_raw(message='查卡 ars 1x', user_id='1528593481', platform='red', channel_id='666808414'):
+for i in tsugu.handler_raw('查卡 ars 1x', '1528593481'):
     print('文本: ',i) if i['type'] == 'text' else None
     print(f"[图片]") if i['type'] == 'base64' else None
 ```
 
 
 > 在常用的qqbot中，群号就是 `channel_id`。   
-> 当你使用QQ号作为 `user_id` 时，`platform` 可以填写 `red`。   
+> 当你使用QQ号作为 `user_id` 时，`platform` 默认 `red`。   
 
 ## 📚 异步支持
 
