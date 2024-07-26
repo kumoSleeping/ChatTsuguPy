@@ -7,7 +7,7 @@ from loguru import logger
 from . import src
 
 
-def handler(message: str, user_id: str, platform: str) -> List[Union[bytes, str]]:
+def handler(message: str, user_id: str, platform: str = 'red') -> List[Union[bytes, str]]:
     '''
     Tsugu Handler
     处理用户输入的自然语言，返回处理后的结果
@@ -30,7 +30,7 @@ def handler(message: str, user_id: str, platform: str) -> List[Union[bytes, str]
         raise e
 
 
-def handler_raw(message: str, user_id: str, platform: str) -> List[Dict[str, str]]:
+def handler_raw(message: str, user_id: str, platform: str = 'red') -> List[Dict[str, str]]:
     '''
     handler_raw 除了返回的数据类型不同外，其他与 handler 函数一致
     返回格式为 Tsugu 标准数据格式
@@ -46,7 +46,7 @@ def handler_raw(message: str, user_id: str, platform: str) -> List[Dict[str, str
         raise e
 
 
-async def handler_async(message: str, user_id: str, platform: str) -> List[Union[bytes, str]]:
+async def handler_async(message: str, user_id: str, platform: str = 'red') -> List[Union[bytes, str]]:
     '''
     Tsugu Handler Async
     异步支持
@@ -70,7 +70,7 @@ async def handler_async(message: str, user_id: str, platform: str) -> List[Union
         raise e
 
 
-async def handler_raw_async(message: str, user_id: str, platform: str) -> List[Dict[str, str]]:
+async def handler_raw_async(message: str, user_id: str, platform: str = 'red') -> List[Dict[str, str]]:
     '''
     handler_raw_async 除了返回的数据类型不同外，其他与 handler_async 函数一致
     返回格式为 Tsugu 标准数据格式

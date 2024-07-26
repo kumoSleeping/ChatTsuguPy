@@ -74,10 +74,10 @@ def handler(message, user_id, platform):
 
                 # 帮助信息
                 if result.error_data == ['-h']:
-                    return getattr(globals()['help'], 'handler')('help ' + result.header_result, user_id, platform)
+                    return getattr(globals()['help'], 'handler')('help ' + result.source.replace('Alconna::', '', 1), user_id, platform)
                 # 错误信息
                 else:
-                    return text_response(result.error_info)
+                    return text_response(str(result.error_info) + '\n' + command_manager.command_help(result.source.replace('Alconna::', '', 1)))
 
         # 已生成结果
         if isinstance(result, list):
@@ -99,10 +99,10 @@ async def handler_async(message, user_id, platform):
 
                 # 帮助信息
                 if result.error_data == ['-h']:
-                    return await getattr(globals()['help'], 'handler_async')('help ' + result.header_result, user_id, platform)
+                    return await getattr(globals()['help'], 'handler_async')('help ' + result.source.replace('Alconna::', '', 1), user_id, platform)
                 # 错误信息
                 else:
-                    return text_response(result.error_info)
+                    return text_response(str(result.error_info) + '\n' + command_manager.command_help(result.source.replace('Alconna::', '', 1)))
 
         # 已生成结果
         if isinstance(result, list):

@@ -33,6 +33,7 @@ def handler(message: str, user_id: str, platform: str):
 
     return res
 
+
 async def handler_async(message: str, user_id: str, platform: str):
     res = alc.parse(message)
 

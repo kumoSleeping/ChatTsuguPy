@@ -5,6 +5,19 @@ import tsugu_api_async
 
 
 difficulty_text_tuple = ('easy', 'ez', 'normal', 'nm', 'hard', 'hd', 'expert', 'ex', 'special', 'sp')
+difficulty_text_2_difficulty_id = {
+    "easy": 0,
+    "ez": 0,
+    "normal": 1,
+    "nm": 1,
+    "hard": 2,
+    "hd": 2,
+    "expert": 3,
+    "ex": 3,
+    "special": 4,
+    "sp": 4,
+}
+
 
 alc = Alconna(
         ["查谱面", "查铺面"],
@@ -23,7 +36,7 @@ def handler(message: str, user_id: str, platform: str):
     if res.matched:
         user = get_user(user_id, platform)
         try:
-            return tsugu_api.song_chart(user.displayed_server_list, res.songId, res.difficultyText)
+            return tsugu_api.song_chart(user.displayed_server_list, res.songId, difficulty_text_2_difficulty_id[res.difficultyText])
         except Exception as e:
             return text_response(e)
 
@@ -36,7 +49,7 @@ async def handler_async(message: str, user_id: str, platform: str):
     if res.matched:
         user = await get_user_async(user_id, platform)
         try:
-            return await tsugu_api_async.song_chart(user.displayed_server_list, res.songId, res.difficultyText)
+            return await tsugu_api_async.song_chart(user.displayed_server_list, res.songId, difficulty_text_2_difficulty_id[res.difficultyText])
         except Exception as e:
             return text_response(e)
 

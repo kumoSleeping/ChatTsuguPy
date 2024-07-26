@@ -4,11 +4,11 @@ import tsugu_api_async
 
 from arclet.alconna import Alconna, Option, Subcommand, Args, CommandMeta, Empty, Namespace, namespace, command_manager, AllParam
 from tsugu.utils import get_user_account_list_msg
-
+from typing import List, Tuple, Optional
 
 alc = Alconna(
         ["解除绑定"],
-        Args["any", AllParam],
+        Args["any", Optional[AllParam]],
         meta=CommandMeta(
             compact=True,
             description="解除绑定",

@@ -25,12 +25,14 @@ def handler(message: str, user_id: str, platform: str):
         if len(user.user_player_list) < int(res.index):
             return text_response('未找到记录')
         player_id = user.user_player_list[int(res.index) - 1].get("playerId")
-        server_mode = user.user_player_list[int(res.index) - 1].get("server")
+        server = user.user_player_list[int(res.index) - 1].get("server")
+        # print(platform, user.user_id, player_id, server)
+        # print(type(platform), type(user.user_id), type(player_id), type(server))
         try:
-            r = tsugu_api.bind_player_verification(platform, user.user_id, server_mode, player_id, 'unbind')
+            r = tsugu_api.bind_player_verification(platform, user.user_id, server, player_id, 'unbind')
             return text_response('解绑成功！')
         except Exception as e:
-            return text_response(str(e))
+            return text_response(e)
     
     return res
 
