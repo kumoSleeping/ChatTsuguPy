@@ -34,6 +34,8 @@ def handler(message: str, user_id: str, platform: str):
     def _case_default():
         user_player_index = user.user_player_index
         try:
+            if len(user.user_player_list) == 0:
+                return text_response(f'未找到记录，请先绑定。')
             game_id_msg = user.user_player_list[user_player_index]
             return tsugu_api.search_player(int(game_id_msg.get("playerId")), game_id_msg.get("server")) + text_response(f'已查找默认玩家状态（{user_player_index + 1}），“help 玩家状态” 了解更多。')
         except Exception as e:
@@ -41,7 +43,7 @@ def handler(message: str, user_id: str, platform: str):
 
     def _case_index():
         if res.accountIndex > len(user.user_player_list) or res.accountIndex < 1:
-            return text_response(f'未找到记录 {res.accountIndex}。')
+            return text_response(f'未找到记录 {res.accountIndex}，请先绑定。')
         try:
             game_id_msg = user.user_player_list[res.accountIndex - 1]
             return tsugu_api.search_player(int(game_id_msg.get("playerId")), game_id_msg.get("server")) + text_response(f'已查找账号 {res.accountIndex} 玩家状态，“help 玩家状态” 了解更多。')
@@ -65,6 +67,8 @@ async def handler_async(message: str, user_id: str, platform: str):
         async def _case_default():
             user_player_index = user.user_player_index
             try:
+                if len(user.user_player_list) == 0:
+                    return text_response(f'未找到记录，请先绑定。')
                 game_id_msg = user.user_player_list[user_player_index]
                 return await tsugu_api_async.search_player(int(game_id_msg.get("playerId")), game_id_msg.get("server")) + text_response(f'已查找默认玩家状态（{user_player_index + 1}），“help 玩家状态” 了解更多。')
             except Exception as e:
@@ -72,7 +76,7 @@ async def handler_async(message: str, user_id: str, platform: str):
 
         async def _case_index():
             if res.accountIndex > len(user.user_player_list) or res.accountIndex < 1:
-                return text_response(f'未找到记录 {res.accountIndex}。')
+                return text_response(f'未找到记录 {res.accountIndex}，请先绑定。')
             try:
                 game_id_msg = user.user_player_list[res.accountIndex - 1]
                 return await tsugu_api_async.search_player(int(game_id_msg.get("playerId")), game_id_msg.get("server")) + text_response(f'已查找账号 {res.accountIndex} 玩家状态，“help 玩家状态” 了解更多。')

@@ -82,6 +82,7 @@ def get_user(user_id: str, platform: str) -> User:
         try:
             user_data_res = tsugu_api.get_user_data(platform, user_id)
             user_data = user_data_res.get('data')
+            print(user_data)
             user = User(user_id=user_id,
                         platform=platform,
                         main_server=user_data.get('mainServer'),

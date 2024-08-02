@@ -8,7 +8,7 @@ from tsugu_api_core._typing import _ServerName
 
 alc = Alconna(
         ["验证绑定"],
-        Args["playerId#你的玩家ID(数字)", int]["serverName#服务器名(字母缩写)", _ServerName],
+        Args["playerId#你的玩家ID(数字)", int]["serverName;?#服务器名(字母缩写)", _ServerName],
         meta=CommandMeta(
             compact=True,
             description="验证绑定",)
@@ -20,7 +20,7 @@ def handler(message: str, user_id: str, platform: str):
 
     if res.matched:
         user = get_user(user_id, platform)
-        server = server_name_2_server_id(res.serverName)
+        server = server_name_2_server_id(res.serverName) if res.serverName else user.main_server  # 加入默认服务器
         if str(res.playerId).startswith('4') and server == 3:
             return text_response('Bestdori 暂不支持渠道服相关功能。')
         try:

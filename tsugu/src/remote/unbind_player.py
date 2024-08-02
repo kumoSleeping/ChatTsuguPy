@@ -18,7 +18,6 @@ alc = Alconna(
     )
 
 
-
 def handler(message: str, user_id: str, platform: str):
     res = alc.parse(message)
 
@@ -27,6 +26,8 @@ def handler(message: str, user_id: str, platform: str):
 
         try:
             bind_record = get_user_account_list_msg(user)
+            if bind_record == '':
+                return text_response('未找到记录，请先绑定账号')
             r = tsugu_api.bind_player_request(platform, user.user_id)
             return text_response(f'''请先然后登陆游戏，将 评论(个性签名) 或者 当前使用的 乐队编队名称改为
 {r.get('data')['verifyCode']}
@@ -48,6 +49,8 @@ async def handler_async(message: str, user_id: str, platform: str):
 
         try:
             bind_record = get_user_account_list_msg(user)
+            if bind_record == '':
+                return text_response('未找到记录，请先绑定账号')
             r = await tsugu_api_async.bind_player_request(platform, user.user_id)
             return text_response(f'''请先然后登陆游戏，将 评论(个性签名) 或者 当前使用的 乐队编队名称改为
 {r.get('data')['verifyCode']}

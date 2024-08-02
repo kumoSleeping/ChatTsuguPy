@@ -10,8 +10,7 @@ alc = Alconna(
         Args["index#要解绑的绑定编号", int],
         meta=CommandMeta(
             compact=True,
-            description="验证解绑",
-            usage="验证解绑 记录编号(数字)",
+            description="验证: 解除游戏账号绑定",
             example="验证解绑 1 : 解绑第一个记录"
         ),
     )
