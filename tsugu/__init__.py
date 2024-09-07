@@ -145,7 +145,7 @@ async def cmd_generator(
         user_id (str): _description_ 用户ID
         platform (str, optional): _description_. Defaults to "red". 平台，当用户ID为真实QQ号时，平台可以为red
         message_id (str, optional): _description_. Defaults to "". 消息ID，可用于主动消息的回复
-        send_func (Optional[Callable], optional): _description_. Defaults to None. 主动发送消息的函数
+        send_func (Optional[Callable], optional): _description_. Defaults to None. 主动发送消息的函数。
 
     Returns:
         Optional[List[Dict[str, str]]]: _description_
@@ -182,6 +182,17 @@ async def cmd_generator(
         return result
 
     return None
+
+
+alc_0 =  Alconna(
+            ["help"],
+            Args["cmd;?#命令", str],
+            meta=CommandMeta(
+                compact=True,
+                description="Tsugu 帮助",
+            ),
+        )
+
 
 alc_1 = Alconna(
             ["查试炼", "查stage", "查舞台", "查festival", "查5v5"],
@@ -503,14 +514,7 @@ async def _handler(
     active_send_func: callable,
 ):
     if (
-        res := Alconna(
-            ["help"],
-            Args["cmd;?#命令", str],
-            meta=CommandMeta(
-                compact=True,
-                description="Tsugu 帮助",
-            ),
-        ).parse(message)
+        res := alc_0.parse(message)
     ).matched:
         if not res.cmd:
             return text_response(command_manager.all_command_help())
