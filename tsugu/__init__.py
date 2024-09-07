@@ -183,6 +183,317 @@ async def cmd_generator(
 
     return None
 
+alc_1 = Alconna(
+            ["查试炼", "查stage", "查舞台", "查festival", "查5v5"],
+            Args["eventId;?#省略活动ID时查询当前活动。", [int]][
+                "meta;?#歌曲meta。", ["-m"]
+            ],
+            meta=CommandMeta(
+                compact=True,
+                description="",
+                usage="",
+                example="""查试炼 157 -m :返回157号活动的试炼信息，包含歌曲meta。
+查试炼 -m :返回当前活动的试炼信息，包含歌曲meta。
+查试炼 :返回当前活动的试炼信息。""",
+            ),
+        )
+
+
+alc_2 = Alconna(
+            ["抽卡模拟", "卡池模拟"],
+            Args["times", int, 10][
+                "gacha_id;?#如果没有卡池ID的话，卡池为当前活动的卡池。", int
+            ],
+            meta=CommandMeta(
+                compact=True,
+                description="抽卡模拟",
+                usage="模拟抽卡",
+                example="抽卡模拟 300 922 :模拟抽卡300次，卡池为922号卡池。",
+            ),
+        )
+
+alc_3 = Alconna(
+    ["查卡面", "查插画"],
+    Args["cardId", int],
+    meta=CommandMeta(
+        compact=True,
+        description="查卡面",
+        usage="根据卡片ID查询卡片插画",
+        example="查卡面 1399 :返回1399号卡牌的插画",
+    ),
+)
+
+alc_4 = Alconna(
+    ["lsycx", "历史预测线"],
+    Args["tier", int]["eventId;?#活动ID，省略时查询当前活动。", int][
+        "serverName;?#省略服务器名时，默认从你当前的主服务器查询。",
+        _ServerNameFull,
+    ],
+    meta=CommandMeta(
+        compact=True,
+        description="查询指定档位的历史预测线。",
+        usage="查询指定档位的预测线与最近的4期活动类型相同的活动的档线数据。",
+        example="lsycx 1000\nlsycx 1000 177 jp",
+    ),
+)
+
+alc_5 = Alconna(
+    ["查卡", "查卡牌"],
+    Args["word#请输入卡面ID，角色等查询参数，使用空格隔开", AllParam],
+    meta=CommandMeta(
+        compact=True,
+        description="查询卡片信息。",
+        usage="根据关键词或卡牌ID查询卡片信息。",
+        example="查卡 1399 :返回1399号卡牌的信息。\n查卡 红 ars 5x :返回角色 ars 的 5x 卡片的信息。",
+    ),
+)
+
+alc_6 = Alconna(
+    ["查角色"],
+    Args["word#角色名，乐队，昵称等查询参数", AllParam],
+    meta=CommandMeta(
+        compact=True,
+        description="查询角色信息",
+        usage="根据关键词或角色ID查询角色信息",
+        example="查角色 10 :返回10号角色的信息。\n查角色 吉他 :返回所有角色模糊搜索标签中包含吉他的角色列表。",
+    ),
+)
+
+alc_7 = Alconna(
+    ["查活动"],
+    Args["word#请输入活动名，乐队，活动ID等查询参数", AllParam],
+    meta=CommandMeta(
+        compact=True,
+        description="查活动",
+        usage="根据关键词或活动ID查询活动信息",
+        example="查活动 绿 tsugu :返回所有属性加成为pure，且活动加成角色中包括羽泽鸫的活动列表\n查活动 177 :返回177号活动的信息",
+    ),
+)
+
+alc_8 = Alconna(
+    ["查卡池"],
+    Args["gachaId#可以通过查活动、查卡等获取", str],
+    meta=CommandMeta(
+        compact=True,
+        description="查卡池",
+        usage="根据卡池ID查询卡池信息",
+    ),
+)
+
+alc_9 = Alconna(
+    ["查玩家", "查询玩家"],
+    Args["playerId#你的游戏账号(数字)", int][
+        "serverName;?#省略服务器名时，默认从你当前的主服务器查询。",
+        _ServerNameFull,
+    ],
+    meta=CommandMeta(
+        compact=True,
+        description="查询玩家信息",
+        usage="查询指定ID玩家的信息。",
+        example="查玩家 40474621 jp : 查询日服玩家ID为40474621的玩家信息。",
+    ),
+)
+
+alc_10 = Alconna(
+    ["随机曲"],
+    Args["word;?#歌曲信息，名称，乐队，难度等。", AllParam],
+    meta=CommandMeta(
+        compact=True,
+        description="随机曲",
+        usage="根据关键词或曲目ID随机曲目信息。",
+        example="随机曲 lv27 :在所有包含27等级难度的曲中, 随机返回其中一个",
+    ),
+)
+
+alc_11 = Alconna(
+    ["查曲"],
+    Args["word#歌曲信息，名称，乐队，难度等。", AllParam],
+    meta=CommandMeta(
+        compact=True,
+        description="查曲",
+        usage="根据关键词或曲目ID查询曲目信息。",
+        example="查曲 1 :返回1号曲的信息\n查曲 ag lv27 :返回所有难度为27的ag曲列表",
+    ),
+)
+
+alc_12 = Alconna(
+    ["查谱面", "查铺面"],
+    Args["songId", int]["difficultyText", ("easy", "ez", "normal", "nm", "hard", "hd", "expert", "ex", "special", "sp"), "ex"],
+    meta=CommandMeta(
+        compact=True,
+        description="查谱面",
+        usage="根据曲目ID与难度查询铺面信息。",
+        example="查谱面 1 :返回1号曲的ex难度谱面\n查谱面 128 special :返回128号曲的special难度谱面",
+    ),
+)
+
+alc_13 = Alconna(
+    ["查询分数表", "查分数表", "查询分数榜", "查分数榜"],
+    Args["serverName;?#省略服务器名时，默认从你当前的主服务器查询。", _ServerNameFull],
+    meta=CommandMeta(
+        compact=True,
+        description="查询分数表",
+        usage="查询指定服务器的歌曲分数表。",
+        example="查询分数表 cn :返回国服的歌曲分数表",
+    ),
+)
+
+alc_14 = Alconna(
+    ["ycxall", "ycx all"],
+    Args["eventId;?#活动ID，省略时查询当前活动。", int]["serverName;?#省略服务器名时，默认从你当前的主服务器查询。", _ServerNameFull],
+    meta=CommandMeta(
+        compact=True,
+        description="查询指定档位的预测线",
+        usage="根据关键词或角色ID查询角色信息",
+        example="ycx 1000\nycx 1000 177 jp",
+    ),
+)
+
+alc_15 = Alconna(
+    ["ycx", "预测线"],
+    Args["tier#指定档位", int][
+        "eventId;?#活动ID，省略时查询当前活动。", int
+    ][
+        "serverName;?#省略服务器名时，默认从你当前的主服务器查询。", _ServerNameFull
+    ],
+    meta=CommandMeta(
+        compact=True,
+        description="查询指定档位的预测线",
+        usage="查询指定档位的预测线。",
+        example="""ycx 1000
+ycx 1000 177 jp""",
+    ),
+)
+
+alc_16 = Alconna(
+    ["绑定玩家"],
+    Args["playerId#你的玩家ID", int][
+        "serverName;?#服务器名(字母缩写)", _ServerNameFull
+    ],
+    meta=CommandMeta(
+        compact=True,
+        description="开始进入绑定游戏账号流程",
+        usage="绑定玩家 <playerId> [serverName]",
+        example="""
+绑定玩家 114514
+绑定玩家 1919810 jp""",
+    ),
+)
+
+alc_17 = Alconna(
+    ["请求绑定"],
+    meta=CommandMeta(
+        compact=True,
+        description="请求绑定",
+        usage="请求绑定",
+        example="""
+请求绑定""",
+    ),
+)
+
+alc_18 = Alconna(
+    ["设置默认服务器", "默认服务器"],
+    Args["serverList#使用空格分隔服务器列表。", MultiVar(_ServerNameFull)],
+    meta=CommandMeta(
+        compact=True,
+        description="设定信息显示中的默认服务器排序",
+        usage="设置默认服务器 <server1> <server2> ...",
+        example="""设置默认服务器 cn jp : 将国服设置为第一服务器，日服设置为第二服务器。""",
+    ),
+)
+
+alc_19 = Alconna(
+    ["主服务器", "设置主服务器"],
+    Args["serverName#服务器名", _ServerNameFull],
+    meta=CommandMeta(
+        compact=True,
+        description="主服务器",
+        usage="将指定的服务器设置为你的主服务器。",
+        example="""主服务器 cn : 将国服设置为主服务器。""",
+    ),
+)
+
+alc_20 = Alconna(
+    ["关闭车牌转发", "关闭个人车牌转发"],
+    meta=CommandMeta(
+        compact=True,
+        description="关闭车牌转发",
+        usage="关闭车牌转发",
+        example="""关闭车牌转发""",
+    ),
+)
+
+alc_21 = Alconna(
+    ["开启车牌转发", "开启个人车牌转发"],
+    meta=CommandMeta(
+        compact=True,
+        description="开启车牌转发",
+        usage="开启车牌转发",
+        example="""开启车牌转发""",
+    ),
+)
+
+alc_22 = Alconna(
+    ["玩家状态"],
+    Args["accountIndex#指定账号索引，可选", int],
+    meta=CommandMeta(
+        compact=True,
+        description="查询自己的玩家状态",
+        usage="玩家状态 [accountIndex]",
+        example="""
+玩家状态 :返回指定默认账号的玩家状态
+玩家状态 1 :返回账号1的玩家状态
+主账号 :返回默认查询账号
+主账号 2 :设置账号2为默认查询账号
+玩家状态 2 :返回账号2的玩家状态
+""",
+    ),
+)
+
+alc_23 = Alconna(
+    ["主账号"],
+    Args["accountIndex#主账号，从1开始", int],
+    meta=CommandMeta(
+        compact=True,
+        description="设定默认玩家状态、车牌展示中的主账号使用第几个账号",
+        usage="主账号 [accountIndex]",
+        example="""主账号 2 : 将第二个账号设置为主账号。""",
+    ),
+)
+
+alc_24 = Alconna(
+    ["解除绑定"],
+    Args["index#序号", int],
+    meta=CommandMeta(
+        compact=True,
+        description="解除绑定",
+        usage="解除绑定 <index>",
+        example="解除绑定 1 : 解绑第一个记录",
+    ),
+)
+
+alc_25 = Alconna(
+    ["ycm", "车来", "有车吗"],
+    meta=CommandMeta(
+        compact=True,
+        description="获取车牌",
+        usage="ycm / 车来 / 有车吗",
+        example="""ycm
+车来
+有车吗""",
+    ),
+)
+
+alc_26 = Alconna(
+    ["上传车牌"],
+    Args["roomNumber#车牌号码", str],
+    meta=CommandMeta(
+        compact=True,
+        description="上传车牌",
+        usage="上传车牌 <roomNumber>",
+        example="""上传车牌 ABC123""",
+    ),
+)
 
 async def _handler(
     message: str,
@@ -210,20 +521,7 @@ async def _handler(
         return res
 
     if (
-        res := Alconna(
-            ["查试炼", "查stage", "查舞台", "查festival", "查5v5"],
-            Args["eventId;?#省略活动ID时查询当前活动。", [int]][
-                "meta;?#歌曲meta。", ["-m"]
-            ],
-            meta=CommandMeta(
-                compact=True,
-                description="",
-                usage="",
-                example="""查试炼 157 -m :返回157号活动的试炼信息，包含歌曲meta。
-查试炼 -m :返回当前活动的试炼信息，包含歌曲meta。
-查试炼 :返回当前活动的试炼信息。""",
-            ),
-        ).parse(message)
+        res := alc_1.parse(message)
     ).matched:
         user = await get_user(user_id, platform)
         if res.meta:
@@ -240,18 +538,7 @@ async def _handler(
         return res
 
     if (
-        res := Alconna(
-            ["抽卡模拟", "卡池模拟"],
-            Args["times", int, 10][
-                "gacha_id;?#如果没有卡池ID的话，卡池为当前活动的卡池。", int
-            ],
-            meta=CommandMeta(
-                compact=True,
-                description="抽卡模拟",
-                usage="模拟抽卡",
-                example="抽卡模拟 300 922 :模拟抽卡300次，卡池为922号卡池。",
-            ),
-        ).parse(message)
+        res := alc_2.parse(message)
     ).matched:
         user = await get_user(user_id, platform)
         if res.gacha_id:
@@ -269,16 +556,7 @@ async def _handler(
         return res
 
     if (
-        res := Alconna(
-            ["查卡面", "查插画"],
-            Args["cardId", int],
-            meta=CommandMeta(
-                compact=True,
-                description="查卡面",
-                usage="根据卡片ID查询卡片插画",
-                example="查卡面 1399 :返回1399号卡牌的插画",
-            ),
-        ).parse(message)
+        res := alc_3.parse(message)
     ).matched:
         try:
             return await tsugu_api_async.get_card_illustration(res.cardId)
@@ -289,21 +567,7 @@ async def _handler(
         return res
 
     if (
-        res := Alconna(
-            ["lsycx", "历史预测线"],
-            ["/", ""],
-            Args["tier", int]["eventId;?#活动ID，省略时查询当前活动。", int][
-                "serverName;?#省略服务器名时，默认从你当前的主服务器查询。",
-                _ServerNameFull,
-            ],
-            meta=CommandMeta(
-                compact=True,
-                description="查询指定档位的历史预测线。",
-                usage="查询指定档位的预测线与最近的4期活动类型相同的活动的档线数据。",
-                example="""lsycx 1000 
-lsycx 1000 177 jp""",
-            ),
-        ).parse(message)
+        res := alc_4.parse(message)
     ).matched:
         user = await get_user(user_id, platform)
         server = (
@@ -322,18 +586,7 @@ lsycx 1000 177 jp""",
         return res
 
     if (
-        res := Alconna(
-            ["查卡", "查卡牌"],
-            Args["word#请输入卡面ID，角色等查询参数，使用空格隔开", AllParam],
-            meta=CommandMeta(
-                compact=True,
-                description="查询卡片信息。",
-                usage="根据关键词或卡牌ID查询卡片信息。",
-                example="""查卡 1399 :返回1399号卡牌的信息。
-    查卡面 1399 :返回1399号卡牌的插画。
-    查卡 红 ars 5x :返回角色 ars 的 5x 卡片的信息。""",
-            ),
-        ).parse(message)
+        res := alc_5.parse(message)
     ).matched:
         user = await get_user(user_id, platform)
         try:
@@ -347,17 +600,7 @@ lsycx 1000 177 jp""",
         return res
 
     if (
-        res := Alconna(
-            ["查角色"],
-            Args["word#角色名，乐队，昵称等查询参数", AllParam],
-            meta=CommandMeta(
-                compact=True,
-                description="查询角色信息",
-                usage="根据关键词或角色ID查询角色信息",
-                example="""查角色 10 :返回10号角色的信息。
-查角色 吉他 :返回所有角色模糊搜索标签中包含吉他的角色列表。""",
-            ),
-        ).parse(message)
+        res := alc_6.parse(message)
     ).matched:
         user = await get_user(user_id, platform)
         try:
@@ -371,19 +614,7 @@ lsycx 1000 177 jp""",
         return res
 
     if (
-        res := Alconna(
-            ["查活动"],
-            Args["word#请输入活动名，乐队，活动ID等查询参数", AllParam],
-            meta=CommandMeta(
-                compact=True,
-                description="查活动",
-                usage="根据关键词或活动ID查询活动信息",
-                example="""查活动 绿 tsugu :返回所有属性加成为pure，且活动加成角色中包括羽泽鸫的活动列表
-查活动 177 :返回177号活动的信息
-查活动 >225 :查询大于225的活动
-查活动 220-225 :查询220到225的活动""",
-            ),
-        ).parse(message)
+        res := alc_7.parse(message)
     ).matched:
         user = await get_user(user_id, platform)
         try:
@@ -397,15 +628,7 @@ lsycx 1000 177 jp""",
         return res
 
     if (
-        res := Alconna(
-            ["查卡池"],
-            Args["gachaId#可以通过查活动、查卡等获取", str],
-            meta=CommandMeta(
-                compact=True,
-                description="查卡池",
-                usage="根据卡池ID查询卡池信息",
-            ),
-        ).parse(message)
+        res := alc_8.parse(message)
     ).matched:
         user = await get_user(user_id, platform)
         try:
@@ -419,19 +642,7 @@ lsycx 1000 177 jp""",
         return res
 
     if (
-        res := Alconna(
-            ["查玩家", "查询玩家"],
-            Args["playerId#你的游戏账号(数字)", int][
-                "serverName;?#省略服务器名时，默认从你当前的主服务器查询。",
-                _ServerNameFull,
-            ],
-            meta=CommandMeta(
-                compact=True,
-                description="查询玩家信息",
-                usage="查询指定ID玩家的信息。查询指定ID玩家的信息。",
-                example="查玩家 40474621 jp : 查询日服玩家ID为40474621的玩家信息。\n查玩家 10000000 : 查询你当前默认服务器中，玩家ID为10000000的玩家信息。",
-            ),
-        ).parse(message)
+        res := alc_9.parse(message)
     ).matched:
         user = await get_user(user_id, platform)
         if res.serverName:
@@ -449,17 +660,7 @@ lsycx 1000 177 jp""",
         return res
 
     if (
-        res := Alconna(
-            ["随机曲"],
-            Args["word;?#歌曲信息，名称，乐队，难度等。", AllParam],
-            meta=CommandMeta(
-                compact=True,
-                description="随机曲",
-                usage="根据关键词或曲目ID随机曲目信息。",
-                example="""随机曲 lv27 :在所有包含27等级难度的曲中, 随机返回其中一个
-随机曲 lv24 ag :在所有包含24等级难度的afterglow曲中, 随机返回其中一个""",
-            ),
-        ).parse(message)
+        res := alc_10.parse(message)
     ).matched:
         user = await get_user(user_id, platform)
         try:
@@ -471,19 +672,7 @@ lsycx 1000 177 jp""",
     elif res.head_matched:
         return res
     if (
-        res := Alconna(
-            ["查曲"],
-            Args["word#歌曲信息，名称，乐队，难度等。", AllParam],
-            meta=CommandMeta(
-                compact=True,
-                description="查曲",
-                usage="根据关键词或曲目ID查询曲目信息。",
-                example="""查曲 1 :返回1号曲的信息
-查曲 ag lv27 :返回所有难度为27的ag曲列表
-查曲 >27 :查询大于27的曲目
-查曲 滑滑蛋 :匹配歌曲 fuwa fuwa time""",
-            ),
-        ).parse(message)
+        res := alc_11.parse(message)
     ).matched:
         user = await get_user(user_id, platform)
         try:
@@ -522,17 +711,7 @@ lsycx 1000 177 jp""",
     }
 
     if (
-        res := Alconna(
-            ["查谱面", "查铺面"],
-            Args["songId", int]["difficultyText", difficulty_text_tuple, "ex"],
-            meta=CommandMeta(
-                compact=True,
-                description="查谱面",
-                usage="根据曲目ID与难度查询铺面信息。",
-                example="""查谱面 1 :返回1号曲的ex难度谱面
-查谱面 128 special :返回128号曲的special难度谱面""",
-            ),
-        ).parse(message)
+        res := alc_12.parse(message)
     ).matched:
         user = await get_user(user_id, platform)
         try:
@@ -548,19 +727,7 @@ lsycx 1000 177 jp""",
         return res
 
     if (
-        res := Alconna(
-            ["查询分数表", "查分数表", "查询分数榜", "查分数榜"],
-            Args[
-                "serverName;?#省略服务器名时，默认从你当前的主服务器查询。",
-                _ServerNameFull,
-            ],
-            meta=CommandMeta(
-                compact=True,
-                description="查询分数表",
-                usage="查询指定服务器的歌曲分数表。",
-                example="""查询分数表 cn :返回国服的歌曲分数表""",
-            ),
-        ).parse(message)
+        res := alc_13.parse(message)
     ).matched:
         user = await get_user(user_id, platform)
         if res.serverName:
@@ -576,20 +743,7 @@ lsycx 1000 177 jp""",
         return res
 
     if (
-        res := Alconna(
-            ["ycxall", "ycx all"],
-            Args["eventId;?#活动ID，省略时查询当前活动。", int][
-                "serverName;?#省略服务器名时，默认从你当前的主服务器查询。活动ID不存在时，也可以作为第二个参数。",
-                _ServerNameFull,
-            ],
-            meta=CommandMeta(
-                compact=True,
-                description="查询指定档位的预测线",
-                usage="根据关键词或角色ID查询角色信息",
-                example="""ycx 1000 
-ycx 1000 177 jp""",
-            ),
-        ).parse(message)
+        res := alc_14.parse(message)
     ).matched:
         user = await get_user(user_id, platform)
         server = (
@@ -606,20 +760,7 @@ ycx 1000 177 jp""",
         return res
 
     if (
-        res := Alconna(
-            ["ycx", "预测线"],
-            Args["tier", int]["eventId;?#活动ID，省略时查询当前活动。", int][
-                "serverName;?#省略服务器名时，默认从你当前的主服务器查询。",
-                _ServerNameFull,
-            ],
-            meta=CommandMeta(
-                compact=True,
-                description="查询指定档位的预测线",
-                usage="查询指定档位的预测线。",
-                example="""ycx 1000
-ycx 1000 177 jp""",
-            ),
-        ).parse(message)
+        res := alc_15.parse(message)
     ).matched:
         user = await get_user(user_id, platform)
         server = (
@@ -636,19 +777,7 @@ ycx 1000 177 jp""",
         return res
 
     if (
-        res := Alconna(
-            ["绑定玩家"],
-            Args["playerId#你的玩家ID", int][
-                "serverName;?#服务器名(字母缩写)", _ServerNameFull
-            ],
-            meta=CommandMeta(
-                compact=True,
-                description="开始进入绑定游戏账号流程",
-                example="""
-绑定玩家 114514
-绑定玩家 1919810 jp""",
-            ),
-        ).parse(message)
+        res := alc_16.parse(message)
     ).matched:
         user = await get_user(user_id, platform)
         server = (
@@ -706,10 +835,7 @@ ycx 1000 177 jp""",
         return res
 
     if (
-        res := Alconna(
-            ["请求绑定"],
-            meta=CommandMeta(compact=True, description="请求绑定"),
-        ).parse(message)
+        res := alc_17.parse(message)
     ).matched:
 
         try:
@@ -726,15 +852,7 @@ ycx 1000 177 jp""",
         return res
 
     if (
-        res := Alconna(
-            ["设置默认服务器", "默认服务器"],
-            Args["serverList#使用空格分隔服务器列表。", MultiVar(_ServerNameFull)],
-            meta=CommandMeta(
-                compact=True,
-                description="设定信息显示中的默认服务器排序",
-                example="""设置默认服务器 cn jp : 将国服设置为第一服务器，日服设置为第二服务器。""",
-            ),
-        ).parse(message)
+        res := alc_18.parse(message)
     ).matched:
         user = await get_user(user_id, platform)
         try:
@@ -752,16 +870,7 @@ ycx 1000 177 jp""",
         return res
 
     if (
-        res := Alconna(
-            ["主服务器", "设置主服务器"],
-            Args["serverName#服务器名", _ServerNameFull],
-            meta=CommandMeta(
-                compact=True,
-                description="主服务器",
-                usage="将指定的服务器设置为你的主服务器。",
-                example="""主服务器 cn : 将国服设置为主服务器。""",
-            ),
-        ).parse(message)
+        res := alc_19.parse(message)
     ).matched:
         user = await get_user(user_id, platform)
         try:
@@ -780,13 +889,7 @@ ycx 1000 177 jp""",
     elif res.head_matched:
         return res
     if (
-        res := Alconna(
-            ["关闭车牌转发", "关闭个人车牌转发"],
-            meta=CommandMeta(
-                compact=True,
-                description="关闭车牌转发",
-            ),
-        ).parse(message)
+        res := alc_20.parse(message)
     ).matched:
         user = await get_user(user_id, platform)
         update = {
@@ -802,13 +905,7 @@ ycx 1000 177 jp""",
         return res
 
     if (
-        res := Alconna(
-            ["开启车牌转发", "开启个人车牌转发"],
-            meta=CommandMeta(
-                compact=True,
-                description="开启车牌转发",
-            ),
-        ).parse(message)
+        res := alc_21.parse(message)
     ).matched:
         user = await get_user(user_id, platform)
         update = {
@@ -824,22 +921,7 @@ ycx 1000 177 jp""",
         return res
 
     if (
-        res := Alconna(
-            ["玩家状态"],
-            Args["accountIndex;?", int],
-            meta=CommandMeta(
-                compact=True,
-                description="查询自己的玩家状态",
-                usage="根据关键词或活动ID查询活动信息",
-                example="""
-玩家状态 :返回指定默认账号的玩家状态
-玩家状态 1 :返回账号1的玩家状态
-主账号 :返回默认查询账号
-主账号 2 :设置账号2为默认查询账号
-玩家状态 2 :返回账号2的玩家状态
-""",
-            ),
-        ).parse(message)
+        res := alc_22.parse(message)
     ).matched:
 
         async def _player_status_case_default():
@@ -915,15 +997,7 @@ ycx 1000 177 jp""",
         return bind_record
 
     if (
-        res := Alconna(
-            ["主账号"],
-            Args["accountIndex;?#主账号，从1开始", int],
-            meta=CommandMeta(
-                compact=True,
-                description="设定默认玩家状态、车牌展示中的主账号使用第几个账号",
-                example="""主账号 2 : 将第二个账号设置为主账号。""",
-            ),
-        ).parse(message)
+        res := alc_23.parse(message)
     ).matched:
         user = await get_user(user_id, platform)
         if (
@@ -948,16 +1022,7 @@ ycx 1000 177 jp""",
             return text_response(str(e))
 
     if (
-        res := Alconna(
-            ["解除绑定"],
-            Args["index;?#序号", int],
-            meta=CommandMeta(
-                compact=True,
-                description="解除绑定",
-                usage="验证解绑 记录编号(数字)",
-                example="验证解绑 1 : 解绑第一个记录",
-            ),
-        ).parse(message)
+        res := alc_24.parse(message)
     ).matched:
         user = await get_user(user_id, platform)
         server = (
@@ -1023,13 +1088,7 @@ ycx 1000 177 jp""",
         return res
 
     if (
-        res := Alconna(
-            ["ycm", "车来", "有车吗"],
-            meta=CommandMeta(
-                compact=True,
-                description="获取车牌",
-            ),
-        ).parse(message)
+        res := alc_25.parse(message)
     ).matched:
         try:
             data = await tsugu_api_async.query_room_number()
@@ -1107,12 +1166,6 @@ ycx 1000 177 jp""",
     elif res.head_matched:
         return res
 
-    Alconna(
-        ["上传车牌"],
-        meta=CommandMeta(
-            description="上传车牌",
-        ),
-    )
 
     _car_config = {
         "car": [
