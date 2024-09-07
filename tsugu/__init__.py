@@ -1,6 +1,7 @@
 import re
 from typing import Callable, List, Literal, TypeAlias, Union, Dict, Optional
 import asyncio
+from dataclasses import dataclass
 
 from loguru import logger
 
@@ -70,32 +71,21 @@ def server_exists(server):
     return False
 
 
+@dataclass
 class User:
-    def __init__(
-        self,
-        user_id: str,
-        platform: str,
-        main_server: _ServerId,
-        displayed_server_list: List[_ServerId],
-        share_room_number: bool,
-        user_player_index: int,
-        user_player_list: List[_UserPlayerInList],
-    ):
-        self.user_id = user_id
-        self.platform = platform
-        self.main_server = main_server
-        self.displayed_server_list = displayed_server_list
-        self.share_room_number = share_room_number
-        self.user_player_index = user_player_index
-        self.user_player_list = user_player_list
+    user_id: str
+    platform: str
+    main_server: _ServerId
+    displayed_server_list: List[_ServerId]
+    share_room_number: bool
+    user_player_index: int
+    user_player_list: List[_UserPlayerInList]
 
 
 async def get_user(user_id: str, platform: str) -> User:
     """
-        获取用户数据
         多次尝试获取用户数据
-        兼容旧版用户数据
-    W
+    
         :param user_id:
         :param platform:
         :return:
@@ -103,7 +93,6 @@ async def get_user(user_id: str, platform: str) -> User:
     for i in range(3):
         try:
             user_data_res = await tsugu_api_async.get_user_data(platform, user_id)
-            # print(user_data_res)
             user_data = user_data_res.get("data")
             user = User(
                 user_id=user_id,
@@ -452,7 +441,7 @@ alc_23 = Alconna(
 
 alc_24 = Alconna(
     ["解除绑定"],
-    Args["index", int],
+    Args["index;?", int],
     meta=CommandMeta(
         compact=True,
         description="解除绑定游戏账号",
