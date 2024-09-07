@@ -692,7 +692,6 @@ ycx 1000 177 jp""",
                 return text_response(
                     f"绑定成功！现在可以使用 玩家状态 命令查看绑定的玩家状态"
                 )
-
             except Exception as e:
                 # 如果最后一次
                 if i == 6:
@@ -1007,9 +1006,9 @@ ycx 1000 177 jp""",
         for i in range(7):
             await asyncio.sleep(20)
             try:
-                logger.debug(
-                    f"解除绑定：{user_id} {platform} {server} {player_id}，第{i + 1}次尝试"
-                )
+                # logger.debug(
+                #     f"解除绑定：{user_id} {platform} {server} {player_id}，第{i + 1}次尝试"
+                # )
                 await tsugu_api_async.bind_player_verification(
                     user_id=user_id,
                     platform=platform,
@@ -1017,14 +1016,7 @@ ycx 1000 177 jp""",
                     player_id=player_id,
                     binding_action="unbind",
                 )
-                await active_send_func(
-                    {
-                        "user_id": user_id,
-                        "platform": platform,
-                        "message": f"解除绑定成功。",
-                        "message_id": message_id,
-                    }
-                )
+                return text_response(f"解除绑定成功。")
             except Exception as e:
                 # 如果最后一次
                 if i == 6:
