@@ -145,7 +145,7 @@ async def cmd_generator(
         user_id (str): _description_ 用户ID
         platform (str, optional): _description_. Defaults to "red". 平台，当用户ID为真实QQ号时，平台可以为red
         message_id (str, optional): _description_. Defaults to "". 消息ID，可用于主动消息的回复
-        send_func (Optional[Callable], optional): _description_. Defaults to None. 主动发送消息的函数。
+        send_func (Optional[Callable], optional): _description_. Defaults to None. 主动发送消息的函数
 
     Returns:
         Optional[List[Dict[str, str]]]: _description_
@@ -186,26 +186,25 @@ async def cmd_generator(
 
 alc_0 =  Alconna(
             ["help"],
-            Args["cmd;?#命令", str],
+            Args["cmd;?", str],
             meta=CommandMeta(
                 compact=True,
-                description="Tsugu 帮助",
+                description="",
             ),
         )
 
 
 alc_1 = Alconna(
             ["查试炼", "查stage", "查舞台", "查festival", "查5v5"],
-            Args["eventId;?#省略活动ID时查询当前活动。", [int]][
-                "meta;?#歌曲meta。", ["-m"]
+            Args["eventId;?", [int]][
+                "meta;?", ["-m"]
             ],
             meta=CommandMeta(
                 compact=True,
-                description="",
-                usage="",
-                example="""查试炼 157 -m :返回157号活动的试炼信息，包含歌曲meta。
-查试炼 -m :返回当前活动的试炼信息，包含歌曲meta。
-查试炼 :返回当前活动的试炼信息。""",
+                description="查询活动的试炼信息",
+                example="""查试炼 157 -m :返回157号活动的试炼信息，包含歌曲meta
+查试炼 -m :返回当前活动的试炼信息，包含歌曲meta
+查试炼 :返回当前活动的试炼信息""",
             ),
         )
 
@@ -213,13 +212,12 @@ alc_1 = Alconna(
 alc_2 = Alconna(
             ["抽卡模拟", "卡池模拟"],
             Args["times", int, 10][
-                "gacha_id;?#如果没有卡池ID的话，卡池为当前活动的卡池。", int
+                "gacha_id;?", int
             ],
             meta=CommandMeta(
                 compact=True,
-                description="抽卡模拟",
-                usage="模拟抽卡",
-                example="抽卡模拟 300 922 :模拟抽卡300次，卡池为922号卡池。",
+                description="就像真的抽卡一样",
+                example="抽卡模拟 300 922 :模拟抽卡300次，卡池为922号卡池",
             ),
         )
 
@@ -228,102 +226,97 @@ alc_3 = Alconna(
     Args["cardId", int],
     meta=CommandMeta(
         compact=True,
-        description="查卡面",
-        usage="根据卡片ID查询卡片插画",
+        description="根据卡面ID查询卡面插画",
         example="查卡面 1399 :返回1399号卡牌的插画",
     ),
 )
 
 alc_4 = Alconna(
     ["lsycx", "历史预测线"],
-    Args["tier", int]["eventId;?#活动ID，省略时查询当前活动。", int][
-        "serverName;?#省略服务器名时，默认从你当前的主服务器查询。",
+    Args["tier", int]["eventId;?", int][
+        "serverName;?",
         _ServerNameFull,
     ],
     meta=CommandMeta(
         compact=True,
-        description="查询指定档位的历史预测线。",
-        usage="查询指定档位的预测线与最近的4期活动类型相同的活动的档线数据。",
+        description="查询指定档位的预测线与最近的4期活动类型相同的活动的档线数据",
         example="lsycx 1000\nlsycx 1000 177 jp",
     ),
 )
 
 alc_5 = Alconna(
-    ["查卡", "查卡牌"],
-    Args["word#请输入卡面ID，角色等查询参数，使用空格隔开", AllParam],
+    ["查卡"],
+    Args["word", AllParam],
     meta=CommandMeta(
         compact=True,
-        description="查询卡片信息。",
-        usage="根据关键词或卡牌ID查询卡片信息。",
-        example="查卡 1399 :返回1399号卡牌的信息。\n查卡 红 ars 5x :返回角色 ars 的 5x 卡片的信息。",
+        description="根据卡面ID、角色名、乐队、昵称等查询卡面信息",
+        example="查卡 1399 :返回1399号卡牌的信息\n查卡 红 ars 5x :返回角色 ars 的 5x 卡片的信息",
     ),
 )
 
 alc_6 = Alconna(
     ["查角色"],
-    Args["word#角色名，乐队，昵称等查询参数", AllParam],
+    Args["word", AllParam],
     meta=CommandMeta(
         compact=True,
-        description="查询角色信息",
-        usage="根据关键词或角色ID查询角色信息",
-        example="查角色 10 :返回10号角色的信息。\n查角色 吉他 :返回所有角色模糊搜索标签中包含吉他的角色列表。",
+        description="根据角色名、乐队、昵称等查询角色信息",
+        example="查角色 10 :返回10号角色的信息\n查角色 吉他 :返回所有角色模糊搜索标签中包含吉他的角色列表",
     ),
 )
 
 alc_7 = Alconna(
     ["查活动"],
-    Args["word#请输入活动名，乐队，活动ID等查询参数", AllParam],
+    Args["word", AllParam],
     meta=CommandMeta(
         compact=True,
-        description="查活动",
-        usage="根据关键词或活动ID查询活动信息",
+        description="根据活动名、乐队、活动ID等查询活动信息",
         example="查活动 绿 tsugu :返回所有属性加成为pure，且活动加成角色中包括羽泽鸫的活动列表\n查活动 177 :返回177号活动的信息",
     ),
 )
 
 alc_8 = Alconna(
     ["查卡池"],
-    Args["gachaId#可以通过查活动、查卡等获取", str],
+    Args["gachaId", str],
     meta=CommandMeta(
         compact=True,
-        description="查卡池",
-        usage="根据卡池ID查询卡池信息",
-    ),
+        description="根据卡池ID查询卡池信息",
+        example="查卡池 947 :返回947号卡池的信息",),
 )
 
 alc_9 = Alconna(
     ["查玩家", "查询玩家"],
-    Args["playerId#你的游戏账号(数字)", int][
-        "serverName;?#省略服务器名时，默认从你当前的主服务器查询。",
+    Args["playerId", int][
+        "serverName;?",
         _ServerNameFull,
     ],
     meta=CommandMeta(
         compact=True,
-        description="查询玩家信息",
-        usage="查询指定ID玩家的信息。",
-        example="查玩家 40474621 jp : 查询日服玩家ID为40474621的玩家信息。",
+        description="根据玩家ID、服务器查询玩家信息",
+        example="""查玩家 1003282233 : 查询默认服务器中玩家ID为1003282233的玩家信息
+查玩家 40474621 jp : 查询日服玩家ID为40474621的玩家信息
+""",
     ),
 )
 
 alc_10 = Alconna(
     ["随机曲"],
-    Args["word;?#歌曲信息，名称，乐队，难度等。", AllParam],
+    Args["word;?", AllParam],
     meta=CommandMeta(
         compact=True,
-        description="随机曲",
-        usage="根据关键词或曲目ID随机曲目信息。",
-        example="随机曲 lv27 :在所有包含27等级难度的曲中, 随机返回其中一个",
+        description="根据关键词或曲目ID随机曲目信息",
+        example="""随机曲 lv27 :在所有包含27等级难度的曲中, 随机返回其中一个
+随机曲 ag :返回随机的 Afterglow 曲目""",
     ),
 )
 
 alc_11 = Alconna(
     ["查曲"],
-    Args["word#歌曲信息，名称，乐队，难度等。", AllParam],
+    Args["word", AllParam],
     meta=CommandMeta(
         compact=True,
-        description="查曲",
-        usage="根据关键词或曲目ID查询曲目信息。",
-        example="查曲 1 :返回1号曲的信息\n查曲 ag lv27 :返回所有难度为27的ag曲列表",
+        description="根据关键词或曲目ID查询曲目信息",
+        example="""查曲 1 :返回1号曲的信息
+查曲 ag lv27 :返回所有难度为27的ag曲列表""",
     ),
 )
 
@@ -332,45 +325,41 @@ alc_12 = Alconna(
     Args["songId", int]["difficultyText", ("easy", "ez", "normal", "nm", "hard", "hd", "expert", "ex", "special", "sp"), "ex"],
     meta=CommandMeta(
         compact=True,
-        description="查谱面",
-        usage="根据曲目ID与难度查询铺面信息。",
+        description="根据曲目ID与难度查询铺面信息",
         example="查谱面 1 :返回1号曲的ex难度谱面\n查谱面 128 special :返回128号曲的special难度谱面",
     ),
 )
 
 alc_13 = Alconna(
     ["查询分数表", "查分数表", "查询分数榜", "查分数榜"],
-    Args["serverName;?#省略服务器名时，默认从你当前的主服务器查询。", _ServerNameFull],
+    Args["serverName;?", _ServerNameFull],
     meta=CommandMeta(
         compact=True,
-        description="查询分数表",
-        usage="查询指定服务器的歌曲分数表。",
+        description="",
         example="查询分数表 cn :返回国服的歌曲分数表",
     ),
 )
 
 alc_14 = Alconna(
     ["ycxall", "ycx all"],
-    Args["eventId;?#活动ID，省略时查询当前活动。", int]["serverName;?#省略服务器名时，默认从你当前的主服务器查询。", _ServerNameFull],
+    Args["eventId;?", int]["serverName;?", _ServerNameFull],
     meta=CommandMeta(
         compact=True,
-        description="查询指定档位的预测线",
-        usage="根据关键词或角色ID查询角色信息",
+        description="输出全部档位的预测线",
         example="ycx 1000\nycx 1000 177 jp",
     ),
 )
 
 alc_15 = Alconna(
     ["ycx", "预测线"],
-    Args["tier#指定档位", int][
-        "eventId;?#活动ID，省略时查询当前活动。", int
+    Args["tier", int][
+        "eventId;?", int
     ][
-        "serverName;?#省略服务器名时，默认从你当前的主服务器查询。", _ServerNameFull
+        "serverName;?", _ServerNameFull
     ],
     meta=CommandMeta(
         compact=True,
-        description="查询指定档位的预测线",
-        usage="查询指定档位的预测线。",
+        description="指定档位的预测线",
         example="""ycx 1000
 ycx 1000 177 jp""",
     ),
@@ -378,15 +367,13 @@ ycx 1000 177 jp""",
 
 alc_16 = Alconna(
     ["绑定玩家"],
-    Args["playerId#你的玩家ID", int][
-        "serverName;?#服务器名(字母缩写)", _ServerNameFull
+    Args["playerId", int][
+        "serverName;?", _ServerNameFull
     ],
     meta=CommandMeta(
         compact=True,
-        description="开始进入绑定游戏账号流程",
-        usage="绑定玩家 <playerId> [serverName]",
-        example="""
-绑定玩家 114514
+        description="绑定游戏账号",
+        example="""绑定玩家 114514
 绑定玩家 1919810 jp""",
     ),
 )
@@ -395,32 +382,28 @@ alc_17 = Alconna(
     ["请求绑定"],
     meta=CommandMeta(
         compact=True,
-        description="请求绑定",
-        usage="请求绑定",
-        example="""
-请求绑定""",
+        description="用于刷新绑定时的验证码",
+        example="""请求绑定""",
     ),
 )
 
 alc_18 = Alconna(
     ["设置默认服务器", "默认服务器"],
-    Args["serverList#使用空格分隔服务器列表。", MultiVar(_ServerNameFull)],
+    Args["serverList", MultiVar(_ServerNameFull)],
     meta=CommandMeta(
         compact=True,
         description="设定信息显示中的默认服务器排序",
-        usage="设置默认服务器 <server1> <server2> ...",
-        example="""设置默认服务器 cn jp : 将国服设置为第一服务器，日服设置为第二服务器。""",
+        example="""设置默认服务器 cn jp : 将国服设置为第一服务器，日服设置为第二服务器""",
     ),
 )
 
 alc_19 = Alconna(
     ["主服务器", "设置主服务器"],
-    Args["serverName#服务器名", _ServerNameFull],
+    Args["serverName", _ServerNameFull],
     meta=CommandMeta(
         compact=True,
-        description="主服务器",
-        usage="将指定的服务器设置为你的主服务器。",
-        example="""主服务器 cn : 将国服设置为主服务器。""",
+        description="将指定的服务器设置为你的主服务器",
+        example="""主服务器 cn : 将国服设置为主服务器""",
     ),
 )
 
@@ -428,9 +411,7 @@ alc_20 = Alconna(
     ["关闭车牌转发", "关闭个人车牌转发"],
     meta=CommandMeta(
         compact=True,
-        description="关闭车牌转发",
-        usage="关闭车牌转发",
-        example="""关闭车牌转发""",
+        description="",
     ),
 )
 
@@ -438,19 +419,16 @@ alc_21 = Alconna(
     ["开启车牌转发", "开启个人车牌转发"],
     meta=CommandMeta(
         compact=True,
-        description="开启车牌转发",
-        usage="开启车牌转发",
-        example="""开启车牌转发""",
+        description="",
     ),
 )
 
 alc_22 = Alconna(
     ["玩家状态"],
-    Args["accountIndex#指定账号索引，可选", int],
+    Args["accountIndex", int],
     meta=CommandMeta(
         compact=True,
         description="查询自己的玩家状态",
-        usage="玩家状态 [accountIndex]",
         example="""
 玩家状态 :返回指定默认账号的玩家状态
 玩家状态 1 :返回账号1的玩家状态
@@ -463,22 +441,21 @@ alc_22 = Alconna(
 
 alc_23 = Alconna(
     ["主账号"],
-    Args["accountIndex#主账号，从1开始", int],
+    Args["accountIndex", int],
     meta=CommandMeta(
         compact=True,
         description="设定默认玩家状态、车牌展示中的主账号使用第几个账号",
-        usage="主账号 [accountIndex]",
-        example="""主账号 2 : 将第二个账号设置为主账号。""",
+        example="""主账号 : 返回所有账号列表
+主账号 2 : 将第二个账号设置为主账号""",
     ),
 )
 
 alc_24 = Alconna(
     ["解除绑定"],
-    Args["index#序号", int],
+    Args["index", int],
     meta=CommandMeta(
         compact=True,
-        description="解除绑定",
-        usage="解除绑定 <index>",
+        description="解除绑定游戏账号",
         example="解除绑定 1 : 解绑第一个记录",
     ),
 )
@@ -487,22 +464,15 @@ alc_25 = Alconna(
     ["ycm", "车来", "有车吗"],
     meta=CommandMeta(
         compact=True,
-        description="获取车牌",
-        usage="ycm / 车来 / 有车吗",
-        example="""ycm
-车来
-有车吗""",
+        description="获取车站信息",
     ),
 )
 
 alc_26 = Alconna(
     ["上传车牌"],
-    Args["roomNumber#车牌号码", str],
+    Args["roomNumber", str],
     meta=CommandMeta(
-        compact=True,
-        description="上传车牌",
-        usage="上传车牌 <roomNumber>",
-        example="""上传车牌 ABC123""",
+        description="自动检测车牌并上传",
     ),
 )
 
@@ -654,7 +624,7 @@ async def _handler(
         else:
             server = user.main_server
         if str(res.playerId).startswith("4") and server == 3:
-            return text_response("Bestdori 暂不支持渠道服相关功能。")
+            return text_response("Bestdori 暂不支持渠道服相关功能")
         try:
             return await tsugu_api_async.search_player(res.playerId, server)
         except Exception as e:
@@ -791,10 +761,10 @@ async def _handler(
         )
 
         if str(res.playerId).startswith("4") and server == 3:
-            return text_response("Bestdori 暂不支持渠道服相关功能。")
+            return text_response("Bestdori 暂不支持渠道服相关功能")
 
         if res.playerId in [player["playerId"] for player in user.user_player_list]:
-            return text_response("你已经绑定过这个玩家了。")
+            return text_response("你已经绑定过这个玩家了")
 
         try:
             r = await tsugu_api_async.bind_player_request(
@@ -807,7 +777,7 @@ async def _handler(
             {
                 "user_id": user_id,
                 "platform": platform,
-                "message": f"""已进入绑定流程，请将在2min内将游戏账号的 评论(个性签名) 或者 当前使用的 乐队编队名称改为\n{r.get('data')['verifyCode']}\nbot将自动验证，绑定成功后会发送消息通知。\n若验证码不可用，发送 请求绑定 获取新验证码。""",
+                "message": f"""已进入绑定流程，请将在2min内将游戏账号的 评论(个性签名) 或者 当前使用的 乐队编队名称改为\n{r.get('data')['verifyCode']}\nbot将自动验证，绑定成功后会发送消息通知\n若验证码不可用，发送 请求绑定 获取新验证码""",
                 "message_id": message_id,
             }
         )
@@ -823,17 +793,17 @@ async def _handler(
                     binding_action="bind",
                 )
                 return text_response(
-                    f"绑定成功！现在可以使用 玩家状态 命令查看绑定的玩家状态"
+                    f"绑定成功，现在可以使用 玩家状态 命令查看绑定的玩家状态"
                 )
             except Exception as e:
                 # 如果最后一次
                 if i == 6:
-                    return text_response(f"绑定超时，请重试。")
+                    return text_response(f"绑定超时，请重试")
 
                 if "都与验证码不匹配" in str(e):
                     continue
                 # 其他错误
-                return text_response(f"绑定失败，请稍后再试。")
+                return text_response(f"绑定失败，请稍后再试")
 
     elif res.head_matched:
         return res
@@ -901,7 +871,7 @@ async def _handler(
         }
         try:
             r = await tsugu_api_async.change_user_data(platform, user.user_id, update)
-            return text_response("关闭车牌转发成功！")
+            return text_response("关闭车牌转发成功")
         except Exception as e:
             return text_response(e)
 
@@ -917,7 +887,7 @@ async def _handler(
         }
         try:
             r = await tsugu_api_async.change_user_data(platform, user.user_id, update)
-            return text_response("开启车牌转发成功！")
+            return text_response("开启车牌转发成功")
         except Exception as e:
             return text_response(e)
 
@@ -932,7 +902,7 @@ async def _handler(
             user_player_index = user.user_player_index
             try:
                 if len(user.user_player_list) == 0:
-                    return text_response(f"未找到记录，请先绑定。")
+                    return text_response(f"未找到记录，请先绑定")
 
                 if user.user_player_index + 1 > len(user.user_player_list):
                     update = {"userPlayerIndex": 0}
@@ -944,31 +914,31 @@ async def _handler(
                             {
                                 "user_id": user_id,
                                 "platform": platform,
-                                "message": f"""主账号异常，自动修正成功，将生成玩家状态（1）。""",
+                                "message": f"""主账号异常，自动修正成功，将生成玩家状态（1）""",
                                 "message_id": message_id,
                             }
                         )
                     except Exception as e:
                         return text_response(
-                            "主账号异常，自动修正失败，请手动发送“主账号 1”修正，或联系 bot 管理员。"
+                            "主账号异常，自动修正失败，请手动发送“主账号 1”修正，或联系 bot 管理员"
                         )
                 game_id_msg = user.user_player_list[user_player_index]
                 return await tsugu_api_async.search_player(
                     int(game_id_msg.get("playerId")), game_id_msg.get("server")
                 ) + text_response(
-                    f"\n已查找默认玩家状态（{user_player_index + 1}），“help 玩家状态” 了解更多。"
+                    f"\n已查找默认玩家状态（{user_player_index + 1}），“help 玩家状态” 了解更多"
                 )
             except Exception as e:
                 return text_response(e)
 
         async def _player_status_case_index():
             if res.accountIndex > len(user.user_player_list) or res.accountIndex < 1:
-                return text_response(f"未找到记录 {res.accountIndex}，请先绑定。")
+                return text_response(f"未找到记录 {res.accountIndex}，请先绑定")
             try:
                 game_id_msg = user.user_player_list[res.accountIndex - 1]
                 return await tsugu_api_async.search_player(
                     int(game_id_msg.get("playerId")), game_id_msg.get("server")
-                ) + text_response(f"\n已查找账号 {res.accountIndex} 玩家状态，“help 玩家状态” 了解更多。")
+                ) + text_response(f"\n已查找账号 {res.accountIndex} 玩家状态，“help 玩家状态” 了解更多")
             except Exception as e:
                 return text_response(e)
 
@@ -1011,7 +981,7 @@ async def _handler(
         ):
             bind_record = _get_user_account_list_msg(user=user)
             if bind_record == "":
-                return text_response("未找到记录，请先绑定账号。")
+                return text_response("未找到记录，请先绑定账号")
             return text_response(
                 "请选择你要设置为主账号的账号数字：\n"
                 + bind_record
@@ -1040,7 +1010,7 @@ async def _handler(
             try:
                 bind_record = _get_user_account_list_msg(user=user)
                 if bind_record == "":
-                    return text_response("未找到记录，请先绑定账号。")
+                    return text_response("未找到记录，请先绑定账号")
                 return text_response(
                     f"""选择你要解除的账号数字：\n{bind_record}\n例如：解除绑定 1"""
                 )
@@ -1057,7 +1027,7 @@ async def _handler(
             {
                 "user_id": user_id,
                 "platform": platform,
-                "message": f"""已进入解除绑定流程，请将在2min内将游戏账号的 评论(个性签名) 或者 当前使用的 乐队编队名称改为\n{r.get('data')['verifyCode']}\nbot将自动验证，解除成功后会发送消息通知。\n若验证码不可用，发送 请求绑定 获取新验证码。""",
+                "message": f"""已进入解除绑定流程，请将在2min内将游戏账号的 评论(个性签名) 或者 当前使用的 乐队编队名称改为\n{r.get('data')['verifyCode']}\nbot将自动验证，解除成功后会发送消息通知\n若验证码不可用，发送 请求绑定 获取新验证码""",
                 "message_id": message_id,
             }
         )
@@ -1075,18 +1045,18 @@ async def _handler(
                     player_id=player_id,
                     binding_action="unbind",
                 )
-                return text_response(f"解除绑定成功。")
+                return text_response(f"解除绑定成功")
             except Exception as e:
                 # 如果最后一次
                 if i == 6:
-                    return text_response(f"解除绑定超时，请重试。")
+                    return text_response(f"解除绑定超时，请重试")
 
                 if "都与验证码不匹配" in str(e):
                     # print(f'验证码错误，{i + 1}次尝试')
                     # 进入下一次循环
                     continue
                 # 其他错误
-                return text_response(f"解除绑定失败，请稍后再试。")
+                return text_response(f"解除绑定失败，请稍后再试")
 
     elif res.head_matched:
         return res
