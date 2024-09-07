@@ -695,29 +695,12 @@ ycx 1000 177 jp""",
             except Exception as e:
                 # 如果最后一次
                 if i == 6:
-                    await active_send_func(
-                        {
-                            "user_id": user_id,
-                            "platform": platform,
-                            "message": f"""绑定超时，请重试。""",
-                            "message_id": message_id,
-                        }
-                    )
-                    return
+                    return text_response(f"绑定超时，请重试。")
 
                 if "都与验证码不匹配" in str(e):
-                    # print(f'验证码错误，{i+1}次尝试')
-                    # 进入下一次循环
                     continue
                 # 其他错误
-                await active_send_func(
-                    {
-                        "user_id": user_id,
-                        "platform": platform,
-                        "message": f"""绑定失败，请稍后再试。""",
-                        "message_id": message_id,
-                    }
-                )
+                return text_response(f"绑定失败，请稍后再试。")
 
     elif res.head_matched:
         return res
@@ -871,11 +854,18 @@ ycx 1000 177 jp""",
                         await tsugu_api_async.change_user_data(
                             platform, user.user_id, update
                         )
+                        await active_send_func(
+                            {
+                                "user_id": user_id,
+                                "platform": platform,
+                                "message": f"""主账号异常，自动修正成功，将生成玩家状态（1）。""",
+                                "message_id": message_id,
+                            }
+                        )
                     except Exception as e:
                         return text_response(
-                            "查询中索引出现问题，自动修正失败，请手动发送“主账号 1”修正。"
+                            "主账号异常，自动修正失败，请手动发送“主账号 1”修正，或联系 bot 管理员。"
                         )
-
                 game_id_msg = user.user_player_list[user_player_index]
                 return await tsugu_api_async.search_player(
                     int(game_id_msg.get("playerId")), game_id_msg.get("server")
@@ -1020,30 +1010,14 @@ ycx 1000 177 jp""",
             except Exception as e:
                 # 如果最后一次
                 if i == 6:
-                    await active_send_func(
-                        {
-                            "user_id": user_id,
-                            "platform": platform,
-                            "message": f"解除绑定超时，请重试。",
-                            "message_id": message_id,
-                        }
-                    )
-                    return
+                    return text_response(f"解除绑定超时，请重试。")
 
                 if "都与验证码不匹配" in str(e):
                     # print(f'验证码错误，{i + 1}次尝试')
                     # 进入下一次循环
                     continue
                 # 其他错误
-                await active_send_func(
-                    {
-                        "user_id": user_id,
-                        "platform": platform,
-                        "message": f"解除绑定失败，请重试。{str(e)}",
-                        "message_id": message_id,
-                    }
-                )
-                return
+                return text_response(f"解除绑定失败，请稍后再试。")
 
     elif res.head_matched:
         return res
