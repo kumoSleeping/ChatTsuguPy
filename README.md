@@ -35,42 +35,60 @@ pip install tsugu --upgrade
 
 ***
 
+## 📚 异步支持
+- 4.0.0 后需要异步环境处理。
+
+
 
 ## 📖 使用
 
-### handler & handler_raw
+`cmd_generator` 是一个异步方法，用于直接处理用户输入的自然语言并返回查询结果:   
 
-- `handler` 是一个同步方法，用于直接处理用户输入的自然语言并返回查询结果:   
-- 如果你方便使用 base64，`handler_raw` 方法或许会更好，`tsugu` 后端本身返回此数据结构，这个方法可以节省不必要的开销。
+
+- 以 `satori-python` + `chronocat` 为例
+
 ```python
-import tsugu
+from tsugu import cmd_generator
 
-# 四个参数，分别意味着 消息内容 用户id 平台 频道id
-for i in tsugu.handler('查卡 ars 1x', '1528593481'):
-    print('文本: ',i) if isinstance(i, str) else None
-    print(f"[图片]") if isinstance(i, bytes) else None
+@app.register_on(EventType.MESSAGE_CREATED)
+async def on_message_(account: Account, event: Event):
+    
+    async def send_active_message(messages: dict):
+        message = messages.get('message', None)
+        if message:
+            await account.send(event, E.quote(event.message.id).dumps() + message)
+                
+    if msg := cmd_select(event, prefix=['.']):
+        rpl = await cmd_generator(message=msg, user_id=event.user.id,platform='red', message_id=event.message.id, active_send_func=send_active_message)
+        if not rpl:
+            pass
+        else:
+            modified_results = []
+            for item in rpl:
+                if item['type'] == 'string':
+                    # 处理字符串类型的结果，可能是文本消息
+                    text_message = item['string'].replace("<", "&lt;").replace(">", "&gt;")
+                    modified_results.append(text_message)
+                elif item['type'] == 'base64':
+                    # 处理Base64编码的图像数据
+                    base64_data = item['string']
+                    # 将Base64数据包裹在^IMG=xxx^中并添加到文本中
+                    image_tag = f'<img src="data:image/png;base64,{base64_data}"/>'
 
-for i in tsugu.handler_raw('查卡 ars 1x', '1528593481'):
-    print('文本: ',i) if i['type'] == 'text' else None
-    print(f"[图片]") if i['type'] == 'base64' else None
+                    modified_results.append(image_tag)
+            result_string = ''.join(modified_results)
+            await account.send(event, E.quote(event.message.id).dumps() + result_string)
+
 ```
-
-
 > 在常用的qqbot中，群号就是 `channel_id`。   
 > 当你使用QQ号作为 `user_id` 时，`platform` 默认 `red`。   
 
-## 📚 异步支持
+
+## ❌ 同步多线程支持
+- 4.0.0 后不再支持同步多线程，因为本人用不到。实现起来很简单，本包在导入时完成了 `Alconna` 的初始化，避免了多线程 `context` 错误，因此可以在多线程中使用 `tsugu`，欢迎有志人士一同完善。
 
 
-### handler_async & handler_raw_async
 
-- `handler_async` 是 `handler` 的异步版本，使用方法与 `handler` 相同。
-- `handler_raw_async` 同理。
-
-
-## 🧵多线程支持
-
-- tsugu 在导入时完成了 `Alconna` 的初始化，避免了多线程 `context` 错误，因此可以在多线程中使用 `tsugu`。
 
 
 ## ⚙️ api settings
