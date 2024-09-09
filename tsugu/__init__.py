@@ -84,11 +84,11 @@ class User:
 
 async def get_user(user_id: str, platform: str) -> User:
     """
-        多次尝试获取用户数据
-    
-        :param user_id:
-        :param platform:
-        :return:
+    多次尝试获取用户数据
+
+    :param user_id:
+    :param platform:
+    :return:
     """
     for i in range(3):
         try:
@@ -113,6 +113,7 @@ async def get_user(user_id: str, platform: str) -> User:
 
 
 output_manager.set_action(lambda *_: None)
+
 
 async def async_print(*args, **kwargs):
     print(*args, **kwargs)
@@ -173,42 +174,38 @@ async def cmd_generator(
     return None
 
 
-alc_0 =  Alconna(
-            ["help"],
-            Args["cmd;?", str],
-            meta=CommandMeta(
-                compact=True,
-                description="",
-            ),
-        )
+alc_0 = Alconna(
+    ["help"],
+    Args["cmd;?", str],
+    meta=CommandMeta(
+        compact=True,
+        description="",
+    ),
+)
 
 
 alc_1 = Alconna(
-            ["查试炼", "查stage", "查舞台", "查festival", "查5v5"],
-            Args["eventId;?", [int]][
-                "meta;?", ["-m"]
-            ],
-            meta=CommandMeta(
-                compact=True,
-                description="查询活动的试炼信息",
-                example="""查试炼 157 -m :返回157号活动的试炼信息，包含歌曲meta
+    ["查试炼", "查stage", "查舞台", "查festival", "查5v5"],
+    Args["eventId;?", [int]]["meta;?", ["-m"]],
+    meta=CommandMeta(
+        compact=True,
+        description="查询活动的试炼信息",
+        example="""查试炼 157 -m :返回157号活动的试炼信息，包含歌曲meta
 查试炼 -m :返回当前活动的试炼信息，包含歌曲meta
 查试炼 :返回当前活动的试炼信息""",
-            ),
-        )
+    ),
+)
 
 
 alc_2 = Alconna(
-            ["抽卡模拟", "卡池模拟"],
-            Args["times", int, 10][
-                "gacha_id;?", int
-            ],
-            meta=CommandMeta(
-                compact=True,
-                description="就像真的抽卡一样",
-                example="抽卡模拟 300 922 :模拟抽卡300次，卡池为922号卡池",
-            ),
-        )
+    ["抽卡模拟", "卡池模拟"],
+    Args["times", int, 10]["gacha_id;?", int],
+    meta=CommandMeta(
+        compact=True,
+        description="就像真的抽卡一样",
+        example="抽卡模拟 300 922 :模拟抽卡300次，卡池为922号卡池",
+    ),
+)
 
 alc_3 = Alconna(
     ["查卡面", "查插画"],
@@ -234,12 +231,12 @@ alc_4 = Alconna(
 )
 
 alc_5 = Alconna(
-    ["查卡"],
-    Args["word", AllParam],
+    ["查卡池"],
+    Args["gachaId", str],
     meta=CommandMeta(
         compact=True,
-        description="根据卡面ID、角色名、乐队、昵称等查询卡面信息",
-        example="查卡 1399 :返回1399号卡牌的信息\n查卡 红 ars 5x :返回角色 ars 的 5x 卡片的信息",
+        description="根据卡池ID查询卡池信息",
+        example="查卡池 947 :返回947号卡池的信息",
     ),
 )
 
@@ -264,12 +261,13 @@ alc_7 = Alconna(
 )
 
 alc_8 = Alconna(
-    ["查卡池"],
-    Args["gachaId", str],
+    ["查卡"],
+    Args["word", AllParam],
     meta=CommandMeta(
         compact=True,
-        description="根据卡池ID查询卡池信息",
-        example="查卡池 947 :返回947号卡池的信息",),
+        description="根据卡面ID、角色名、乐队、昵称等查询卡面信息",
+        example="查卡 1399 :返回1399号卡牌的信息\n查卡 红 ars 5x :返回角色 ars 的 5x 卡片的信息",
+    ),
 )
 
 alc_9 = Alconna(
@@ -311,7 +309,11 @@ alc_11 = Alconna(
 
 alc_12 = Alconna(
     ["查谱面", "查铺面"],
-    Args["songId", int]["difficultyText", ("easy", "ez", "normal", "nm", "hard", "hd", "expert", "ex", "special", "sp"), "ex"],
+    Args["songId", int][
+        "difficultyText",
+        ("easy", "ez", "normal", "nm", "hard", "hd", "expert", "ex", "special", "sp"),
+        "ex",
+    ],
     meta=CommandMeta(
         compact=True,
         description="根据曲目ID与难度查询铺面信息",
@@ -341,11 +343,7 @@ alc_14 = Alconna(
 
 alc_15 = Alconna(
     ["ycx", "预测线"],
-    Args["tier", int][
-        "eventId;?", int
-    ][
-        "serverName;?", _ServerNameFull
-    ],
+    Args["tier", int]["eventId;?", int]["serverName;?", _ServerNameFull],
     meta=CommandMeta(
         compact=True,
         description="指定档位的预测线",
@@ -356,25 +354,16 @@ ycx 1000 177 jp""",
 
 alc_16 = Alconna(
     ["绑定玩家"],
-    Args["playerId", int][
-        "serverName;?", _ServerNameFull
-    ],
+    Args["playerId;?", int]["serverName;?", _ServerNameFull]["geetest;?", ["刷新"]],
     meta=CommandMeta(
         compact=True,
         description="绑定游戏账号",
-        example="""绑定玩家 114514
-绑定玩家 1919810 jp""",
+        example="""绑定玩家 114514 : 绑定默认服务器中玩家ID为114514的玩家
+绑定玩家 1919810 jp : 绑定日服玩家ID为1919810的玩家
+绑定玩家 刷新 : 刷新你的验证码""",
     ),
 )
 
-alc_17 = Alconna(
-    ["请求绑定"],
-    meta=CommandMeta(
-        compact=True,
-        description="用于刷新绑定时的验证码",
-        example="""请求绑定""",
-    ),
-)
 
 alc_18 = Alconna(
     ["设置默认服务器", "默认服务器"],
@@ -441,7 +430,7 @@ alc_23 = Alconna(
 
 alc_24 = Alconna(
     ["解除绑定"],
-    Args["index;?", int],
+    Args["index;?", int]["geetest;?", ["刷新"]],
     meta=CommandMeta(
         compact=True,
         description="解除绑定游戏账号",
@@ -465,6 +454,7 @@ alc_26 = Alconna(
     ),
 )
 
+
 async def _handler(
     message: str,
     user_id: str,
@@ -472,9 +462,7 @@ async def _handler(
     message_id: str,
     active_send_func: callable,
 ):
-    if (
-        res := alc_0.parse(message)
-    ).matched:
+    if (res := alc_0.parse(message)).matched:
         if not res.cmd:
             return text_response(command_manager.all_command_help())
 
@@ -483,9 +471,7 @@ async def _handler(
     elif res.head_matched:
         return res
 
-    if (
-        res := alc_1.parse(message)
-    ).matched:
+    if (res := alc_1.parse(message)).matched:
         user = await get_user(user_id, platform)
         if res.meta:
             meta = True
@@ -496,13 +482,11 @@ async def _handler(
                 user.main_server, res.eventId, meta
             )
         except Exception as e:
-            return text_response('API Error: /event_stage' + str(e))
+            return text_response("API Error: /event_stage" + str(e))
     elif res.head_matched:
         return res
 
-    if (
-        res := alc_2.parse(message)
-    ).matched:
+    if (res := alc_2.parse(message)).matched:
         user = await get_user(user_id, platform)
         if res.gacha_id:
             gacha_id = res.gacha_id
@@ -513,25 +497,21 @@ async def _handler(
                 user.main_server, res.times, gacha_id
             )
         except Exception as e:
-            return text_response('API Error: /gacha_simulate' + str(e))
+            return text_response("API Error: /gacha_simulate" + str(e))
 
     elif res.head_matched:
         return res
 
-    if (
-        res := alc_3.parse(message)
-    ).matched:
+    if (res := alc_3.parse(message)).matched:
         try:
             return await tsugu_api_async.get_card_illustration(res.cardId)
         except Exception as e:
-            return text_response('API Error: /get_card_illustration' + str(e))
+            return text_response("API Error: /get_card_illustration" + str(e))
 
     elif res.head_matched:
         return res
 
-    if (
-        res := alc_4.parse(message)
-    ).matched:
+    if (res := alc_4.parse(message)).matched:
         user = await get_user(user_id, platform)
         server = (
             server_name_2_server_id(res.serverName)
@@ -543,70 +523,60 @@ async def _handler(
                 server, res.tier, res.eventId
             )
         except Exception as e:
-            return text_response('API Error: /cutoff_list_of_recent_event' + str(e))
+            return text_response("API Error: /cutoff_list_of_recent_event" + str(e))
 
     elif res.head_matched:
         return res
 
-    if (
-        res := alc_5.parse(message)
-    ).matched:
-        user = await get_user(user_id, platform)
-        try:
-            return await tsugu_api_async.search_card(
-                user.displayed_server_list, " ".join(res.word)
-            )
-        except Exception as e:
-            return text_response('API Error: /search_card' + str(e))
-
-    elif res.head_matched:
-        return res
-
-    if (
-        res := alc_6.parse(message)
-    ).matched:
-        user = await get_user(user_id, platform)
-        try:
-            return await tsugu_api_async.search_character(
-                user.displayed_server_list, text=" ".join(res.word)
-            )
-        except Exception as e:
-            return text_response('API Error: /search_character' + str(e))
-
-    elif res.head_matched:
-        return res
-
-    if (
-        res := alc_7.parse(message)
-    ).matched:
-        user = await get_user(user_id, platform)
-        try:
-            return await tsugu_api_async.search_event(
-                user.displayed_server_list, text=" ".join(res.word)
-            )
-        except Exception as e:
-            return text_response('API Error: /search_event' + str(e))
-
-    elif res.head_matched:
-        return res
-
-    if (
-        res := alc_8.parse(message)
-    ).matched:
+    if (res := alc_5.parse(message)).matched:
         user = await get_user(user_id, platform)
         try:
             return await tsugu_api_async.search_gacha(
                 user.displayed_server_list, res.gachaId
             )
         except Exception as e:
-            return text_response('API Error: /search_gacha' + str(e))
+            return text_response("API Error: /search_gacha" + str(e))
 
     elif res.head_matched:
         return res
 
-    if (
-        res := alc_9.parse(message)
-    ).matched:
+    if (res := alc_6.parse(message)).matched:
+        user = await get_user(user_id, platform)
+        try:
+            return await tsugu_api_async.search_character(
+                user.displayed_server_list, text=" ".join(res.word)
+            )
+        except Exception as e:
+            return text_response("API Error: /search_character" + str(e))
+
+    elif res.head_matched:
+        return res
+
+    if (res := alc_7.parse(message)).matched:
+        user = await get_user(user_id, platform)
+        try:
+            return await tsugu_api_async.search_event(
+                user.displayed_server_list, text=" ".join(res.word)
+            )
+        except Exception as e:
+            return text_response("API Error: /search_event" + str(e))
+
+    elif res.head_matched:
+        return res
+
+    if (res := alc_8.parse(message)).matched:
+        user = await get_user(user_id, platform)
+        try:
+            return await tsugu_api_async.search_card(
+                user.displayed_server_list, " ".join(res.word)
+            )
+        except Exception as e:
+            return text_response("API Error: /search_card" + str(e))
+
+    elif res.head_matched:
+        return res
+
+    if (res := alc_9.parse(message)).matched:
         user = await get_user(user_id, platform)
         if res.serverName:
             server = server_name_2_server_id(res.serverName)
@@ -617,33 +587,29 @@ async def _handler(
         try:
             return await tsugu_api_async.search_player(res.playerId, server)
         except Exception as e:
-            return text_response('API Error: /search_player' + str(e))
+            return text_response("API Error: /search_player" + str(e))
 
     elif res.head_matched:
         return res
 
-    if (
-        res := alc_10.parse(message)
-    ).matched:
+    if (res := alc_10.parse(message)).matched:
         user = await get_user(user_id, platform)
         try:
             text = " ".join(res.word) if res.word else None
             return await tsugu_api_async.song_random(user.main_server, text=text)
         except Exception as e:
-            return text_response('API Error: /song_random' + str(e))
+            return text_response("API Error: /song_random" + str(e))
 
     elif res.head_matched:
         return res
-    if (
-        res := alc_11.parse(message)
-    ).matched:
+    if (res := alc_11.parse(message)).matched:
         user = await get_user(user_id, platform)
         try:
             return await tsugu_api_async.search_song(
                 user.displayed_server_list, text=" ".join(res.word)
             )
         except Exception as e:
-            return text_response('API Error: /search_song' + str(e))
+            return text_response("API Error: /search_song" + str(e))
 
     elif res.head_matched:
         return res
@@ -673,9 +639,7 @@ async def _handler(
         "sp": 4,
     }
 
-    if (
-        res := alc_12.parse(message)
-    ).matched:
+    if (res := alc_12.parse(message)).matched:
         user = await get_user(user_id, platform)
         try:
             return await tsugu_api_async.song_chart(
@@ -684,14 +648,12 @@ async def _handler(
                 difficulty_text_2_difficulty_id[res.difficultyText],
             )
         except Exception as e:
-            return text_response('API Error: /song_chart' + str(e))
+            return text_response("API Error: /song_chart" + str(e))
 
     elif res.head_matched:
         return res
 
-    if (
-        res := alc_13.parse(message)
-    ).matched:
+    if (res := alc_13.parse(message)).matched:
         user = await get_user(user_id, platform)
         if res.serverName:
             server = server_name_2_server_id(res.serverName)
@@ -700,14 +662,12 @@ async def _handler(
         try:
             return await tsugu_api_async.song_meta(user.displayed_server_list, server)
         except Exception as e:
-            return text_response('API Error: /song_meta' + str(e))
+            return text_response("API Error: /song_meta" + str(e))
 
     elif res.head_matched:
         return res
 
-    if (
-        res := alc_14.parse(message)
-    ).matched:
+    if (res := alc_14.parse(message)).matched:
         user = await get_user(user_id, platform)
         server = (
             server_name_2_server_id(res.serverName)
@@ -717,14 +677,12 @@ async def _handler(
         try:
             return await tsugu_api_async.cutoff_all(server, res.eventId)
         except Exception as e:
-            return text_response('API Error: /cutoff_all' + str(e))
+            return text_response("API Error: /cutoff_all" + str(e))
 
     elif res.head_matched:
         return res
 
-    if (
-        res := alc_15.parse(message)
-    ).matched:
+    if (res := alc_15.parse(message)).matched:
         user = await get_user(user_id, platform)
         server = (
             server_name_2_server_id(res.serverName)
@@ -734,14 +692,24 @@ async def _handler(
         try:
             return await tsugu_api_async.cutoff_detail(server, res.tier, res.eventId)
         except Exception as e:
-            return text_response('API Error: /cutoff_detail' + str(e))
+            return text_response("API Error: /cutoff_detail" + str(e))
 
     elif res.head_matched:
         return res
 
-    if (
-        res := alc_16.parse(message)
-    ).matched:
+    if (res := alc_16.parse(message)).matched:
+
+        if res.geetest:
+            try:
+                r = await tsugu_api_async.bind_player_request(
+                    user_id=user_id, platform=platform
+                )
+                return text_response(
+                    f"""刷新验证码成功，验证码为 {r.get('data')['verifyCode']} """
+                )
+            except Exception as e:
+                return text_response(str(e) + "请求失败，请稍后再试")
+
         user = await get_user(user_id, platform)
         server = (
             server_name_2_server_id(res.serverName)
@@ -766,7 +734,7 @@ async def _handler(
             {
                 "user_id": user_id,
                 "platform": platform,
-                "message": f"""已进入绑定流程，请将在2min内将游戏账号的 评论(个性签名) 或者 当前使用的 乐队编队名称改为\n{r.get('data')['verifyCode']}\nbot将自动验证，绑定成功后会发送消息通知\n若验证码不可用，发送 请求绑定 获取新验证码""",
+                "message": f"""已进入绑定流程，请将在2min内将游戏账号的 评论(个性签名) 或者 当前使用的 乐队编队名称改为\n{r.get('data')['verifyCode']}\nbot将自动验证，绑定成功后会发送消息通知\n若验证码不可用，使用「绑定玩家 刷新」刷新验证码""",
                 "message_id": message_id,
             }
         )
@@ -797,26 +765,7 @@ async def _handler(
     elif res.head_matched:
         return res
 
-    if (
-        res := alc_17.parse(message)
-    ).matched:
-
-        try:
-            r = await tsugu_api_async.bind_player_request(
-                user_id=user_id, platform=platform
-            )
-            return text_response(
-                f"""请求成功，验证码为 {r.get('data')['verifyCode']} """
-            )
-        except Exception as e:
-            return text_response(str(e) + "请求绑定失败，请稍后再试")
-
-    elif res.head_matched:
-        return res
-
-    if (
-        res := alc_18.parse(message)
-    ).matched:
+    if (res := alc_18.parse(message)).matched:
         user = await get_user(user_id, platform)
         try:
             await tsugu_api_async.change_user_data(
@@ -832,9 +781,7 @@ async def _handler(
     elif res.head_matched:
         return res
 
-    if (
-        res := alc_19.parse(message)
-    ).matched:
+    if (res := alc_19.parse(message)).matched:
         user = await get_user(user_id, platform)
         try:
             r = await tsugu_api_async.change_user_data(
@@ -843,7 +790,7 @@ async def _handler(
                 {"mainServer": server_name_2_server_id(res.serverName)},
             )
         except Exception as e:
-            return text_response('API Error: /change_user_data' + str(e))
+            return text_response("API Error: /change_user_data" + str(e))
         return text_response("主服务器已设置为 " + res.serverName)
 
     elif res.head_matched:
@@ -851,9 +798,7 @@ async def _handler(
 
     elif res.head_matched:
         return res
-    if (
-        res := alc_20.parse(message)
-    ).matched:
+    if (res := alc_20.parse(message)).matched:
         user = await get_user(user_id, platform)
         update = {
             "shareRoomNumber": False,
@@ -862,14 +807,12 @@ async def _handler(
             r = await tsugu_api_async.change_user_data(platform, user.user_id, update)
             return text_response("关闭车牌转发成功")
         except Exception as e:
-            return text_response('API Error: /change_user_data' + str(e))
+            return text_response("API Error: /change_user_data" + str(e))
 
     elif res.head_matched:
         return res
 
-    if (
-        res := alc_21.parse(message)
-    ).matched:
+    if (res := alc_21.parse(message)).matched:
         user = await get_user(user_id, platform)
         update = {
             "shareRoomNumber": True,
@@ -878,14 +821,12 @@ async def _handler(
             r = await tsugu_api_async.change_user_data(platform, user.user_id, update)
             return text_response("开启车牌转发成功")
         except Exception as e:
-            return text_response('API Error: /change_user_data' + str(e))
+            return text_response("API Error: /change_user_data" + str(e))
 
     elif res.head_matched:
         return res
 
-    if (
-        res := alc_22.parse(message)
-    ).matched:
+    if (res := alc_22.parse(message)).matched:
 
         async def _player_status_case_default():
             user_player_index = user.user_player_index
@@ -918,7 +859,7 @@ async def _handler(
                     f"\n已查找默认玩家状态（{user_player_index + 1}），“help 玩家状态” 了解更多"
                 )
             except Exception as e:
-                return text_response('API Error: /search_player' + str(e))
+                return text_response("API Error: /search_player" + str(e))
 
         async def _player_status_case_index():
             if res.accountIndex > len(user.user_player_list) or res.accountIndex < 1:
@@ -929,7 +870,7 @@ async def _handler(
                     int(game_id_msg.get("playerId")), game_id_msg.get("server")
                 ) + text_response(f"\n已查找账号 {res.accountIndex} 玩家状态，“help 玩家状态” 了解更多")
             except Exception as e:
-                return text_response('API Error: /search_player' + str(e))
+                return text_response("API Error: /search_player" + str(e))
 
         user = await get_user(user_id, platform)
         if res.accountIndex:
@@ -959,9 +900,7 @@ async def _handler(
         )
         return bind_record
 
-    if (
-        res := alc_23.parse(message)
-    ).matched:
+    if (res := alc_23.parse(message)).matched:
         user = await get_user(user_id, platform)
         if (
             not res.accountIndex
@@ -982,11 +921,21 @@ async def _handler(
             await tsugu_api_async.change_user_data(platform, user.user_id, update)
             return text_response("主账号已设置为账号 " + str(res.accountIndex))
         except Exception as e:
-            return text_response('API Error: /change_user_data' + str(e))
+            return text_response("API Error: /change_user_data" + str(e))
 
-    if (
-        res := alc_24.parse(message)
-    ).matched:
+    if (res := alc_24.parse(message)).matched:
+        if res.geetest:
+            try:
+
+                r = await tsugu_api_async.bind_player_request(
+                    user_id=user_id, platform=platform
+                )
+                return text_response(
+                    f"""刷新验证码成功，验证码为 {r.get('data')['verifyCode']} """
+                )
+            except Exception as e:
+                return text_response(str(e) + "请求失败，请稍后再试")
+
         user = await get_user(user_id, platform)
         server = (
             server_name_2_server_id(res.serverName)
@@ -1016,7 +965,7 @@ async def _handler(
             {
                 "user_id": user_id,
                 "platform": platform,
-                "message": f"""已进入解除绑定流程，请将在2min内将游戏账号的 评论(个性签名) 或者 当前使用的 乐队编队名称改为\n{r.get('data')['verifyCode']}\nbot将自动验证，解除成功后会发送消息通知\n若验证码不可用，发送 请求绑定 获取新验证码""",
+                "message": f"""已进入解除绑定流程，请将在2min内将游戏账号的 评论(个性签名) 或者 当前使用的 乐队编队名称改为\n{r.get('data')['verifyCode']}\nbot将自动验证，解除成功后会发送消息通知\n若验证码不可用，使用「解除绑定 刷新」刷新验证码""",
                 "message_id": message_id,
             }
         )
@@ -1050,9 +999,7 @@ async def _handler(
     elif res.head_matched:
         return res
 
-    if (
-        res := alc_25.parse(message)
-    ).matched:
+    if (res := alc_25.parse(message)).matched:
         try:
             data = await tsugu_api_async.query_room_number()
         except Exception as e:
@@ -1129,7 +1076,6 @@ async def _handler(
     elif res.head_matched:
         return res
 
-
     _car_config = {
         "car": [
             "q1",
@@ -1171,10 +1117,9 @@ async def _handler(
             "禁fc",
         ],
         "fake": [
-            "114514",
-            "1919",
-            "下北泽",
             "11451",
+            "1919",
+            "810",
             "雀魂",
             "麻将",
             "打牌",
@@ -1186,9 +1131,6 @@ async def _handler(
             "qq.com",
             "腾讯会议",
             "master",
-            "疯狂星期四",
-            "av",
-            "bv",
         ],
     }
 
