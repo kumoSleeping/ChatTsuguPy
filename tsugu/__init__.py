@@ -422,7 +422,7 @@ alc_22 = Alconna(
 
 alc_23 = Alconna(
     ["主账号"],
-    Args["accountIndex", int],
+    Args["accountIndex;?", int],
     meta=CommandMeta(
         compact=True,
         description="设定默认玩家状态、车牌展示中的主账号使用第几个账号",
