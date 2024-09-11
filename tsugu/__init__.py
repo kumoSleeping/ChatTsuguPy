@@ -927,6 +927,10 @@ async def _handler(
         except Exception as e:
             return text_response("API Error: /change_user_data" + str(e))
 
+    elif res.head_matched:
+        return res
+    
+    
     if (res := alc_24.parse(message)).matched:
         if res.index == 0:
             try:
