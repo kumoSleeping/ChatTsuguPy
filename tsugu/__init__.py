@@ -24,6 +24,9 @@ from arclet.alconna import (
 
 import tsugu_api_async
 from tsugu_api_core._typing import _ServerName, _ServerId, _UserPlayerInList
+from tsugu_api_core import settings
+
+settings.timeout = 30
 
 _i_s = {0: "jp", 1: "en", 2: "tw", 3: "cn", 4: "kr"}
 _s_i = {
@@ -354,13 +357,13 @@ ycx 1000 177 jp""",
 
 alc_16 = Alconna(
     ["绑定玩家"],
-    Args["playerId;?", int]["serverName;?", _ServerNameFull]["geetest;?", ["刷新"]],
+    Args["playerId", int]["serverName;?", _ServerNameFull],
     meta=CommandMeta(
         compact=True,
         description="绑定游戏账号",
         example="""绑定玩家 114514 : 绑定默认服务器中玩家ID为114514的玩家
 绑定玩家 1919810 jp : 绑定日服玩家ID为1919810的玩家
-绑定玩家 刷新 : 刷新你的验证码""",
+绑定玩家 0 : 刷新你的验证码""",
     ),
 )
 
@@ -430,7 +433,7 @@ alc_23 = Alconna(
 
 alc_24 = Alconna(
     ["解除绑定"],
-    Args["index;?", int]["geetest;?", ["刷新"]],
+    Args["index;?", int],
     meta=CommandMeta(
         compact=True,
         description="解除绑定游戏账号",
@@ -699,13 +702,14 @@ async def _handler(
 
     if (res := alc_16.parse(message)).matched:
 
-        if res.geetest:
+        if res.playerId == 0:
             try:
                 r = await tsugu_api_async.bind_player_request(
                     user_id=user_id, platform=platform
                 )
                 return text_response(
-                    f"""刷新验证码成功，验证码为 {r.get('data')['verifyCode']} """
+                    f"""绑定玩家 0 用于刷新验证码
+刷新成功，验证码为 {r.get('data')['verifyCode']} """
                 )
             except Exception as e:
                 return text_response(str(e) + "请求失败，请稍后再试")
@@ -734,7 +738,7 @@ async def _handler(
             {
                 "user_id": user_id,
                 "platform": platform,
-                "message": f"""已进入绑定流程，请将在2min内将游戏账号的 评论(个性签名) 或者 当前使用的 乐队编队名称改为\n{r.get('data')['verifyCode']}\nbot将自动验证，绑定成功后会发送消息通知\n若验证码不可用，使用「绑定玩家 刷新」刷新验证码""",
+                "message": f"""已进入绑定流程，请将在2min内将游戏账号的 评论(个性签名) 或者 当前使用的 乐队编队名称改为\n{r.get('data')['verifyCode']}\nbot将自动验证，绑定成功后会发送消息通知\n若验证码不可用，使用「绑定玩家 0」刷新验证码""",
                 "message_id": message_id,
             }
         )
@@ -924,14 +928,15 @@ async def _handler(
             return text_response("API Error: /change_user_data" + str(e))
 
     if (res := alc_24.parse(message)).matched:
-        if res.geetest:
+        if res.index == 0:
             try:
 
                 r = await tsugu_api_async.bind_player_request(
                     user_id=user_id, platform=platform
                 )
                 return text_response(
-                    f"""刷新验证码成功，验证码为 {r.get('data')['verifyCode']} """
+                    f"""解除绑定 0 用于刷新验证码
+刷新成功，验证码为 {r.get('data')['verifyCode']} """
                 )
             except Exception as e:
                 return text_response(str(e) + "请求失败，请稍后再试")
@@ -965,7 +970,7 @@ async def _handler(
             {
                 "user_id": user_id,
                 "platform": platform,
-                "message": f"""已进入解除绑定流程，请将在2min内将游戏账号的 评论(个性签名) 或者 当前使用的 乐队编队名称改为\n{r.get('data')['verifyCode']}\nbot将自动验证，解除成功后会发送消息通知\n若验证码不可用，使用「解除绑定 刷新」刷新验证码""",
+                "message": f"""已进入解除绑定流程，请将在2min内将游戏账号的 评论(个性签名) 或者 当前使用的 乐队编队名称改为\n{r.get('data')['verifyCode']}\nbot将自动验证，解除成功后会发送消息通知\n若验证码不可用，使用「解除绑定 0」刷新验证码""",
                 "message_id": message_id,
             }
         )
