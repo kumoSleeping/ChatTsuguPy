@@ -235,7 +235,7 @@ alc_4 = Alconna(
 
 alc_5 = Alconna(
     ["查卡池"],
-    Args["gachaId", str],
+    Args["gachaId", int],
     meta=CommandMeta(
         compact=True,
         description="根据卡池ID查询卡池信息",
