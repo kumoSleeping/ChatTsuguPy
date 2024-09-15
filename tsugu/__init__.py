@@ -340,7 +340,8 @@ alc_14 = Alconna(
     meta=CommandMeta(
         compact=True,
         description="输出全部档位的预测线",
-        example="ycx 1000\nycx 1000 177 jp",
+        example="""ycxall 177 :返回177号活动的全部档位预测线
+ycxall 177 jp :返回日服177号活动的全部档位预测线""",
     ),
 )
 
