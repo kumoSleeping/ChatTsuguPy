@@ -407,16 +407,15 @@ alc_21 = Alconna(
 
 alc_22 = Alconna(
     ["玩家状态"],
-    Args["accountIndex;?", int],
+    Args["accountIndex;?", int]["serverName;?", _ServerNameFull],
     meta=CommandMeta(
         compact=True,
         description="查询自己的玩家状态",
         example="""
 玩家状态 :返回指定默认账号的玩家状态
-玩家状态 1 :返回账号1的玩家状态
-主账号 :返回默认查询账号
-主账号 2 :设置账号2为默认查询账号
 玩家状态 2 :返回账号2的玩家状态
+主账号 2 :设置账号2为默认查询账号
+绑定玩家 / 解除绑定 :管理存储的账号
 """,
     ),
 )
@@ -486,7 +485,7 @@ async def _handler(
                 user.main_server, res.eventId, meta
             )
         except Exception as e:
-            return text_response("API Error: /event_stage" + str(e))
+            return text_response("API Error: /event_stage")
     elif res.head_matched:
         return res
 
@@ -501,7 +500,7 @@ async def _handler(
                 user.main_server, res.times, gacha_id
             )
         except Exception as e:
-            return text_response("API Error: /gacha_simulate" + str(e))
+            return text_response("API Error: /gacha_simulate")
 
     elif res.head_matched:
         return res
@@ -510,7 +509,7 @@ async def _handler(
         try:
             return await tsugu_api_async.get_card_illustration(res.cardId)
         except Exception as e:
-            return text_response("API Error: /get_card_illustration" + str(e))
+            return text_response("API Error: /get_card_illustration")
 
     elif res.head_matched:
         return res
@@ -527,7 +526,7 @@ async def _handler(
                 server, res.tier, res.eventId
             )
         except Exception as e:
-            return text_response("API Error: /cutoff_list_of_recent_event" + str(e))
+            return text_response("API Error: /cutoff_list_of_recent_event")
 
     elif res.head_matched:
         return res
@@ -539,7 +538,7 @@ async def _handler(
                 user.displayed_server_list, res.gachaId
             )
         except Exception as e:
-            return text_response("API Error: /search_gacha" + str(e))
+            return text_response("API Error: /search_gacha")
 
     elif res.head_matched:
         return res
@@ -551,7 +550,7 @@ async def _handler(
                 user.displayed_server_list, text=" ".join(res.word)
             )
         except Exception as e:
-            return text_response("API Error: /search_character" + str(e))
+            return text_response("API Error: /search_character")
 
     elif res.head_matched:
         return res
@@ -563,7 +562,7 @@ async def _handler(
                 user.displayed_server_list, text=" ".join(res.word)
             )
         except Exception as e:
-            return text_response("API Error: /search_event" + str(e))
+            return text_response("API Error: /search_event")
 
     elif res.head_matched:
         return res
@@ -575,7 +574,7 @@ async def _handler(
                 user.displayed_server_list, " ".join(res.word)
             )
         except Exception as e:
-            return text_response("API Error: /search_card" + str(e))
+            return text_response("API Error: /search_card")
 
     elif res.head_matched:
         return res
@@ -591,7 +590,7 @@ async def _handler(
         try:
             return await tsugu_api_async.search_player(res.playerId, server)
         except Exception as e:
-            return text_response("API Error: /search_player" + str(e))
+            return text_response("API Error: /search_player")
 
     elif res.head_matched:
         return res
@@ -602,7 +601,7 @@ async def _handler(
             text = " ".join(res.word) if res.word else None
             return await tsugu_api_async.song_random(user.main_server, text=text)
         except Exception as e:
-            return text_response("API Error: /song_random" + str(e))
+            return text_response("API Error: /song_random")
 
     elif res.head_matched:
         return res
@@ -613,7 +612,7 @@ async def _handler(
                 user.displayed_server_list, text=" ".join(res.word)
             )
         except Exception as e:
-            return text_response("API Error: /search_song" + str(e))
+            return text_response("API Error: /search_song")
 
     elif res.head_matched:
         return res
@@ -652,7 +651,7 @@ async def _handler(
                 difficulty_text_2_difficulty_id[res.difficultyText],
             )
         except Exception as e:
-            return text_response("API Error: /song_chart" + str(e))
+            return text_response("API Error: /song_chart")
 
     elif res.head_matched:
         return res
@@ -666,7 +665,7 @@ async def _handler(
         try:
             return await tsugu_api_async.song_meta(user.displayed_server_list, server)
         except Exception as e:
-            return text_response("API Error: /song_meta" + str(e))
+            return text_response("API Error: /song_meta")
 
     elif res.head_matched:
         return res
@@ -681,7 +680,7 @@ async def _handler(
         try:
             return await tsugu_api_async.cutoff_all(server, res.eventId)
         except Exception as e:
-            return text_response("API Error: /cutoff_all" + str(e))
+            return text_response("API Error: /cutoff_all")
 
     elif res.head_matched:
         return res
@@ -696,7 +695,7 @@ async def _handler(
         try:
             return await tsugu_api_async.cutoff_detail(server, res.tier, res.eventId)
         except Exception as e:
-            return text_response("API Error: /cutoff_detail" + str(e))
+            return text_response("API Error: /cutoff_detail")
 
     elif res.head_matched:
         return res
@@ -795,7 +794,7 @@ async def _handler(
                 {"mainServer": server_name_2_server_id(res.serverName)},
             )
         except Exception as e:
-            return text_response("API Error: /change_user_data" + str(e))
+            return text_response("API Error: /change_user_data")
         return text_response("主服务器已设置为 " + res.serverName)
 
     elif res.head_matched:
@@ -812,7 +811,7 @@ async def _handler(
             r = await tsugu_api_async.change_user_data(platform, user.user_id, update)
             return text_response("关闭车牌转发成功")
         except Exception as e:
-            return text_response("API Error: /change_user_data" + str(e))
+            return text_response("API Error: /change_user_data")
 
     elif res.head_matched:
         return res
@@ -826,7 +825,7 @@ async def _handler(
             r = await tsugu_api_async.change_user_data(platform, user.user_id, update)
             return text_response("开启车牌转发成功")
         except Exception as e:
-            return text_response("API Error: /change_user_data" + str(e))
+            return text_response("API Error: /change_user_data")
 
     elif res.head_matched:
         return res
@@ -864,8 +863,28 @@ async def _handler(
                     f"\n已查找默认玩家状态（{user_player_index + 1}），“help 玩家状态” 了解更多"
                 )
             except Exception as e:
-                return text_response("API Error: /search_player" + str(e))
+                return text_response("API Error: /search_player")
 
+        async def _player_status_case_server():
+            server_id = server_name_2_server_id(res.serverName)
+            if not server_exists(server_id):
+                return text_response("未找到服务器 " + res.serverName)
+            
+            try:
+                for i, x in enumerate(user.user_player_list):
+                    if x.get("server") == server_id:
+                        game_id_msg = user.user_player_list[i]
+                        return await tsugu_api_async.search_player(
+                            int(game_id_msg.get("playerId")), game_id_msg.get("server")
+                        ) + text_response(
+                            f"\n已查找服务器 {res.serverName} 玩家状态，“help 玩家状态” 了解更多"
+                        )
+                return text_response(f"未找到服务器 {res.serverName} 的记录")
+            
+            except Exception as e:
+                return text_response("API Error: /search_player")
+            
+            
         async def _player_status_case_index():
             if res.accountIndex > len(user.user_player_list) or res.accountIndex < 1:
                 return text_response(f"未找到记录 {res.accountIndex}，请先绑定")
@@ -875,11 +894,15 @@ async def _handler(
                     int(game_id_msg.get("playerId")), game_id_msg.get("server")
                 ) + text_response(f"\n已查找账号 {res.accountIndex} 玩家状态，“help 玩家状态” 了解更多")
             except Exception as e:
-                return text_response("API Error: /search_player" + str(e))
+                return text_response("API Error: /search_player")
 
         user = await get_user(user_id, platform)
-        if res.accountIndex:
+        if res.accountIndex and not res.serverName:
             return await _player_status_case_index()
+        elif res.serverName and not res.accountIndex:
+            return await _player_status_case_server()
+        elif res.serverName and res.accountIndex:
+            return text_response("只能同时指定一个账号或服务器")
         else:
             return await _player_status_case_default()
 
@@ -926,7 +949,7 @@ async def _handler(
             await tsugu_api_async.change_user_data(platform, user.user_id, update)
             return text_response("主账号已设置为账号 " + str(res.accountIndex))
         except Exception as e:
-            return text_response("API Error: /change_user_data" + str(e))
+            return text_response("API Error: /change_user_data")
 
     elif res.head_matched:
         return res
@@ -996,15 +1019,14 @@ async def _handler(
                 return text_response(f"解除绑定成功")
             except Exception as e:
                 # 如果最后一次
+                if i == 6 and "都与验证码不匹配" in str(e):
+                    return text_response(f"解除绑定超时,{e}\n用户未及时修改游戏信息或Bestdori服务器暂时失效")
                 if i == 6:
-                    return text_response(f"解除绑定超时，请重试")
-
+                    return text_response(f"解除绑定超时{e}")
                 if "都与验证码不匹配" in str(e):
-                    # print(f'验证码错误，{i + 1}次尝试')
-                    # 进入下一次循环
                     continue
                 # 其他错误
-                return text_response(f"解除绑定失败，请稍后再试")
+                return text_response(f"解除绑定失败，请稍后再试{e}")
 
     elif res.head_matched:
         return res
