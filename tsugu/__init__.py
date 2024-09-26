@@ -758,13 +758,14 @@ async def _handler(
                 )
             except Exception as e:
                 # 如果最后一次
+                if i == 6 and "都与验证码不匹配" in str(e):
+                    return text_response(f"解除绑定超时，{e}\n用户未及时修改游戏信息或Bestdori服务器暂时失效")
                 if i == 6:
-                    return text_response(f"绑定超时，请重试")
-
+                    return text_response(f"解除绑定超时，{e}")
                 if "都与验证码不匹配" in str(e):
                     continue
                 # 其他错误
-                return text_response(f"绑定失败，请稍后再试")
+                return text_response(f"绑定失败，{e}")
 
     elif res.head_matched:
         return res
@@ -1020,13 +1021,13 @@ async def _handler(
             except Exception as e:
                 # 如果最后一次
                 if i == 6 and "都与验证码不匹配" in str(e):
-                    return text_response(f"解除绑定超时,{e}\n用户未及时修改游戏信息或Bestdori服务器暂时失效")
+                    return text_response(f"解除绑定超时，{e}\n用户未及时修改游戏信息或Bestdori服务器暂时失效")
                 if i == 6:
-                    return text_response(f"解除绑定超时{e}")
+                    return text_response(f"解除绑定超时，{e}")
                 if "都与验证码不匹配" in str(e):
                     continue
                 # 其他错误
-                return text_response(f"解除绑定失败，请稍后再试{e}")
+                return text_response(f"解除绑定失败，{e}")
 
     elif res.head_matched:
         return res
