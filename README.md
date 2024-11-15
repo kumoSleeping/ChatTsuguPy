@@ -1,5 +1,5 @@
 
-<h1 align="center"> Chat Tsugu Py <img src="./logo.jpg" width="30" width="30" height="30" alt="tmrn"/> </h1>
+<h1 align="center"> Chat Tsugu Py <img src="./logo.jpg" width="30" width="30" height="30" alt="tsugu"/> </h1>
 
 
 <div align="center">
@@ -41,11 +41,19 @@ pip install tsugu --upgrade
 
 
 ## 📖 使用
-
 `cmd_generator` 是一个异步方法，用于直接处理用户输入的自然语言并返回查询结果:   
 
 
-- 以 `satori-python` + `chronocat` 为例
+- 测试可用
+
+```python
+import tsugu
+import asyncio
+print(asyncio.run(tsugu.cmd_generator('查活动', '114514')))
+# 输出：[{'type': 'string', 'string': '参数 word 丢失\n查活动 <...word> \n根据活动名、乐队、活动ID等查询活动信息\n使用示例:\n查活动 绿 tsugu :返回所有属性加成为pure，且活动加成角色中包括羽泽鸫的活动列表\n查活动 177 :返回177号活动的信息'}]
+```
+
+- 生产实操：以 `satori-python` + `chronocat` 为例
 
 ```python
 from tsugu import cmd_generator
@@ -84,25 +92,46 @@ async def on_message_(account: Account, event: Event):
 > 当你使用QQ号作为 `user_id` 时，`platform` 默认 `red`。   
 
 
-## ❌ 同步多线程支持
-- 4.0.0 后不再支持同步多线程，因为本人用不到。实现起来很简单，本包在导入时完成了 `Alconna` 的初始化，避免了多线程 `context` 错误，因此可以在多线程中使用 `tsugu`，欢迎有志人士一同完善。
+## ✏️ 环境变量
 
+> Chat Tsugu Py 使用读取环境变量的方式改变一些配置
 
+```zsh
+# 命令头后是否必须更上完整的空格才能匹配，例如 `查卡947` 与 `查卡 947` 。（默认值：false）
+export TSUGU_COMPACT='false' 
 
+# 设置请求超时时间（默认值：120秒）
+export TSUGU_TIMEOUT=120
 
+# 设置代理地址（默认值：空字符串）
+export TSUGU_PROXY=''
 
-## ⚙️ api settings
+# 设置后端地址（默认值：http://tsugubot.com:8080）
+export TSUGU_BACKEND_URL='http://tsugubot.com:8080'
 
-> 安装 `tsugu` 后可以直接导入 `tsugu_api_core` 的 `settings` 修改配置项。
+# 设置是否使用后端代理（默认值：true）
+export TSUGU_BACKEND_PROXY='true'
 
+# 设置用户数据后端地址（默认值：http://tsugubot.com:8080）
+export TSUGU_USERDATA_BACKEND_URL='http://tsugubot.com:8080'
 
-```py 
-from tsugu_api_core import settings
+# 设置是否使用用户数据后端代理（默认值：true）
+export TSUGU_USERDATA_BACKEND_PROXY='true'
 
-...
+# 设置是否使用简易背景（默认值：true）
+export TSUGU_USE_EASY_BG='true'
+
+# 设置是否压缩返回数据（默认值：true）
+export TSUGU_COMPRESS='true'
 ```
 
-[tsugu_api settings 详细内容](https://github.com/WindowsSov8forUs/tsugu-api-python/blob/main/tsugu_api_core/settings.py)
+# 🤖 特性
 
+- 为改善用户体验，本包与 `koishi 插件` 在部分行为上略有不同。
+  - BOT 玩家状态绑定/解绑策略自验证策略
+  - 基于 `Alconna` 的真 “可选参数” 。
+
+- 为了适应官方 BOT 的特性，本包提供了隐式一些非通用方法。
+  - 当解除绑定用户数据库返回特定值时会被认定为安全模式，触发直接解除绑定操作。
 
 ---
