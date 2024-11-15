@@ -3,7 +3,15 @@
 
 <div align="center">
 
-\[Tsugu-bot^2backend\]✨<img src="./logo.jpg" width="30" width="30" height="30" alt="tsugu"/>✨
+
+<h1 align="center"> Tsugu B3 </h1>
+
+
+<div align="center">
+
+</div>
+
+✨<img src="./logo.jpg" width="30" width="30" height="30" alt="tsugu"/>✨
 
 
 
