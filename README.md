@@ -1,11 +1,13 @@
 
-<h1 align="center"> Chat Tsugu Py <img src="./logo.jpg" width="30" width="30" height="30" alt="tsugu"/> </h1>
 
 
 <div align="center">
 
-_✨ Python 编写的 [TsuguBanGDreamBot](https://github.com/Yamamoto-2/tsugu-bangdream-bot?tab=readme-ov-file) 自然语言交互库  ✨_
+\[Tsugu-bot^2backend\]✨<img src="./logo.jpg" width="30" width="30" height="30" alt="tsugu"/>✨
 
+
+
+_✨ user (Natural language) -> ⬆⬆⬆⬆  -> [Tsugu BanG Dream Bot](https://github.com/Yamamoto-2/tsugu-bangdream-bot?tab=readme-ov-file)  ✨_
 </div>
 
 <p align="center">
@@ -23,10 +25,10 @@ _✨ Python 编写的 [TsuguBanGDreamBot](https://github.com/Yamamoto-2/tsugu-ba
 
 ---
 
-## 📦 安装
+## 📦 Install
 
 ```shell
-pip install tsugu --upgrade
+pip install tsugu
 ```
 
 > API powered by  <a href="https://github.com/WindowsSov8forUs/tsugu-api-python?tab=readme-ov-file">tsugu-api-python</a>
@@ -35,8 +37,16 @@ pip install tsugu --upgrade
 
 ***
 
+## 🚗 App
+| 项目 | 说明 |
+| --- | --- |
+| [Tsugu QQ 官方机器人](https://bot.q.qq.com/s/b2vuxpu4g?id=102076262) | 主力项目 |
+| Tomorin 私家机器人 | 私家车，基于标准用户数据库 |
+| [一个 NoneBot 插件](https://github.com/zhaomaoniu/tsugu-bangdream-bot-py) | 无人维护，不如去用[这个](https://github.com/WindowsSov8forUs/nonebot-plugin-tsugu-bangdream-bot) |
+|[lgr-py Tsugu](https://github.com/kumoSleeping/lgr-tsugu-py) | 无人维护，似了 |
 
-# 📜 特性
+
+## 📜 Feat
 
 - 为改善用户体验，本包与 `koishi 插件` 在部分行为上略有不同。
   - 默认不需要命令头后跟上完整的空格（可关闭）。
@@ -58,17 +68,16 @@ pip install tsugu --upgrade
 
 
 
-## 📚 异步使用
+## 📚 Async & Higher-Order Function
 `cmd_generator` 是一个异步方法，用于直接处理用户输入的自然语言并返回查询结果:   
 
 
 - 测试可用
 
 ```python
-import tsugu
-import asyncio
-print(asyncio.run(tsugu.cmd_generator('查活动', '114514')))
-# 输出：[{'type': 'string', 'string': '参数 word 丢失\n查活动 <...word> \n根据活动名、乐队、活动ID等查询活动信息\n使用示例:\n查活动 绿 tsugu :返回所有属性加成为pure，且活动加成角色中包括羽泽鸫的活动列表\n查活动 177 :返回177号活动的信息'}]
+-------------
+预发布版暂无示例
+-------------
 ```
 
 - 生产实操：以 `satori-python` + `chronocat` 为例
@@ -84,7 +93,7 @@ from tsugu import cmd_generator
 > 当你使用QQ号作为 `user_id` 时，`platform` 默认 `red`。   
 
 
-## ✏️ 环境变量配置
+## ✏️ Env
 
 > Chat Tsugu Py 使用读取环境变量的方式改变一些配置
 
