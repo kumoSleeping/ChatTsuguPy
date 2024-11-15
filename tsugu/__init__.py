@@ -351,16 +351,49 @@ async def _handler(
         return res
 
     if (res := alc_bind_player.parse(message)).head_matched:
-        if res.matched:
-            if res.playerId == 0:  # 刷新验证码
-                return await _api_call(tsugu_api_async.bind_player_request, user_id=user_id, platform=platform)
-            user = await get_user(user_id, platform)
-            server = server_name_2_server_id(res.serverName) if res.serverName else user.main_server
-            if str(res.playerId).startswith("4") and server == 3:  # 渠道服的uid以4开头
-                return "Bestdori 暂不支持渠道服相关功能"
-            if res.playerId in [player["playerId"] for player in user.user_player_list]:
-                return "你已经绑定过这个玩家了"
-            return await _api_call(tsugu_api_async.bind_player_request, user_id=user_id, platform=platform)
+        if res.playerId == 0:
+            try:
+                r = await tsugu_api_async.bind_player_request( user_id=user_id, platform=platform )
+                return f"绑定玩家 0 用于刷新验证码\n刷新成功，验证码为 {r.get('data')['verifyCode']} "
+            except Exception as e:
+                return "请求失败，请稍后再试"
+                
+
+        user = await get_user(user_id, platform)
+        server = (
+            server_name_2_server_id(res.serverName)
+            if res.serverName
+            else user.main_server
+        )
+
+        if str(res.playerId).startswith("4") and server == 3:
+            return text_response("Bestdori 暂不支持渠道服相关功能")
+
+        if res.playerId in [player["playerId"] for player in user.user_player_list]:
+            return text_response("你已经绑定过这个玩家了")
+        try:
+            r = await tsugu_api_async.bind_player_request(user_id=user_id, platform=platform)
+        except Exception as e:
+            return text_response(str(e) + "请求绑定失败，请稍后再试")
+
+        await _send(f"""已进入绑定流程，请将在2min内将游戏账号的 评论(个性签名) 或者 当前使用的 乐队编队名称改为\n{r.get('data')['verifyCode']}\nbot将自动验证，绑定成功后会发送消息通知\n若验证码不可用，使用「绑定玩家 0」刷新验证码""")
+
+        for i in range(7):
+            await asyncio.sleep(20)
+            try:
+                await tsugu_api_async.bind_player_verification(  user_id=user_id, platform=platform, server=server, player_id=res.playerId, binding_action="bind", )
+                return f"绑定成功，现在可以使用 玩家状态 命令查看绑定的玩家状态"
+            except Exception as e:
+                # 如果最后一次
+                if i == 6 and "都与验证码不匹配" in str(e):
+                    return f"解除绑定超时，{e}\n用户未及时修改游戏信息或Bestdori服务器暂时失效"
+                if i == 6:
+                    return f"解除绑定超时，{e}"
+                if "都与验证码不匹配" in str(e):
+                    continue
+                # 其他错误
+                return f"绑定失败，{e}"
+
         return res
 
     if (res := alc_change_displayed_server_list.parse(message)).head_matched:
@@ -477,10 +510,18 @@ async def _handler(
     if (res := alc_unbind_player.parse(message)).head_matched:
         if res.matched:
             if res.index == 0:
-                return await _api_call(tsugu_api_async.bind_player_request, user_id=user_id, platform=platform)
-
+                try:
+                    r = await tsugu_api_async.bind_player_request(
+                        user_id=user_id, platform=platform
+                    )
+                    return text_response(
+                        f"""解除绑定 0 用于刷新验证码
+    刷新成功，验证码为 {r.get('data')['verifyCode']} """
+                    )
+                except Exception as e:
+                    return text_response(str(e) + "请求失败，请稍后再试")
+            
             user = await get_user(user_id, platform)
-            server = server_name_2_server_id(res.serverName) if res.serverName else user.main_server
 
             if (not res.index) or len(user.user_player_list) < res.index or res.index < 1:
                 bind_record = _get_user_account_list_msg(user=user)
@@ -493,18 +534,22 @@ async def _handler(
             # 私有数据库API的解绑流程
             if r.get("extra") == "safe_mode":
                 try:
-                    await tsugu_api_async.bind_player_verification( user_id=user_id, platform=platform, server=server, player_id=user.user_player_list[res.index - 1].get("playerId"), binding_action="unbind")
+                    await tsugu_api_async.bind_player_verification( user_id=user_id, platform=platform,
+                                                                   server=user.user_player_list[res.index - 1].get("server"),
+                                                                   player_id=user.user_player_list[res.index - 1].get("playerId"), binding_action="unbind")
                     return f"解除绑定成功"
                 except Exception as e:
                     return f"解除绑定失败，请联系管理员"
             
             # 常规解绑流程
             await _send(f"""已进入解除绑定流程，请将在2min内将游戏账号的 评论(个性签名) 或者 当前使用的 乐队编队名称改为\n{r.get('data')['verifyCode']}\nbot将自动验证，解除成功后会发送消息通知\n若验证码不可用，使用「解除绑定 0」刷新验证码""")
-            player_id = user.user_player_list[res.index - 1].get("playerId")
             for i in range(7):
                 await asyncio.sleep(20)
                 try:
-                    await tsugu_api_async.bind_player_verification(user_id=user_id, platform=platform, server=server, player_id=player_id, binding_action="unbind")
+                    await tsugu_api_async.bind_player_verification(user_id=user_id, platform=platform,
+                                                                   server=user.user_player_list[res.index - 1].get("server"),
+                                                                   player_id=user.user_player_list[res.index - 1].get("playerId"),
+                                                                   binding_action="unbind")
                     return f"解除绑定成功"
                 except Exception as e:
                     if i == 6 and "都与验证码不匹配" in str(e):
