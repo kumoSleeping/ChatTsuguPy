@@ -12,6 +12,7 @@ import io
 from PIL import Image
 
 tsugu_test_all = [
+    # 'help',
     # '查试炼',
     # '查试炼 -m',
     # '抽卡模拟',
@@ -44,42 +45,55 @@ tsugu_test_all = [
     # '绑定玩家',
     # '绑定玩家 0',
     # '设置默认服务器 cn jp',
+    # '主服务器',
+    # '主服务器日服',
+    # '主账号',
+    # '主账号 0',
+    # '主账号 1',
+    # '主账号 3',
+    # '主账号 -1',
     # '主服务器 cn',
+    # '国服模式',
     # '关闭车牌转发',
     # '开启车牌转发',
     # '绑定玩家',
     # '玩家状态',
-    '主账号',
-    '主账号 2',
-    '解除绑定 1',
+    # '主账号',
+    # '主账号 2',
+    # '解除绑定 1',
     # 'ycm',
     
-    # '上传车牌 12345',
+    # '上传车牌 12345q4',
 ]
 
 async def test_tsugu():
-    async def show_back_msg(data):
-        if not data:
-            print("没有返回数据")
-            return
-        for item in data:
-            if item['type'] == 'string':
-                print(f"[文字信息] {item['string']}")
-            elif item['type'] == 'base64':
-                print("[图片信息]")
-                i = base64.b64decode(item['string'])
-                img = Image.open(io.BytesIO(i))
-                # img.show()
-                print(f"[图像大小: {len(i) / 1024:.2f}KB]")
+    
+    async def _log_send(result):
+        from loguru import logger
+        if isinstance(result, list):
+            if not result:
+                logger.error("没有返回数据")
+                return
+            for item in result:
+                if item['type'] == 'string':
+                    logger.success('\n'+f"[文字信息] {item['string']}")
+                elif item['type'] == 'base64':
+                    i = base64.b64decode(item['string'])
+                    logger.warning('\n'+f"[图片信息: 图像大小: {len(i) / 1024:.2f}KB]")
+                    img = Image.open(io.BytesIO(i))
+                    img.show()
+        if isinstance(result, str):
+            logger.success('\n'+result)
 
     test_count = 0
     user_id='114514'
 
     for i in tsugu_test_all:
-        msg = await cmd_generator(message=i, user_id=user_id)
-        await show_back_msg(msg)
+        msg = await cmd_generator(message=i, user_id=user_id,send_func=_log_send)
     
 
 # 启动测试
 if __name__ == '__main__':
     asyncio.run(test_tsugu())
+    
+    
