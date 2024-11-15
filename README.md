@@ -15,7 +15,7 @@
 
 
 
-_✨ user (Natural language) -> ⬆⬆⬆⬆  -> [Tsugu BanG Dream Bot](https://github.com/Yamamoto-2/tsugu-bangdream-bot?tab=readme-ov-file)  ✨_
+_✨ User (Natural language) -> ^^^^^  -> [Tsugu BanG Dream Bot](https://github.com/Yamamoto-2/tsugu-bangdream-bot?tab=readme-ov-file)  ✨_
 </div>
 
 <p align="center">
