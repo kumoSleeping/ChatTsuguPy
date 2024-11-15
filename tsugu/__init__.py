@@ -74,9 +74,8 @@ async def cmd_generator(message: str,user_id: str,platform: str = "red",send_fun
             # 使得 _handler 函数直接 return 与 send 都可以发送消息
             await send_func(result)
     except Exception as e:
-        logger.error(f"Error: {e}")
         await send_func("出现错误，请联系管理员")        
-
+        raise e
 
 async def _handler( message: str, user_id: str, platform: str, send_func: callable):
     
@@ -311,7 +310,7 @@ async def _handler( message: str, user_id: str, platform: str, send_func: callab
 
     if (res := alc_query_room_number.parse(message)).matched:
         
-        data = await tsugu_api_async.query_room_number
+        data = await tsugu_api_async.query_room_number()
         if not data:
             return "myc"
 
@@ -346,7 +345,7 @@ async def _handler( message: str, user_id: str, platform: str, send_func: callab
 
             new_data_list.append(new_data)
 
-        return await tsugu_api_async.room_list, new_data_list
+        return await tsugu_api_async.room_list(new_data_list)
         
     # 最后检查车牌
     message_for_car = message[4:].strip() if message.startswith("上传车牌") else message

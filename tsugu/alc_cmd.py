@@ -290,6 +290,7 @@ alc_unbind_player = Alconna(
 
 alc_query_room_number = Alconna(
     ["ycm", "车来", "有车吗"],
+    Args["_;?", AllParam], 
     meta=CommandMeta(
         compact=TSUGU_COMPACT,
         description="获取车站信息",

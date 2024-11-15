@@ -93,8 +93,9 @@ async def get_user(user_id: str, platform: str) -> User:
     """
     for i in range(3):
         try:
-            user_data = await tsugu_api_async.get_user_data(platform, user_id).get("data")
-            user = User(user_id=user_id, platform=platform, main_server=user_data.get("mainServer"),displayed_server_list=user_data.get("displayedServerList"),hare_room_number=user_data.get("shareRoomNumber"),user_player_index=user_data.get("userPlayerIndex"),user_player_list=user_data.get("userPlayerList"),)
+            user_data_raw = await tsugu_api_async.get_user_data(platform, user_id)
+            user_data = user_data_raw.get("data")
+            user = User(user_id=user_id, platform=platform, main_server=user_data.get("mainServer"),displayed_server_list=user_data.get("displayedServerList"),share_room_number=user_data.get("shareRoomNumber"),user_player_index=user_data.get("userPlayerIndex"),user_player_list=user_data.get("userPlayerList"),)
             return user
         except TimeoutError:
             await asyncio.sleep(0.2)
