@@ -1,4 +1,4 @@
-from typing import Callable, List, Literal, TypeAlias, Union, Dict, Optional
+from typing import Literal, TypeAlias
 
 _ServerNameFull: TypeAlias = Literal[
     "jp", "en", "tw", "cn", "kr", "日服", "国际服", "台服", "国服", "韩服"

@@ -1,29 +1,22 @@
+import os
+from loguru import logger
 from arclet.alconna import (
-    Alconna,
-    Option,
-    Subcommand,
     Args,
-    CommandMeta,
-    Empty,
-    Namespace,
-    namespace,
-    command_manager,
+    Alconna,
     AllParam,
     MultiVar,
-    Arparma,
-    output_manager,
-    command_manager,
+    CommandMeta,
 )
 
-from loguru import logger
-import os
 from .config import _ServerNameFull
 
 
-TSUGU_COMPACT = True if os.environ.get("TSUGU_COMPACT", "true") == "true" else False
+TSUGU_COMPACT = os.environ.get("TSUGU_COMPACT", "true") == "true"
+
 if not TSUGU_COMPACT:
     logger.warning("TSUGU_COMPACT is off")
-    
+
+
 alc_help = Alconna(
     ["help"],
     Args["cmd;?", str],
@@ -290,7 +283,7 @@ alc_unbind_player = Alconna(
 
 alc_query_room_number = Alconna(
     ["ycm", "车来", "有车吗"],
-    Args["_;?", AllParam], 
+    Args["_;?", AllParam],
     meta=CommandMeta(
         compact=TSUGU_COMPACT,
         description="获取车站信息",
@@ -304,4 +297,3 @@ alc_26 = Alconna(
         description="自动检测车牌并上传",
     ),
 )
-
