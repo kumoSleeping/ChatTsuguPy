@@ -1,10 +1,10 @@
 from typing import Literal, TypeAlias
 
-_ServerNameFull: TypeAlias = Literal[
+ServerNameFull: TypeAlias = Literal[
     "jp", "en", "tw", "cn", "kr", "日服", "国际服", "台服", "国服", "韩服"
 ]
-_i_s = {0: "jp", 1: "en", 2: "tw", 3: "cn", 4: "kr"}
-_s_i = {
+INDEX_TO_SERVER = {0: "jp", 1: "en", 2: "tw", 3: "cn", 4: "kr"}
+SERVER_TO_INDEX = {
     "jp": 0,
     "en": 1,
     "tw": 2,
@@ -16,7 +16,7 @@ _s_i = {
     "国服": 3,
     "韩服": 4,
 }
-_difficulty_text_2_difficulty_id = {
+DIFFICULTY_TEXT_TO_ID = {
     "easy": 0,
     "ez": 0,
     "normal": 1,
@@ -29,7 +29,7 @@ _difficulty_text_2_difficulty_id = {
     "sp": 4,
 }
 
-_car_config = {
+CAR_CONFIG = {
     "car": [
         "q1",
         "q2",

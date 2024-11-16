@@ -3,12 +3,12 @@ import asyncio
 import tsugu_api_async
 from loguru import logger
 from tsugu_api_core import settings
+from typing import Awaitable, List, Union, Dict, Optional
 from arclet.alconna import output_manager, command_manager
-from typing import Callable, List, Union, Dict, Optional
 
 from .utils import *
 from .alc_cmd import *
-from .config import _difficulty_text_2_difficulty_id, _car_config
+from .const import DIFFICULTY_TEXT_TO_ID, CAR_CONFIG
 
 
 settings.timeout = int(os.getenv("TSUGU_TIMEOUT", "120"))
@@ -42,7 +42,7 @@ async def cmd_generator(
     message: str,
     user_id: str,
     platform: str = "red",
-    send_func: Optional[Callable] = async_print,
+    send_func: Optional[Awaitable] = async_print,
 ):
     """
     ## 命令生成器
@@ -52,7 +52,7 @@ async def cmd_generator(
         message (str): 用户信息
         user_id (str): 用户ID
         platform (str, optional): 平台，当用户ID为真实QQ号时，平台可以为red. Defaults to "red". 
-        send_func (Optional[Callable], optional): 发送消息的函数. Defaults to None. 
+        send_func (Optional[Awaitable], optional): 发送消息的函数. Defaults to None. 
 
     send_func 需处理的消息格式为 str 或者 List[Dict[str, str]]
 
@@ -72,7 +72,7 @@ async def cmd_generator(
         raise e
 
 
-async def _handler(message: str, user_id: str, platform: str, send_func: callable):
+async def _handler(message: str, user_id: str, platform: str, send_func: Awaitable):
 
     async def _send(message: Union[str, List[Dict[str, str]]]):
         await send_func(message)
@@ -161,7 +161,7 @@ async def _handler(message: str, user_id: str, platform: str, send_func: callabl
         return await tsugu_api_async.song_chart(
             displayed_server_list=user.displayed_server_list,
             song_id=res.songId,
-            difficulty_id=_difficulty_text_2_difficulty_id[res.difficultyText],
+            difficulty_id=DIFFICULTY_TEXT_TO_ID[res.difficultyText],
         )
 
     if (res := alc_song_meta.parse(message)).matched:
@@ -481,9 +481,9 @@ async def _handler(message: str, user_id: str, platform: str, send_func: callabl
     # 最后检查车牌
     message_for_car = message[4:].strip() if message.startswith("上传车牌") else message
     # 检查car_config['car']中的关键字
-    if any(str(keyword) in message_for_car for keyword in _car_config["car"]):
+    if any(str(keyword) in message_for_car for keyword in CAR_CONFIG["car"]):
         # 检查car_config['fake']中的关键字
-        if any(str(keyword) in message_for_car for keyword in _car_config["fake"]):
+        if any(str(keyword) in message_for_car for keyword in CAR_CONFIG["fake"]):
             pass
         else:
             if re.match(r"^\d{5}(\D|$)|^\d{6}(\D|$)", message_for_car):

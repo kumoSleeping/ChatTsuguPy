@@ -6,7 +6,7 @@ from dataclasses import dataclass
 from tsugu_api_core._typing import _ServerId, _UserPlayerInList
 
 from .alc_cmd import *
-from .config import _s_i, _i_s
+from .const import SERVER_TO_INDEX, INDEX_TO_SERVER
 
 
 @dataclass
@@ -24,28 +24,28 @@ def server_names_2_server_ids(server_name: List[str]) -> List[_ServerId]:
     """
     服务器名(多)转服务器ID(多)
     """
-    return [_s_i[code] for code in server_name]
+    return [SERVER_TO_INDEX[code] for code in server_name]
 
 
 def server_name_2_server_id(server_name: str) -> _ServerId:
     """
     服务器名(1)转服务器ID(1)
     """
-    return _s_i[server_name] if server_name in _s_i else None
+    return SERVER_TO_INDEX[server_name] if server_name in SERVER_TO_INDEX else None
 
 
 def server_ids_2_server_names(index: List[_ServerId]) -> List[str]:
     """
     服务器ID(多)转服务器名(多)
     """
-    return [_i_s[code] for code in index]
+    return [INDEX_TO_SERVER[code] for code in index]
 
 
 def server_id_2_server_name(index: _ServerId) -> str:
     """
     服务器ID(1)转服务器名(1)
     """
-    return _i_s[index] if index in _i_s else None
+    return INDEX_TO_SERVER[index] if index in INDEX_TO_SERVER else None
 
 
 def server_exists(server_id: _ServerId) -> bool:

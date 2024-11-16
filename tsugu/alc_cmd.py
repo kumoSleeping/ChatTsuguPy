@@ -8,7 +8,7 @@ from arclet.alconna import (
     CommandMeta,
 )
 
-from .config import _ServerNameFull
+from .const import ServerNameFull
 
 
 TSUGU_COMPACT = os.environ.get("TSUGU_COMPACT", "true") == "true"
@@ -64,7 +64,7 @@ alc_cutoff_list_of_recent_event = Alconna(
     ["lsycx", "历史预测线"],
     Args["tier", int]["eventId;?", int][
         "serverName;?",
-        _ServerNameFull,
+        ServerNameFull,
     ],
     meta=CommandMeta(
         compact=TSUGU_COMPACT,
@@ -117,7 +117,7 @@ alc_search_player = Alconna(
     ["查玩家", "查询玩家"],
     Args["playerId", int][
         "serverName;?",
-        _ServerNameFull,
+        ServerNameFull,
     ],
     meta=CommandMeta(
         compact=TSUGU_COMPACT,
@@ -166,7 +166,7 @@ alc_song_chart = Alconna(
 
 alc_song_meta = Alconna(
     ["查询分数表", "查分数表", "查询分数榜", "查分数榜"],
-    Args["serverName;?", _ServerNameFull],
+    Args["serverName;?", ServerNameFull],
     meta=CommandMeta(
         compact=TSUGU_COMPACT,
         description="",
@@ -176,7 +176,7 @@ alc_song_meta = Alconna(
 
 alc_cutoff_all = Alconna(
     ["ycxall", "ycx all"],
-    Args["eventId;?", int]["serverName;?", _ServerNameFull],
+    Args["eventId;?", int]["serverName;?", ServerNameFull],
     meta=CommandMeta(
         compact=TSUGU_COMPACT,
         description="输出全部档位的预测线",
@@ -187,7 +187,7 @@ ycxall 177 jp :返回日服177号活动的全部档位预测线""",
 
 alc_cutoff_detail = Alconna(
     ["ycx", "预测线"],
-    Args["tier", int]["eventId;?", int]["serverName;?", _ServerNameFull],
+    Args["tier", int]["eventId;?", int]["serverName;?", ServerNameFull],
     meta=CommandMeta(
         compact=TSUGU_COMPACT,
         description="指定档位的预测线",
@@ -198,7 +198,7 @@ ycx 1000 177 jp""",
 
 alc_bind_player = Alconna(
     ["绑定玩家"],
-    Args["playerId", int]["serverName;?", _ServerNameFull],
+    Args["playerId", int]["serverName;?", ServerNameFull],
     meta=CommandMeta(
         compact=TSUGU_COMPACT,
         description="绑定游戏账号",
@@ -211,7 +211,7 @@ alc_bind_player = Alconna(
 
 alc_change_displayed_server_list = Alconna(
     ["设置默认服务器", "默认服务器"],
-    Args["serverList", MultiVar(_ServerNameFull)],
+    Args["serverList", MultiVar(ServerNameFull)],
     meta=CommandMeta(
         compact=TSUGU_COMPACT,
         description="设定信息显示中的默认服务器排序",
@@ -221,7 +221,7 @@ alc_change_displayed_server_list = Alconna(
 
 alc_change_main_server = Alconna(
     ["主服务器", "设置主服务器"],
-    Args["serverName", _ServerNameFull],
+    Args["serverName", ServerNameFull],
     meta=CommandMeta(
         compact=TSUGU_COMPACT,
         description="将指定的服务器设置为你的主服务器",
@@ -247,7 +247,7 @@ alc_toggle_share_room_number_on = Alconna(
 
 alc_player_status = Alconna(
     ["玩家状态"],
-    Args["accountIndex;?", int]["serverName;?", _ServerNameFull],
+    Args["accountIndex;?", int]["serverName;?", ServerNameFull],
     meta=CommandMeta(
         compact=TSUGU_COMPACT,
         description="查询自己的玩家状态",
